@@ -1,40 +1,9 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import { Mail, Lock, ArrowRight, Eye, EyeOff, Shield } from 'lucide-react'
+import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { useGoogleLogin } from '@react-oauth/google'
 import api from '../api/axios'
-
-function SmartCard({ animClass, style, name, title, company, theme, initials }) {
-  return (
-    <div className={animClass} style={{ position:'absolute', pointerEvents:'none', ...style }}>
-      <div style={{ width:260, borderRadius:22, background:'white', boxShadow:'0 16px 48px rgba(0,0,0,0.1)', overflow:'hidden' }}>
-        <div style={{ height:64, background:`linear-gradient(135deg,${theme},${theme}bb)`, position:'relative' }}>
-          <div style={{ position:'absolute', top:-16, right:-16, width:70, height:70, borderRadius:'50%', background:'rgba(255,255,255,0.1)' }} />
-        </div>
-        <div style={{ padding:'0 14px 12px', position:'relative' }}>
-          <div style={{ width:44, height:44, borderRadius:'50%', background:`linear-gradient(135deg,${theme},${theme}aa)`, border:'3px solid white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, fontWeight:800, color:'white', marginTop:-22, marginBottom:6, boxShadow:'0 4px 10px rgba(0,0,0,0.12)' }}>{initials}</div>
-          <div style={{ fontWeight:700, fontSize:12, color:'#111827' }}>{name}</div>
-          <div style={{ fontSize:10, color:'#6b7280', marginTop:1 }}>{title}</div>
-          <div style={{ fontSize:10, color:theme, fontWeight:600, marginTop:1 }}>{company}</div>
-          <div style={{ height:1, background:'#f3f4f6', margin:'8px 0' }} />
-          <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
-            {[['📞','+1 234 567 8900'],['🌐','www.example.com'],['✉️','hello@example.com']].map(([ic,v],i)=>(
-              <div key={i} style={{ display:'flex', alignItems:'center', gap:5, padding:'3px 7px', borderRadius:7, background:`${theme}0d` }}>
-                <span style={{ fontSize:8 }}>{ic}</span>
-                <span style={{ fontSize:9, color:'#6b7280' }}>{v}</span>
-              </div>
-            ))}
-          </div>
-          <div style={{ display:'flex', gap:5, marginTop:8 }}>
-            <div style={{ flex:1, padding:'5px 0', borderRadius:7, background:theme, textAlign:'center', fontSize:9, fontWeight:700, color:'white' }}>Share</div>
-            <div style={{ flex:1, padding:'5px 0', borderRadius:7, border:`1.5px solid ${theme}`, textAlign:'center', fontSize:9, fontWeight:700, color:theme }}>Save Contact</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 const GOOGLE_SVG = (
   <svg width="18" height="18" viewBox="0 0 48 48">
@@ -85,122 +54,143 @@ export default function Login() {
   })
 
   return (
-    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden', background:'linear-gradient(145deg,#f0f4ff 0%,#faf5ff 35%,#fff0f9 65%,#f0f9ff 100%)' }} className="mobile-safe-area">
-      <style>{`
-        @keyframes spin{to{transform:rotate(360deg)}}
-        @keyframes vc1{0%,100%{transform:rotate(-18deg) translateY(0px)}50%{transform:rotate(-16deg) translateY(-16px)}}
-        @keyframes vc2{0%,100%{transform:rotate(12deg) translateY(0px)}50%{transform:rotate(14deg) translateY(-20px)}}
-        @keyframes vc3{0%,100%{transform:rotate(-8deg) translateY(0px)}50%{transform:rotate(-6deg) translateY(-14px)}}
-        @keyframes vc4{0%,100%{transform:rotate(22deg) translateY(0px)}50%{transform:rotate(20deg) translateY(-12px)}}
-        @keyframes vc5{0%,100%{transform:rotate(-2deg) translateY(0px)}50%{transform:rotate(0deg) translateY(-10px)}}
-        @keyframes blob{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(20px,-20px) scale(1.05)}66%{transform:translate(-15px,15px) scale(0.97)}}
-        @keyframes form-in{from{opacity:0;transform:translateY(24px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-        @keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        .vc1{animation:vc1 7s ease-in-out infinite}
-        .vc2{animation:vc2 9s ease-in-out infinite}
-        .vc3{animation:vc3 6s ease-in-out infinite}
-        .vc4{animation:vc4 8s ease-in-out infinite}
-        .vc5{animation:vc5 5s ease-in-out infinite}
-        .blob{animation:blob 20s ease-in-out infinite}
-        .form-in{animation:form-in 0.8s ease-out}
-        .fi{animation:fi 0.6s ease-out backwards}
-        .fi:nth-child(1){animation-delay:0.1s}
-        .fi:nth-child(2){animation-delay:0.2s}
-        .fi:nth-child(3){animation-delay:0.3s}
-        .fi:nth-child(4){animation-delay:0.4s}
-        /* Mobile adjustments */
-        @media (max-width: 640px) {
-          .form-in { animation: form-in 0.6s ease-out; }
-          .vc1, .vc2, .vc3, .vc4, .vc5 { display: none; }
-        }
-        @media (max-width: 640px) {
-          .inp{width:100%;padding:12px 16px 12px 42px;background:rgba(255,255,255,0.85);border:1.5px solid rgba(99,102,241,0.15);border-radius:12px;font-size:14px;color:#1e1b4b;outline:none;transition:all 0.25s;box-sizing:border-box}
-          .inp::placeholder{color:#a5b4fc}
-          .inp:focus{border-color:#6366f1;background:white;box-shadow:0 0 0 4px rgba(99,102,241,0.08)}
-          .btn-p{width:100%;padding:13px;border-radius:12px;font-weight:700;font-size:14px;color:white;border:none;cursor:pointer;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.25s}
-          .btn-p:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(99,102,241,0.35)}
-          .btn-p:disabled{opacity:0.6;cursor:not-allowed;transform:none}
-        }
-        .btn-g:hover{border-color:#d1d5db;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
-        .btn-g:disabled{opacity:0.6;cursor:not-allowed}
-      `}</style>
+    <div className="min-h-screen flex">
 
-      {/* Blobs */}
-      <div className="blob" style={{ position:'absolute', top:'-10%', left:'-5%', width:500, height:500, borderRadius:'50%', background:'radial-gradient(circle,rgba(139,92,246,0.12) 0%,transparent 70%)', pointerEvents:'none' }} />
-      <div className="blob" style={{ position:'absolute', bottom:'-10%', right:'-5%', width:600, height:600, borderRadius:'50%', background:'radial-gradient(circle,rgba(236,72,153,0.1) 0%,transparent 70%)', pointerEvents:'none', animationDelay:'3s' }} />
+      {/* Left branding panel */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 flex-col justify-between p-12 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
 
-      {/* Dot grid */}
-      <div style={{ position:'absolute', inset:0, backgroundImage:'radial-gradient(circle,rgba(99,102,241,0.12) 1px,transparent 1px)', backgroundSize:'32px 32px', pointerEvents:'none', opacity:0.6 }} />
+        <div className="relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl backdrop-blur-sm">🪪</div>
+            <span className="text-white font-bold text-xl tracking-tight">Kaira SmartCard</span>
+          </div>
+        </div>
 
-      {/* Floating SmartCards */}
-      <SmartCard animClass="vc1" style={{ top:'5%', left:'-2%', opacity:0.55 }} name="Alex Morgan" title="Product Designer" company="Kaira Technologies" theme="#6366f1" initials="AM" />
-      <SmartCard animClass="vc2" style={{ bottom:'10%', left:'0%', opacity:0.4 }} name="James Liu" title="CEO" company="TechVentures Inc." theme="#0ea5e9" initials="JL" />
-      <SmartCard animClass="vc3" style={{ top:'8%', right:'-1%', opacity:0.5 }} name="Sarah Chen" title="Marketing Director" company="BrandCo" theme="#ec4899" initials="SC" />
-      <SmartCard animClass="vc4" style={{ bottom:'6%', right:'-2%', opacity:0.38 }} name="Ravi Kumar" title="Full Stack Engineer" company="DevStudio" theme="#14b8a6" initials="RK" />
-      <SmartCard animClass="vc5" style={{ top:'50%', left:'50%', transform:'translate(-50%,-50%)', opacity:0.06 }} name="Your Name" title="Your Title" company="Your Company" theme="#6366f1" initials="YN" />
-
-      {/* Form */}
-      <div className="form-in" style={{ position:'relative', zIndex:10, width:'100%', maxWidth:400, margin:'0 16px' }}>
-        <div style={{ background:'rgba(255,255,255,0.78)', backdropFilter:'blur(32px)', border:'1.5px solid rgba(255,255,255,0.95)', borderRadius:24, padding:'36px 32px', boxShadow:'0 32px 80px rgba(99,102,241,0.12),0 8px 32px rgba(0,0,0,0.06)' }}>
-
-          {/* Logo */}
-          <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:28 }}>
-            <div style={{ width:40, height:40, borderRadius:12, background:'linear-gradient(135deg,#6366f1,#8b5cf6)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 14px rgba(99,102,241,0.4)', fontSize:18 }}>🪪</div>
-            <span style={{ fontWeight:800, fontSize:18, color:'#1e1b4b', letterSpacing:0.3 }}>SmartCard</span>
+        <div className="relative z-10 space-y-6">
+          <div>
+            <h2 className="text-4xl font-bold text-white leading-tight">Your digital identity,<br />always in your pocket.</h2>
+            <p className="text-white/70 mt-3 text-base leading-relaxed">Create a stunning digital business card and share it instantly with anyone, anywhere.</p>
           </div>
 
-          <h1 style={{ fontSize:26, fontWeight:800, color:'#1e1b4b', marginBottom:6, letterSpacing:-0.5 }}>Welcome back 👋</h1>
-          <p style={{ fontSize:13, color:'#6b7280', marginBottom:26 }}>Sign in to manage your digital card</p>
-
-          <form onSubmit={handleSubmit(onSubmit)} style={{ display:'flex', flexDirection:'column', gap:15 }}>
-            <div className="fi" style={{ animationDelay:'0.1s' }}>
-              <label style={{ display:'block', fontSize:11, fontWeight:700, color:'#6366f1', textTransform:'uppercase', letterSpacing:1, marginBottom:7 }}>Email</label>
-              <div style={{ position:'relative' }}>
-                <Mail size={14} style={{ position:'absolute', left:14, top:'50%', transform:'translateY(-50%)', color:'#a5b4fc' }} />
-                <input type="email" className="inp" placeholder="you@example.com" {...register('email',{required:'Email is required.'})} />
+          <div className="space-y-3">
+            {[
+              { icon: '⚡', text: 'Create your card in under 2 minutes' },
+              { icon: '📊', text: 'Track views and engagement in real time' },
+              { icon: '🔗', text: 'Share via link, QR code, or NFC' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center text-sm flex-shrink-0">{item.icon}</div>
+                <span className="text-white/80 text-sm">{item.text}</span>
               </div>
-              {errors.email && <p style={{ color:'#ef4444', fontSize:11, marginTop:5 }}>{errors.email.message}</p>}
+            ))}
+          </div>
+        </div>
+
+        <div className="relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="flex -space-x-2">
+              {['#6366f1','#ec4899','#14b8a6','#f59e0b'].map((c, i) => (
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-white/30" style={{ background: c }} />
+              ))}
+            </div>
+            <p className="text-white/70 text-sm">Trusted by <span className="text-white font-semibold">10,000+</span> professionals</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Right form panel */}
+      <div className="flex-1 flex items-center justify-center p-6 bg-gray-50">
+        <div className="w-full max-w-md">
+
+          {/* Mobile logo */}
+          <div className="flex items-center gap-2 mb-8 lg:hidden">
+            <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center text-lg">🪪</div>
+            <span className="font-bold text-gray-900 text-lg">Kaira SmartCard</span>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <div className="mb-7">
+              <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
+              <p className="text-gray-500 text-sm mt-1">Sign in to your account to continue</p>
             </div>
 
-            <div className="fi" style={{ animationDelay:'0.2s' }}>
-              <label style={{ display:'block', fontSize:11, fontWeight:700, color:'#6366f1', textTransform:'uppercase', letterSpacing:1, marginBottom:7 }}>Password</label>
-              <div style={{ position:'relative' }}>
-                <Lock size={14} style={{ position:'absolute', left:14, top:'50%', transform:'translateY(-50%)', color:'#a5b4fc' }} />
-                <input type={showPassword?'text':'password'} className="inp" style={{ paddingRight:44 }} placeholder="••••••••" {...register('password',{required:'Password is required.'})} />
-                <button type="button" onClick={()=>setShowPassword(v=>!v)} style={{ position:'absolute', right:14, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', color:'#a5b4fc', padding:0 }}>
-                  {showPassword ? <EyeOff size={14}/> : <Eye size={14}/>}
-                </button>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
+                <div className="relative">
+                  <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="email"
+                    placeholder="you@example.com"
+                    className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                    {...register('email', { required: 'Email is required.' })}
+                  />
+                </div>
+                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
               </div>
-              {errors.password && <p style={{ color:'#ef4444', fontSize:11, marginTop:5 }}>{errors.password.message}</p>}
-            </div>
 
-            {errors.root && <div style={{ padding:'10px 14px', borderRadius:10, background:'#fef2f2', border:'1px solid #fecaca', color:'#dc2626', fontSize:13 }}>⚠ {errors.root.message}</div>}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+                <div className="relative">
+                  <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    className="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                    {...register('password', { required: 'Password is required.' })}
+                  />
+                  <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                </div>
+                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+              </div>
 
-            <div className="fi" style={{ animationDelay:'0.3s', marginTop:4 }}>
-              <button type="submit" className="btn-p" disabled={isSubmitting}>
-                {isSubmitting ? <><div style={{ width:16, height:16, border:'2px solid rgba(255,255,255,0.3)', borderTopColor:'white', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />Signing in...</> : <>Sign In <ArrowRight size={16}/></>}
+              {errors.root && (
+                <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm">
+                  <span>⚠</span> {errors.root.message}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl transition"
+              >
+                {isSubmitting ? (
+                  <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Signing in...</>
+                ) : (
+                  <>Sign In <ArrowRight size={15} /></>
+                )}
               </button>
+            </form>
+
+            <div className="flex items-center gap-3 my-5">
+              <div className="flex-1 h-px bg-gray-100" />
+              <span className="text-xs text-gray-400 font-medium">OR</span>
+              <div className="flex-1 h-px bg-gray-100" />
             </div>
-          </form>
 
-          <div style={{ display:'flex', alignItems:'center', gap:12, margin:'18px 0' }}>
-            <div style={{ flex:1, height:1, background:'#e5e7eb' }} />
-            <span style={{ color:'#9ca3af', fontSize:11 }}>OR</span>
-            <div style={{ flex:1, height:1, background:'#e5e7eb' }} />
-          </div>
+            <button
+              type="button"
+              onClick={() => googleLogin()}
+              disabled={googleLoading}
+              className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed text-gray-700 font-medium text-sm rounded-xl transition"
+            >
+              {googleLoading
+                ? <div className="w-4 h-4 border-2 border-gray-200 border-t-indigo-500 rounded-full animate-spin" />
+                : GOOGLE_SVG
+              }
+              Continue with Google
+            </button>
 
-          <button type="button" className="btn-g" onClick={()=>googleLogin()} disabled={googleLoading}>
-            {googleLoading ? <div style={{ width:16, height:16, border:'2px solid #e5e7eb', borderTopColor:'#6366f1', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> : GOOGLE_SVG}
-            Continue with Google
-          </button>
-
-          <p style={{ textAlign:'center', fontSize:13, color:'#6b7280', marginTop:20 }}>
-            Don't have an account?{' '}
-            <Link to="/register" style={{ color:'#6366f1', fontWeight:700, textDecoration:'none' }}>Create one free →</Link>
-          </p>
-
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:5, marginTop:16, color:'#d1d5db', fontSize:11 }}>
-            <Shield size={11}/><span>256-bit SSL encrypted</span>
+            <p className="text-center text-sm text-gray-500 mt-6">
+              Don't have an account?{' '}
+              <Link to="/register" className="text-indigo-600 font-semibold hover:text-indigo-700">Create one free</Link>
+            </p>
           </div>
         </div>
       </div>
