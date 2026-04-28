@@ -89,8 +89,7 @@ export default function Dashboard() {
     return () => window.removeEventListener('focus', handleFocus)
   }, [selectedCard])
 
-  const basePath = import.meta.env.MODE === 'production' ? '/demo/vcard' : ''
-  const publicUrl = selectedCard ? `${window.location.origin}${basePath}/card/${selectedCard.id}` : ''
+  const publicUrl = selectedCard ? `${window.location.origin}/card/${selectedCard.slug || selectedCard.id}` : ''
 
   const copyLink = async () => {
     if (publicUrl) {

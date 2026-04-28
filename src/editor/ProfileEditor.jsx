@@ -416,20 +416,15 @@ export default function ProfileEditor() {
     }
   }
 
-  const shareLink = () => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}')
-    const slug = user.slug || card.cardSlug?.trim()
-    const basePath = import.meta.env.MODE === 'production' ? '/demo/vcard' : ''
-    const shareUrl = slug ? `${window.location.origin}${basePath}/card/${slug}` : window.location.href
-    navigator.clipboard.writeText(shareUrl).catch(() => {})
-    alert('Share link copied to clipboard!')
-  }
-
   const getShareUrl = () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     const slug = user.slug || card.cardSlug?.trim()
-    const basePath = import.meta.env.MODE === 'production' ? '/demo/vcard' : ''
-    return slug ? `${window.location.origin}${basePath}/card/${slug}` : window.location.href
+    return slug ? `${window.location.origin}/card/${slug}` : window.location.href
+  }
+
+  const shareLink = () => {
+    navigator.clipboard.writeText(getShareUrl()).catch(() => {})
+    alert('Share link copied to clipboard!')
   }
 
   const shareWhatsApp = () => {

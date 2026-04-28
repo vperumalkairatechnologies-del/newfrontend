@@ -6,8 +6,7 @@ export default function QRModal({ slug, onClose }) {
   const [copied, setCopied] = useState(false)
   const [qrSrc, setQrSrc] = useState(null)
   const [qrError, setQrError] = useState(false)
-  const basePath = import.meta.env.MODE === 'production' ? '/demo/vcard' : ''
-  const publicUrl = `${window.location.origin}${basePath}/card/${slug}`
+  const publicUrl = `${window.location.origin}/card/${slug}`
 
   useEffect(() => {
     const handler = (e) => e.key === 'Escape' && onClose()
