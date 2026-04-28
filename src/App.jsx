@@ -28,6 +28,7 @@ export default function App() {
         <Route path="/admin"     element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
         <Route path="/admin/users" element={<PrivateRoute><AdminUsers /></PrivateRoute>} />
         <Route path="/admin/requests" element={<PrivateRoute><AdminRequests /></PrivateRoute>} />
+        <Route path="/card/id/:cardId" element={<EditorPublicCard />} />
         <Route path="/card/:slug" element={<EditorPublicCard />} />
         <Route path="/"          element={<Home />} />
         <Route path="/:slug"     element={<PublicCard />} />

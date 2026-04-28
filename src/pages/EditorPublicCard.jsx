@@ -17,7 +17,7 @@ const ICON_MAP = {
 }
 
 export default function EditorPublicCard() {
-  const { slug } = useParams()
+  const { slug, cardId } = useParams()
   const [card, setCard] = useState(null)
   const [loading, setLoading] = useState(true)
   const [lead, setLead] = useState({ name: '', email: '', phone: '', note: '' })
@@ -25,11 +25,14 @@ export default function EditorPublicCard() {
   const [showLeadForm, setShowLeadForm] = useState(false)
 
   useEffect(() => {
-    api.get(`/cards/public/${slug}`)
+    const endpoint = cardId
+      ? `/cards/public/id/${cardId}`
+      : `/cards/public/${slug}`
+    api.get(endpoint)
       .then((res) => setCard(res.data.card))
       .catch(() => setCard(null))
       .finally(() => setLoading(false))
-  }, [slug])
+  }, [slug, cardId])
 
   if (loading) {
     return (

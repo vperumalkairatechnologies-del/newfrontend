@@ -416,9 +416,9 @@ export default function ProfileEditor() {
   }
 
   const getShareUrl = () => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}')
-    const slug = user.slug
-    return slug ? `${window.location.origin}/card/${slug}` : window.location.href
+    return serverCardId
+      ? `${window.location.origin}/card/id/${serverCardId}`
+      : window.location.href
   }
 
   const shareLink = () => {

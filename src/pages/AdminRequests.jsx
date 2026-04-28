@@ -1,121 +1,153 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from '../api/axios';
-import { useAuth } from '../api/useAuth';
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ChevronLeft, Check, X, Clock, CreditCard } from 'lucide-react'
+import axios from '../api/axios'
+import { useAuth } from '../api/useAuth'
+import Navbar from '../components/Navbar'
+
+const STATUS_STYLES = {
+  pending:  'bg-yellow-100 text-yellow-700',
+  approved: 'bg-green-100 text-green-700',
+  rejected: 'bg-red-100 text-red-700',
+}
 
 export default function AdminRequests() {
-  const navigate = useNavigate();
-  const { isAdmin, loading: authLoading } = useAuth();
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('pending');
+  const navigate = useNavigate()
+  const { isAdmin, loading: authLoading } = useAuth()
+  const [requests, setRequests] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState('pending')
+  const [actionLoading, setActionLoading] = useState(null)
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!isAdmin()) {
-      navigate('/dashboard');
-      return;
-    }
-    loadRequests();
-  }, [filter, authLoading]); // removed isAdmin from deps — it's a stable function ref issue
+    if (authLoading) return
+    if (!isAdmin()) { navigate('/dashboard'); return }
+    loadRequests()
+  }, [filter, authLoading])
 
   const loadRequests = async () => {
+    setLoading(true)
     try {
-      const params = filter !== 'all' ? { status: filter } : { status: 'all' };
-      const res = await axios.get('/admin/requests', { params });
-      setRequests(res.data.requests || []);
-    } catch (err) {
-      console.error('Failed to load requests:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRequest = async (requestId, action) => {
-    try {
-      await axios.post(`/admin/requests/${requestId}/${action}`);
-      alert(`Request ${action}d successfully!`)
-      loadRequests();
+      const params = filter !== 'all' ? { status: filter } : { status: 'all' }
+      const res = await axios.get('/admin/requests', { params })
+      setRequests(res.data.requests || [])
     } catch (err) {
       console.error(err)
-      alert(err.response?.data?.error || `Failed to ${action} request`);
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
-  if (authLoading || loading) return <div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
+  const handleRequest = async (id, action) => {
+    setActionLoading(`${id}-${action}`)
+    try {
+      await axios.post(`/admin/requests/${id}/${action}`)
+      loadRequests()
+    } catch (err) {
+      alert(err.response?.data?.error || `Failed to ${action} request`)
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  if (authLoading) return (
+    <><Navbar /><div className="flex items-center justify-center min-h-[70vh]"><div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" /></div></>
+  )
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Premium Requests</h1>
-          <button onClick={() => navigate('/admin')} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
-            Back to Admin
+    <>
+      <Navbar />
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-5">
+
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate('/admin')} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors">
+            <ChevronLeft size={16} /> Admin
           </button>
+          <span className="text-gray-300">/</span>
+          <span className="text-sm font-semibold text-gray-800">Premium Requests</span>
         </div>
 
-        {/* Filter */}
-        <div className="bg-white p-4 rounded-lg shadow mb-6">
-          <select value={filter} onChange={(e) => setFilter(e.target.value)} className="px-4 py-2 border rounded-lg">
-            <option value="all">All Requests</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Premium Requests</h1>
+            <p className="text-sm text-gray-500 mt-0.5">{requests.length} {filter !== 'all' ? filter : ''} requests</p>
+          </div>
+          <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
+            {['pending', 'approved', 'rejected', 'all'].map(f => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${filter === f ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Requests List */}
-        <div className="space-y-4">
-          {requests.map(req => (
-            <div key={req.id} className="bg-white p-6 rounded-lg shadow">
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900">{req.email}</h3>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      req.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      req.status === 'approved' ? 'bg-green-100 text-green-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
-                      {req.status}
-                    </span>
+        {loading ? (
+          <div className="flex justify-center py-12"><div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" /></div>
+        ) : requests.length === 0 ? (
+          <div className="bg-white border border-gray-100 rounded-2xl p-12 text-center shadow-sm">
+            <CreditCard size={32} className="mx-auto mb-3 text-gray-300" />
+            <p className="text-sm text-gray-400">No {filter !== 'all' ? filter : ''} requests found</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {requests.map(req => (
+              <div key={req.id} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                        {req.email?.[0]?.toUpperCase()}
+                      </div>
+                      <p className="text-sm font-semibold text-gray-900 truncate">{req.email}</p>
+                      <span className={`px-2 py-0.5 text-xs font-semibold rounded-lg ${STATUS_STYLES[req.status] || STATUS_STYLES.pending}`}>
+                        {req.status}
+                      </span>
+                    </div>
+                    {req.message && (
+                      <p className="text-sm text-gray-500 mb-2 leading-relaxed">{req.message}</p>
+                    )}
+                    <div className="flex items-center gap-3 text-xs text-gray-400">
+                      <span className="flex items-center gap-1"><Clock size={11} /> {new Date(req.created_at).toLocaleString()}</span>
+                      {req.reviewed_at && <span>Reviewed: {new Date(req.reviewed_at).toLocaleString()}</span>}
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600 mb-3">{req.message || 'No message provided'}</p>
-                  <div className="text-xs text-gray-500">
-                    Requested: {new Date(req.created_at).toLocaleString()}
-                  </div>
-                  {req.reviewed_at && (
-                    <div className="text-xs text-gray-500">
-                      Reviewed: {new Date(req.reviewed_at).toLocaleString()}
+
+                  {req.status === 'pending' && (
+                    <div className="flex gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => handleRequest(req.id, 'approve')}
+                        disabled={actionLoading === `${req.id}-approve`}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-all"
+                      >
+                        {actionLoading === `${req.id}-approve`
+                          ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          : <Check size={14} />
+                        }
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleRequest(req.id, 'reject')}
+                        disabled={actionLoading === `${req.id}-reject`}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-red-500 hover:bg-red-600 disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-all"
+                      >
+                        {actionLoading === `${req.id}-reject`
+                          ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          : <X size={14} />
+                        }
+                        Reject
+                      </button>
                     </div>
                   )}
                 </div>
-                {req.status === 'pending' && (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleRequest(req.id, 'approve')}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => handleRequest(req.id, 'reject')}
-                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    >
-                      Reject
-                    </button>
-                  </div>
-                )}
               </div>
-            </div>
-          ))}
-          {requests.length === 0 && (
-            <div className="bg-white p-8 rounded-lg shadow text-center text-gray-500">
-              No {filter !== 'all' ? filter : ''} requests found
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+            ))}
+          </div>
+        )}
+      </main>
+    </>
+  )
 }

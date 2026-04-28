@@ -17,7 +17,7 @@ export default function Dashboard() {
   const [copied, setCopied] = useState(false)
   const [creating, setCreating] = useState(false)
 
-  const publicUrl = selectedCard && user.slug ? `${window.location.origin}/card/${user.slug}` : ''
+  const publicUrl = selectedCard ? `${window.location.origin}/card/id/${selectedCard.id}` : ''
 
   useEffect(() => {
     const fetchData = async () => {
@@ -290,7 +290,7 @@ export default function Dashboard() {
         )}
       </main>
 
-      {showQR && user.slug && <QRModal slug={user.slug} onClose={() => setShowQR(false)} />}
+      {showQR && selectedCard && <QRModal cardId={selectedCard.id} onClose={() => setShowQR(false)} />}
     </>
   )
 }

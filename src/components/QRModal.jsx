@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { X, Download, Copy, Check, Loader } from 'lucide-react'
 
-export default function QRModal({ slug, onClose }) {
+export default function QRModal({ slug, cardId, onClose }) {
   const overlayRef = useRef(null)
   const [copied, setCopied] = useState(false)
   const [qrSrc, setQrSrc] = useState(null)
   const [qrError, setQrError] = useState(false)
-  const publicUrl = `${window.location.origin}/card/${slug}`
+  const publicUrl = cardId
+    ? `${window.location.origin}/card/id/${cardId}`
+    : `${window.location.origin}/card/${slug}`
 
   useEffect(() => {
     const handler = (e) => e.key === 'Escape' && onClose()
@@ -15,12 +17,11 @@ export default function QRModal({ slug, onClose }) {
   }, [onClose])
 
   useEffect(() => {
-    // Fetch QR via axios (goes through Vite proxy with auth headers)
     const fetchQR = async () => {
       try {
         const token = localStorage.getItem('token')
-        const apiBase = import.meta.env.MODE === 'production' ? '/backend/api' : 'http://localhost:8000/api'
-        const url = `${apiBase}/qr/${slug}?target=${encodeURIComponent(publicUrl)}`
+        const apiBase = import.meta.env.VITE_API_BASE || '/api'
+        const url = `${apiBase}/qr?target=${encodeURIComponent(publicUrl)}&slug=${slug || cardId}`
         const res = await fetch(url, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
@@ -33,13 +34,13 @@ export default function QRModal({ slug, onClose }) {
     }
     fetchQR()
     return () => { if (qrSrc) URL.revokeObjectURL(qrSrc) }
-  }, [slug])
+  }, [publicUrl])
 
   const download = () => {
     if (!qrSrc) return
     const a = document.createElement('a')
     a.href = qrSrc
-    a.download = `qr-${slug}.png`
+    a.download = `qr-card.png`
     a.click()
   }
 
