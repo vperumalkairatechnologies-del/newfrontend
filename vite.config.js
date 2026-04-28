@@ -6,6 +6,15 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tailwindcss()],
     base: '/',
+    build: {
+      rollupOptions: {
+        output: {
+          entryFileNames: `assets/[name]-[hash]-v2.js`,
+          chunkFileNames: `assets/[name]-[hash]-v2.js`,
+          assetFileNames: `assets/[name]-[hash]-v2.[ext]`,
+        },
+      },
+    },
     server: {
       port: 5173,
       headers: {
