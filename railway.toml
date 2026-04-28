@@ -1,0 +1,11 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install && npm run build"
+
+[build.env]
+NIXPACKS_NODE_VERSION = "20"
+
+[deploy]
+startCommand = "node node_modules/.bin/serve -s dist -p $PORT --no-cache"
+healthcheckPath = "/"
+restartPolicyType = "on_failure"
