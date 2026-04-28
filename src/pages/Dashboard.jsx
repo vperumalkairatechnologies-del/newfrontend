@@ -89,7 +89,7 @@ export default function Dashboard() {
     return () => window.removeEventListener('focus', handleFocus)
   }, [selectedCard])
 
-  const publicUrl = selectedCard ? `${window.location.origin}/card/${selectedCard.slug || selectedCard.id}` : ''
+  const publicUrl = selectedCard && user.slug ? `${window.location.origin}/card/${user.slug}` : ''
 
   const copyLink = async () => {
     if (publicUrl) {
@@ -398,11 +398,8 @@ export default function Dashboard() {
         )}
       </main>
 
-      {showQR && selectedCard && (
-        <QRModal
-          card={selectedCard}
-          onClose={() => setShowQR(false)}
-        />
+      {showQR && user.slug && (
+        <QRModal slug={user.slug} onClose={() => setShowQR(false)} />
       )}
     </>
   )

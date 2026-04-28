@@ -290,10 +290,9 @@ export default function ProfileEditor() {
         }
       }
       
-      // CRITICAL FIX: Update local state with server URLs after successful save
-      const baseUrl = import.meta.env.MODE === 'production'
+      // After save, go to dashboard to see updated card
       localStorage.removeItem('smartcard_editor')
-      window.location.reload()
+      window.location.href = '/dashboard'
       return
     } catch (err) {
       console.error('Save to backend failed:', err)
@@ -418,7 +417,7 @@ export default function ProfileEditor() {
 
   const getShareUrl = () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
-    const slug = user.slug || card.cardSlug?.trim()
+    const slug = user.slug
     return slug ? `${window.location.origin}/card/${slug}` : window.location.href
   }
 
