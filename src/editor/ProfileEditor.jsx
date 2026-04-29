@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { User, Globe, AtSign, MessageCircle, Briefcase, Download, Share2, RotateCcw, Eye, EyeOff, Upload, FileJson, Sparkles, Target } from 'lucide-react'
+import { User, Globe, AtSign, MessageCircle, Briefcase, Download, Share2, RotateCcw, Eye, EyeOff, Upload, FileJson, Sparkles, Target, Check } from 'lucide-react'
 import html2canvas from 'html2canvas'
 import { useCardStore } from './useCardStore'
 import CardPreview from './CardPreview'
@@ -49,6 +49,7 @@ export default function ProfileEditor() {
   const importRef = useRef()
   const [previewVisible, setPreviewVisible] = useState(true)
   const [exporting, setExporting] = useState(false)
+  const [shareToast, setShareToast] = useState(false)
   const [saving, setSaving] = useState(false)
   const [serverCardId, setServerCardId] = useState(null)
   const { getFeatureLimit, canAccessFeature } = useAuth()
@@ -423,7 +424,8 @@ export default function ProfileEditor() {
 
   const shareLink = () => {
     navigator.clipboard.writeText(getShareUrl()).catch(() => {})
-    alert('Share link copied to clipboard!')
+    setShareToast(true)
+    setTimeout(() => setShareToast(false), 2000)
   }
 
   const shareWhatsApp = () => {
@@ -699,5 +701,11 @@ export default function ProfileEditor() {
         </div>
       </div>
     </div>
+
+    {shareToast && (
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm font-medium px-4 py-2.5 rounded-xl shadow-lg z-50 flex items-center gap-2 pointer-events-none">
+        <Check size={14} className="text-green-400" /> Link copied!
+      </div>
+    )}
   )
 }
