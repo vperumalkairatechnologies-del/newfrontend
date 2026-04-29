@@ -18,7 +18,7 @@ export default function Home() {
       bg: '/phone/kk.png',
       mobileBg: '/phone/mobiles2.png',
       label: 'Built for Modern Professionals',
-      title: 'Create smart \n vcard',
+      title: 'Create smart vcard',
       sub: 'Replace paper cards forever. One link holds your contact, portfolio, and social profiles — always up to date.',
       cta: 'Get Started Free',
       contain: true,
