@@ -5,7 +5,35 @@ export default function Home() {
   const [activeStep, setActiveStep] = useState(0)
   const [isAnnual, setIsAnnual] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [showQR, setShowQR] = useState(false)
+  const [slideIndex, setSlideIndex] = useState(0)
+
+  const slides = [
+    {
+      bg: '/phone/hero.png',
+      mobileBg: '/phone/mobiles1.png',
+      type: 'fullbg',
+    },
+    {
+      type: 'fullbg',
+      bg: '/phone/kk.png',
+      mobileBg: '/phone/mobiles2.png',
+      label: 'Built for Modern Professionals',
+      title: 'Create smart \n vcard',
+      sub: 'Replace paper cards forever. One link holds your contact, portfolio, and social profiles — always up to date.',
+      cta: 'Get Started Free',
+      contain: true,
+    },
+    {
+      type: 'fullbg',
+      bg: '/phone/hero_banner.png',
+      mobileBg: '/phone/mobile3.png',
+      label: 'Real-time Analytics & Insights',
+      title: 'Share Your Contact in \n One Scan',
+      sub: 'Every share, view, and click collects your leads.',
+      cta: 'See How It Works',
+      contain: true,
+    },
+  ]
 
   const pricing = {
     pro: isAnnual ? 499 : 624,
@@ -40,19 +68,43 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setShowQR(prev => !prev)
-    }, 3000)
+    const timer = setInterval(() => setSlideIndex(i => (i + 1) % 3), 5000)
     return () => clearInterval(timer)
   }, [])
 
+  const handleHeroClick = () => setSlideIndex(i => (i + 1) % slides.length)
+
   return (
     <div className="landing-page">
+      <div className="page-bg" />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
         .landing-page *, .landing-page *::before, .landing-page *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        .landing-page { font-family: 'Roboto', sans-serif; background: #f7f5f0; color: #0a0a0f; overflow-x: hidden; }
+        .landing-page { font-family: 'Roboto', sans-serif; background: #f0f4ff; color: #0a0a0f; overflow-x: hidden; }
         .landing-page html { scroll-behavior: smooth; }
+        /* ── Global Abstract Background ── */
+        .landing-page .page-bg {
+          position: fixed;
+          inset: 0;
+          z-index: -1;
+          background:
+            radial-gradient(ellipse 80% 60% at 10% 20%, rgba(186,210,255,0.45) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 50% at 90% 10%, rgba(214,228,255,0.4) 0%, transparent 55%),
+            radial-gradient(ellipse 70% 60% at 80% 80%, rgba(173,205,255,0.35) 0%, transparent 60%),
+            radial-gradient(ellipse 50% 40% at 20% 85%, rgba(199,218,255,0.3) 0%, transparent 55%),
+            radial-gradient(ellipse 90% 70% at 50% 50%, rgba(232,240,255,0.5) 0%, transparent 70%),
+            linear-gradient(160deg, #eef4ff 0%, #f5f8ff 35%, #eaf1ff 65%, #f0f5ff 100%);
+        }
+        .landing-page .page-bg::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900'%3E%3Cdefs%3E%3ClinearGradient id='w1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23b8d4ff' stop-opacity='0.25'/%3E%3Cstop offset='100%25' stop-color='%23daeaff' stop-opacity='0.08'/%3E%3C/linearGradient%3E%3ClinearGradient id='w2' x1='100%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23c5dcff' stop-opacity='0.2'/%3E%3Cstop offset='100%25' stop-color='%23e8f2ff' stop-opacity='0.06'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0,300 C200,200 400,450 720,280 C1040,110 1200,380 1440,250 L1440,0 L0,0 Z' fill='url(%23w1)'/%3E%3Cpath d='M0,600 C300,500 500,700 800,580 C1100,460 1300,650 1440,550 L1440,900 L0,900 Z' fill='url(%23w2)'/%3E%3Cpath d='M0,450 C250,350 450,550 750,420 C1050,290 1250,480 1440,380' stroke='%23b0ccff' stroke-width='1' fill='none' opacity='0.3'/%3E%3Cpath d='M0,520 C300,420 500,600 800,490 C1100,380 1300,540 1440,450' stroke='%23c8deff' stroke-width='0.8' fill='none' opacity='0.25'/%3E%3C/svg%3E");
+          background-size: cover;
+          background-position: center;
+          pointer-events: none;
+        }
         /* Enhanced Navigation Bar */
         .landing-page nav { 
           position: fixed; 
@@ -148,293 +200,292 @@ export default function Home() {
           transition: all 0.3s ease !important;
           box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
         }
-        /* Enhanced Hero Section */
-        .landing-page .hero { 
-          min-height: 65vh; 
-          display: flex; 
-          flex-direction: column; 
-          justify-content: center; 
-          align-items: center; 
-          text-align: center; 
-          padding: 100px 40px 60px; 
-          position: relative; 
+        /* ── Hero Slider ── */
+        .landing-page .hero {
+          margin-top: 70px;
+          height: calc(100vh - 70px);
+          position: relative;
           overflow: hidden;
-          background: #5665a9;
+          cursor: pointer;
         }
-        
-        .landing-page .hero-particles {
+        /* every slide fills the hero box */
+        .landing-page .slide {
           position: absolute;
-          inset: 0;
-          z-index: 1;
+          top: 0; left: 0; right: 0; bottom: 0;
+          opacity: 0;
+          transition: opacity 0.9s ease;
           pointer-events: none;
         }
-        
-        .landing-page .particle {
+        .landing-page .slide.active {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        /* slide 1 – full background image, no overlay */
+        .landing-page .slide-fullbg {
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+        .landing-page .slide-fullbg.slide-contain {
+          background-size: cover;
+          background-position: center top;
+          background-repeat: no-repeat;
+        }
+        /* slides 2 & 3 – full bg with left text overlay */
+        .landing-page .slide-fullbg .slide-overlay {
           position: absolute;
-          width: 4px;
-          height: 4px;
-          background: rgba(255, 255, 255, 0.8);
-          border-radius: 50%;
-          animation: floatUp 8s linear infinite;
+          inset: 0;
+          background: linear-gradient(to right, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.3) 55%, transparent 100%);
         }
-        
-        @keyframes floatUp {
-          0% {
-            transform: translateY(100vh) scale(0);
-            opacity: 0;
-          }
-          10% {
-            opacity: 1;
-          }
-          90% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-100vh) scale(1.5);
-            opacity: 0;
-          }
-        }
-        
-        .landing-page .badge { 
-          display: inline-flex; 
-          align-items: center; 
-          gap: 8px; 
-          background: rgba(255, 255, 255, 0.15); 
-          color: #fff; 
-          font-size: 12px; 
-          font-weight: 600; 
-          letter-spacing: 0.8px; 
-          text-transform: uppercase; 
-          padding: 8px 20px; 
-          border-radius: 50px; 
-          border: 1px solid rgba(255, 255, 255, 0.3); 
-          margin-bottom: 32px; 
-          position: relative; 
-          z-index: 2; 
-          animation: fadeUp 0.6s ease both;
-          backdrop-filter: blur(10px);
-        }
-        
-        .landing-page .badge-dot { 
-          width: 8px; 
-          height: 8px; 
-          border-radius: 50%; 
-          background: #4ade80; 
-          animation: pulse 2s ease infinite;
-          box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
-        }
-        
-        @keyframes pulse { 
-          0%,100%{opacity:1;transform:scale(1)} 
-          50%{opacity:0.5;transform:scale(1.2)} 
-        }
-        
-        .landing-page .hero h1 { 
-          font-family: 'Roboto', sans-serif; 
-          font-weight: 800; 
-          font-size: clamp(36px, 6vw, 72px); 
-          line-height: 1.0; 
-          letter-spacing: -3px; 
-          color: #fff; 
-          max-width: 1000px; 
-          position: relative; 
-          z-index: 2; 
-          animation: fadeUp 0.7s 0.1s ease both;
-          text-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-        
-        .landing-page .hero h1 em { 
-          font-style: normal; 
-          background: linear-gradient(135deg, #ff0000, #ff4444);
-          -webkit-background-clip: text; 
-          -webkit-text-fill-color: transparent;
-          position: relative;
-        }
-        
-        .landing-page .hero-sub { 
-          font-size: 20px; 
-          font-weight: 300; 
-          color: rgba(255, 255, 255, 0.9); 
-          max-width: 600px; 
-          line-height: 1.6; 
-          margin: 32px 0 48px; 
-          position: relative; 
-          z-index: 2; 
-          animation: fadeUp 0.7s 0.2s ease both;
-        }
-        
-        .landing-page .hero-actions { 
-          display: flex; 
-          gap: 20px; 
-          align-items: center; 
-          position: relative; 
-          z-index: 2; 
-          animation: fadeUp 0.7s 0.3s ease both;
-        }
-        
-        /* Enhanced Buttons */
-        .landing-page .btn-primary { 
-          background: linear-gradient(135deg, #fff, #f8fafc); 
-          color: #667eea; 
-          padding: 20px 44px; 
-          border-radius: 50px; 
-          font-size: 16px; 
-          font-weight: 700; 
-          text-decoration: none; 
-          display: inline-flex; 
-          align-items: center; 
-          gap: 12px; 
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-          box-shadow: 0 10px 30px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1);
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .landing-page .btn-primary::before {
-          content: '';
+        .landing-page .slide-fullbg .slide-content {
           position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(74, 222, 128, 0.3), transparent);
-          transition: left 0.6s ease;
-        }
-        
-        .landing-page .btn-primary:hover::before {
-          left: 100%;
-        }
-        
-        .landing-page .btn-primary:hover { 
-          background: linear-gradient(135deg, #4ade80, #22c55e); 
-          color: #fff; 
-          transform: translateY(-4px) scale(1.02); 
-          box-shadow: 0 20px 50px rgba(74, 222, 128, 0.4), 0 0 0 1px rgba(255,255,255,0.2);
-        }
-        
-        .landing-page .btn-primary:active {
-          transform: translateY(-2px) scale(1.01);
-        }
-        
-        .landing-page .btn-secondary { 
-          background: rgba(255, 255, 255, 0.05); 
-          color: #fff; 
-          padding: 20px 36px; 
-          border-radius: 50px; 
-          font-size: 16px; 
-          font-weight: 600; 
-          text-decoration: none; 
-          display: inline-flex; 
-          align-items: center; 
-          gap: 10px; 
-          border: 2px solid rgba(255, 255, 255, 0.3); 
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          backdrop-filter: blur(20px);
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .landing-page .btn-secondary::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-          transition: left 0.6s ease;
-        }
-        
-        .landing-page .btn-secondary:hover::before {
-          left: 100%;
-        }
-        
-        .landing-page .btn-secondary:hover { 
-          background: rgba(255, 255, 255, 0.15); 
-          border-color: rgba(255, 255, 255, 0.6); 
-          transform: translateY(-4px) scale(1.02);
-          box-shadow: 0 15px 40px rgba(255, 255, 255, 0.2);
-        }
-        
-        .landing-page .btn-secondary:active {
-          transform: translateY(-2px) scale(1.01);
-        }
-        
-        .landing-page .arrow { 
-          font-size: 20px; 
-          transition: all 0.3s ease; 
-          display: inline-block;
-        }
-        
-        .landing-page .btn-primary:hover .arrow { 
-          transform: translateX(6px); 
-        }
-        
-        .landing-page .btn-secondary:hover .arrow { 
-          transform: translateX(6px); 
-        }
-        
-        .landing-page .hero-stats {
+          inset: 0;
           display: flex;
-          gap: 40px;
-          margin-top: 60px;
-          position: relative;
+          flex-direction: column;
+          justify-content: center;
+          padding: 0 80px;
           z-index: 2;
-          animation: fadeUp 0.8s 0.4s ease both;
+          max-width: 620px;
         }
-        
-        .landing-page .hero-stat {
-          text-align: center;
+        .landing-page .slide-fullbg .slide-content.slide-content-short {
+          top: auto;
+          bottom: auto;
+          inset: 0;
+          justify-content: flex-end;
+          padding-bottom: 120px;
+          background: none;
         }
-        
-        .landing-page .hero-stat-number {
-          font-size: 32px;
-          font-weight: 800;
-          color: #4ade80;
-          margin-bottom: 8px;
+        .landing-page .slide-fullbg.slide-short {
+          background-size: cover;
+          background-position: center center;
         }
-        
-        .landing-page .hero-stat-label {
-          font-size: 14px;
-          color: rgba(255, 255, 255, 0.8);
+        .landing-page .slide-fullbg .slide-badge {
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 2.5px;
           text-transform: uppercase;
-          letter-spacing: 1px;
+          color: #4ade80;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 20px;
         }
-        .landing-page .mockup-strip { position: relative; z-index: 1; margin-top: 80px; animation: fadeUp 0.8s 0.4s ease both; width: 100%; display: flex; justify-content: center; }
-        .landing-page .mockup-frame { background: #fff; border-radius: 28px; padding: 12px; box-shadow: 0 32px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05); display: inline-block; max-width: 760px; width: 100%; }
-        .landing-page .mockup-inner { background: #f0f2f7; border-radius: 18px; padding: 28px 32px; display: flex; gap: 20px; align-items: center; }
-        .landing-page .vcard-preview { background: #fff; border-radius: 20px; padding: 24px; min-width: 200px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); flex-shrink: 0; text-align: left; }
-        .landing-page .vcard-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #0057ff, #0084ff); display: flex; align-items: center; justify-content: center; color: white; font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 14px; }
-        .landing-page .vcard-name { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 16px; color: #0a0a0f; }
-        .landing-page .vcard-role { font-size: 12px; color: #7a7a8e; margin: 2px 0 16px; }
-        .landing-page .vcard-contact-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #3a3a4a; margin: 6px 0; }
-        .landing-page .vcard-icon { width: 22px; height: 22px; border-radius: 6px; background: #e8efff; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
-        .landing-page .vcard-qr { background: #0a0a0f; width: 64px; height: 64px; border-radius: 10px; margin-top: 16px; display: grid; grid-template-columns: repeat(6,1fr); gap: 2px; padding: 8px; }
-        .landing-page .qr-dot { background: white; border-radius: 1px; animation: qrBlink 3s ease infinite; }
-        @keyframes qrBlink { 0%,90%,100%{opacity:1} 95%{opacity:0.4} }
-        .landing-page .mockup-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; }
-        .landing-page .stat-card { background: #fff; border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); text-align: left; }
-        .landing-page .stat-label { font-size: 11px; color: #7a7a8e; letter-spacing: 0.3px; margin-bottom: 6px; }
-        .landing-page .stat-value { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 26px; color: #0a0a0f; }
-        .landing-page .stat-sub { font-size: 11px; color: #22c55e; margin-top: 2px; }
-        .landing-page .stat-chart { display: flex; align-items: flex-end; gap: 3px; margin-top: 10px; height: 32px; }
-        .landing-page .bar { flex: 1; border-radius: 3px 3px 0 0; background: #e8efff; transition: height 0.3s; }
-        .landing-page .bar.active { background: #5665a9; }
+        .landing-page .slide-fullbg .slide-badge::before {
+          content: '';
+          width: 28px; height: 2px;
+          background: #4ade80;
+          display: inline-block;
+          flex-shrink: 0;
+        }
+        .landing-page .slide-fullbg .slide-h1 {
+          font-family: 'Roboto', sans-serif;
+          font-weight: 800;
+          font-size: clamp(32px, 4.5vw, 60px);
+          line-height: 1.1;
+          letter-spacing: -1.5px;
+          color: #fff;
+          white-space: pre-line;
+          margin-bottom: 20px;
+        }
+        .landing-page .slide-fullbg .slide-p {
+          font-size: 16px;
+          font-weight: 300;
+          line-height: 1.7;
+          color: rgba(255,255,255,0.8);
+          margin-bottom: 32px;
+          max-width: 440px;
+        }
+        .landing-page .slide-fullbg .slide-trust {
+          margin-top: 14px;
+          font-size: 12px;
+          color: rgba(255,255,255,0.45);
+        }
+        /* slides 2 & 3 – split layout */
+        .landing-page .slide-split {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .landing-page .slide-split-inner {
+          width: 100%;
+          max-width: 1200px;
+          height: 100%;
+          margin: 0 auto;
+          padding: 0 60px;
+          display: flex;
+          align-items: center;
+          gap: 60px;
+        }
+        .landing-page .slide-left {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 0;
+        }
+        .landing-page .slide-right {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          padding: 40px 0;
+        }
+        .landing-page .slide-right img {
+          max-width: 100%;
+          max-height: calc(100vh - 160px);
+          width: auto;
+          height: auto;
+          object-fit: contain;
+          border-radius: 20px;
+          box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+          display: block;
+        }
+        /* text colours for dark bg slides */
+        .landing-page .slide-dark .slide-badge { color: #4ade80; }
+        .landing-page .slide-dark .slide-badge::before { background: #4ade80; }
+        .landing-page .slide-dark .slide-h1 { color: #fff; }
+        .landing-page .slide-dark .slide-h1 em { color: #a5b4fc; font-style: normal; }
+        .landing-page .slide-dark .slide-p { color: rgba(255,255,255,0.75); }
+        .landing-page .slide-dark .slide-trust { color: rgba(255,255,255,0.4); }
+        /* text colours for light bg slides */
+        .landing-page .slide-light .slide-badge { color: #5665a9; }
+        .landing-page .slide-light .slide-badge::before { background: #5665a9; }
+        .landing-page .slide-light .slide-h1 { color: #1a1a3e; }
+        .landing-page .slide-light .slide-h1 em { color: #7c3aed; font-style: normal; }
+        .landing-page .slide-light .slide-p { color: #3a3a5a; }
+        .landing-page .slide-light .slide-trust { color: rgba(26,26,62,0.45); }
+        /* shared text styles */
+        .landing-page .slide-badge {
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 2.5px;
+          text-transform: uppercase;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+        .landing-page .slide-badge::before {
+          content: '';
+          width: 28px; height: 2px;
+          display: inline-block;
+          flex-shrink: 0;
+        }
+        .landing-page .slide-h1 {
+          font-family: 'Roboto', sans-serif;
+          font-weight: 800;
+          font-size: clamp(32px, 4.5vw, 60px);
+          line-height: 1.1;
+          letter-spacing: -1.5px;
+          margin-bottom: 20px;
+        }
+        .landing-page .slide-p {
+          font-size: 16px;
+          font-weight: 300;
+          line-height: 1.7;
+          max-width: 460px;
+          margin-bottom: 32px;
+        }
+        .landing-page .slide-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: #5665a9;
+          color: #fff;
+          padding: 15px 34px;
+          border-radius: 50px;
+          font-size: 15px;
+          font-weight: 600;
+          text-decoration: none;
+          width: fit-content;
+          box-shadow: 0 8px 28px rgba(86,101,169,0.45);
+          transition: all 0.3s ease;
+        }
+        .landing-page .slide-btn:hover {
+          background: #4554a0;
+          transform: translateY(-3px);
+          box-shadow: 0 14px 36px rgba(86,101,169,0.55);
+        }
+        .landing-page .slide-trust {
+          margin-top: 14px;
+          font-size: 12px;
+        }
+        /* slide 1 CTA */
+        .landing-page .slide1-cta {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          background: linear-gradient(135deg, #ff4444, #ff0000);
+          color: #fff;
+          padding: 18px 44px;
+          border-radius: 50px;
+          font-size: 16px;
+          font-weight: 700;
+          text-decoration: none;
+          position: absolute;
+          bottom: 80px;
+          left: 80px;
+          z-index: 3;
+          box-shadow: 0 10px 40px rgba(255,0,0,0.4);
+          transition: all 0.3s ease;
+        }
+        .landing-page .slide1-cta:hover { transform: translateY(-4px); box-shadow: 0 18px 50px rgba(255,0,0,0.5); }
+        /* dots */
+        .landing-page .slider-dots {
+          position: absolute;
+          bottom: 32px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 10px;
+          z-index: 10;
+        }
+        .landing-page .dot {
+          width: 28px; height: 4px;
+          border-radius: 2px;
+          background: rgba(255,255,255,0.4);
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s;
+          padding: 0;
+        }
+        .landing-page .dot.active { background: #fff; width: 52px; }
+        /* mobile */
+        @media (max-width: 768px) {
+          .landing-page .hero { margin-top: 56px; height: calc(100vh - 56px); }
+          .landing-page .slide-fullbg { background-image: var(--mobile-bg) !important; background-size: cover; background-position: center; }
+          .landing-page .slide-badge,
+          .landing-page .slide-fullbg .slide-p,
+          .landing-page .slide-fullbg .slide-trust { display: none !important; }
+          .landing-page .slide-fullbg .slide-overlay { background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.05) 45%, rgba(0,0,0,0.05) 65%, rgba(0,0,0,0.65) 100%); }
+          .landing-page .slide-fullbg .slide-content {
+            justify-content: space-between;
+            padding: 36px 20px 52px;
+            max-width: 100%;
+          }
+          .landing-page .slide-fullbg .slide-h1 { font-size: clamp(22px, 5.5vw, 32px); letter-spacing: -1px; margin-bottom: 0; }
+          .landing-page .slide-btn { display: inline-flex !important; padding: 13px 28px; font-size: 14px; width: fit-content; }
+          .landing-page .slide1-cta { left: 20px; bottom: 52px; padding: 13px 28px; font-size: 14px; }
+          .landing-page .slider-dots { bottom: 16px; }
+        }
+        
+
         .landing-page section { padding: 100px 60px; }
         .landing-page .section-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #0057ff; font-weight: 500; margin-bottom: 16px; }
         .landing-page .section-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: clamp(32px, 4vw, 48px); letter-spacing: -1px; line-height: 1.1; color: #0a0a0f; max-width: 560px; }
         .landing-page .section-desc { font-size: 17px; color: #3a3a4a; font-weight: 300; line-height: 1.7; max-width: 480px; margin-top: 16px; }
-        .landing-page .features { background: #fff; }
+        .landing-page .features { background: transparent; }
         .landing-page .features-header { text-align: center; margin-bottom: 72px; display: flex; flex-direction: column; align-items: center; }
         .landing-page .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 1100px; margin: 0 auto; }
-        .landing-page .feature-cell { background: #fff; padding: 44px 40px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.06); border: none; }
-        .landing-page .feature-cell:hover { background: #5665a9; transform: translateY(-12px); box-shadow: 0 25px 50px rgba(86,101,169,0.3); }
+        .landing-page .feature-cell { background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); padding: 44px 40px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; box-shadow: 0 8px 32px rgba(86,101,169,0.08); border: 1px solid rgba(255,255,255,0.8); }
+        .landing-page .feature-cell:hover { background: #5665a9; transform: translateY(-12px); box-shadow: 0 25px 50px rgba(86,101,169,0.3); border-color: transparent; }
         .landing-page .feature-cell:hover h3, .landing-page .feature-cell:hover p { color: #fff; }
         .landing-page .feature-cell:hover .feature-icon { background: #fff; color: #5665a9; }
         .landing-page .feature-icon { width: 52px; height: 52px; border-radius: 14px; background: #5665a9; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 24px; transition: all 0.3s ease; }
         .landing-page .feature-cell h3 { font-family: 'Roboto', sans-serif; font-weight: 600; font-size: 18px; color: #0a0a0f; margin-bottom: 10px; transition: color 0.3s ease; }
         .landing-page .feature-cell p { font-size: 14px; color: #3a3a4a; line-height: 1.7; transition: color 0.3s ease; }
-        .landing-page .how { background: #ffffff; }
+        .landing-page .how { background: transparent; }
         .landing-page .how-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
         .landing-page .steps { margin-top: 48px; display: flex; flex-direction: column; gap: 0; }
         .landing-page .step { display: flex; gap: 24px; padding: 28px 0; border-bottom: 1px solid rgba(10,10,15,0.08); cursor: pointer; transition: all 0.2s; }
@@ -444,32 +495,6 @@ export default function Home() {
         .landing-page .step-content p { font-size: 14px; color: #3a3a4a; line-height: 1.6; }
         .landing-page .step.active .step-num, .landing-page .step.active h4 { color: #0057ff; }
         .landing-page .how-visual { position: relative; height: 480px; display: flex; align-items: center; justify-content: center; }
-        .landing-page .phone-mock { width: 240px; background: #0a0a0f; border-radius: 44px; padding: 16px; box-shadow: 0 40px 80px rgba(0,0,0,0.25); position: relative; }
-        .landing-page .phone-screen { background: #fff; border-radius: 32px; overflow: hidden; height: 440px; }
-        .landing-page .phone-notch { height: 28px; background: #0a0a0f; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; }
-        .landing-page .phone-notch::after { content: ''; width: 80px; height: 10px; background: #1a1a2e; border-radius: 0 0 12px 12px; }
-        .landing-page .phone-content { padding: 20px 18px; text-align: left; }
-        .landing-page .phone-header-card { background: linear-gradient(135deg, #0057ff 0%, #0084ff 100%); border-radius: 20px; padding: 22px; color: white; margin-bottom: 16px; }
-        .landing-page .phone-avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 16px; color: white; margin-bottom: 12px; }
-        .landing-page .phone-name { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 2px; }
-        .landing-page .phone-role { font-size: 11px; opacity: 0.8; }
-        .landing-page .phone-action-row { display: flex; gap: 8px; margin: 14px 0; }
-        .landing-page .phone-btn { flex: 1; background: #e8efff; border-radius: 10px; padding: 10px; text-align: center; font-size: 11px; font-weight: 500; color: #0057ff; }
-        .landing-page .phone-divider { height: 1px; background: rgba(10,10,15,0.06); margin: 12px 0; }
-        .landing-page .phone-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
-        .landing-page .phone-row-icon { width: 28px; height: 28px; border-radius: 8px; background: #e8efff; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
-        .landing-page .phone-row-text { font-size: 12px; color: #0a0a0f; }
-        .landing-page .phone-qr-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 380px; padding: 20px; text-align: center; animation: phoneFadeIn 0.5s ease; }
-        .landing-page .phone-qr-code { width: 140px; height: 140px; background: #0a0a0f; border-radius: 16px; margin-bottom: 20px; padding: 12px; display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; }
-        .landing-page .phone-qr-dot { background: white; border-radius: 1px; }
-        .landing-page .phone-qr-text { font-size: 13px; font-weight: 600; color: #0a0a0f; line-height: 1.4; }
-        @keyframes phoneFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .landing-page .phone-row-sub { font-size: 10px; color: #7a7a8e; }
-        .landing-page .floating-badge { position: absolute; background: #fff; border-radius: 14px; padding: 12px 18px; box-shadow: 0 12px 40px rgba(0,0,0,0.12); font-size: 12px; font-weight: 500; color: #0a0a0f; display: flex; align-items: center; gap: 10px; animation: float 4s ease-in-out infinite; text-align: left; }
-        .landing-page .floating-badge-icon { font-size: 18px; }
-        .landing-page .fb-1 { top: 40px; right: -20px; animation-delay: 0s; }
-        .landing-page .fb-2 { bottom: 60px; left: -30px; animation-delay: 2s; }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
         .landing-page .pricing { background: #0a0a0f; text-align: center; position: relative; overflow: hidden; }
         .landing-page .pricing::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0,87,255,0.18) 0%, transparent 65%), radial-gradient(ellipse 40% 40% at 10% 100%, rgba(201,168,76,0.08) 0%, transparent 60%); pointer-events: none; }
         .landing-page .pricing-dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 32px 32px; pointer-events: none; }
@@ -530,11 +555,11 @@ export default function Home() {
         .landing-page .plan-cta.enterprise-cta:hover { background: rgba(201,168,76,0.2); border-color: rgba(201,168,76,0.5); color: #e0b84f; }
         .landing-page .plan-note { text-align: center; font-size: 11px; color: rgba(255,255,255,0.2); margin-top: 12px; }
         .landing-page .pricing-card.featured .plan-note { color: #7a7a8e; }
-        .landing-page .testimonials { background: #ffffff; }
+        .landing-page .testimonials { background: transparent; }
         .landing-page .testi-inner { max-width: 1100px; margin: 0 auto; }
         .landing-page .testi-header { text-align: center; margin-bottom: 56px; display: flex; flex-direction: column; align-items: center; }
         .landing-page .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .landing-page .testi-card { background: #fff; border-radius: 24px; padding: 36px 32px; border: 1px solid rgba(10,10,15,0.06); text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .landing-page .testi-card { background: rgba(255,255,255,0.72); backdrop-filter: blur(12px); border-radius: 24px; padding: 36px 32px; border: 1px solid rgba(255,255,255,0.85); text-align: left; box-shadow: 0 8px 32px rgba(86,101,169,0.08); }
         .landing-page .stars { color: #c9a84c; font-size: 14px; letter-spacing: 2px; margin-bottom: 18px; }
         .landing-page .testi-text { font-size: 15px; line-height: 1.7; color: #3a3a4a; font-style: italic; margin-bottom: 24px; }
         .landing-page .testi-author { display: flex; align-items: center; gap: 12px; }
@@ -590,179 +615,199 @@ export default function Home() {
           box-shadow: 0 20px 60px rgba(0,0,0,0.2);
           color: #0057ff;
         }
-        .landing-page footer { 
-          background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); 
-          color: rgba(255,255,255,0.7); 
-          padding: 100px 60px 60px; 
+        /* ── Footer ── */
+        .landing-page footer {
+          background: linear-gradient(160deg, #f0f4ff 0%, #faf5ff 50%, #f0f9ff 100%);
+          border-top: 1px solid rgba(86,101,169,0.12);
+          padding: 80px 60px 40px;
           position: relative;
           overflow: hidden;
         }
-        
         .landing-page footer::before {
           content: '';
           position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(0, 87, 255, 0.5), transparent);
+          top: -120px; right: -120px;
+          width: 400px; height: 400px;
+          background: radial-gradient(circle, rgba(86,101,169,0.08), transparent 70%);
+          pointer-events: none;
         }
-        
-        .landing-page .footer-inner { 
-          max-width: 1200px; 
-          margin: 0 auto; 
-          display: grid; 
-          grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr; 
-          gap: 60px; 
-          padding-bottom: 60px; 
-          border-bottom: 1px solid rgba(255,255,255,0.08); 
-          position: relative;
-          z-index: 1;
+        .landing-page footer::after {
+          content: '';
+          position: absolute;
+          bottom: -80px; left: -80px;
+          width: 300px; height: 300px;
+          background: radial-gradient(circle, rgba(124,58,237,0.06), transparent 70%);
+          pointer-events: none;
         }
-        
-        .landing-page .footer-brand { 
-          max-width: 320px; 
-        }
-        
-        .landing-page .footer-brand .logo { 
-          font-size: 28px; 
-          font-weight: 800; 
-          color: #fff; 
-          text-decoration: none; 
-          display: block; 
-          margin-bottom: 20px;
-        }
-        
-        .landing-page .footer-brand .logo span { 
-          color: #0057ff; 
-        }
-        
-        .landing-page .footer-brand p { 
-          font-size: 15px; 
-          color: rgba(255,255,255,0.5); 
-          line-height: 1.7; 
-          margin-bottom: 24px; 
-        }
-        
-        .landing-page .footer-social {
-          display: flex;
-          gap: 12px;
-          margin-top: 20px;
-        }
-        
-        .landing-page .social-link {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
+        .landing-page .footer-top {
+          max-width: 1200px;
+          margin: 0 auto 60px;
+          background: linear-gradient(135deg, #5665a9 0%, #7c3aed 100%);
+          border-radius: 24px;
+          padding: 48px 60px;
           display: flex;
           align-items: center;
-          justify-content: center;
-          color: rgba(255, 255, 255, 0.7);
-          text-decoration: none;
-          transition: all 0.3s;
+          justify-content: space-between;
+          gap: 40px;
+          position: relative;
+          overflow: hidden;
         }
-        
-        .landing-page .social-link:hover {
-          background: #0057ff;
+        .landing-page .footer-top::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+          pointer-events: none;
+        }
+        .landing-page .footer-top-text h3 {
+          font-family: 'Roboto', sans-serif;
+          font-weight: 800;
+          font-size: 26px;
           color: #fff;
-          transform: translateY(-2px);
-          border-color: #0057ff;
+          letter-spacing: -0.5px;
+          margin-bottom: 8px;
         }
-        
-        .landing-page .footer-col h5 { 
-          font-family: 'Roboto', sans-serif; 
-          font-weight: 700; 
-          font-size: 14px; 
-          color: #fff; 
-          letter-spacing: 0.5px; 
-          text-transform: uppercase; 
-          margin-bottom: 24px; 
+        .landing-page .footer-top-text p {
+          font-size: 15px;
+          color: rgba(255,255,255,0.7);
+          font-weight: 300;
         }
-        
-        .landing-page .footer-col ul { 
-          list-style: none; 
-          display: flex; 
-          flex-direction: column; 
-          gap: 16px; 
-        }
-        
-        .landing-page .footer-col ul a { 
-          text-decoration: none; 
-          font-size: 15px; 
-          color: rgba(255,255,255,0.6); 
-          transition: all 0.2s; 
+        .landing-page .footer-top-cta {
           display: inline-flex;
           align-items: center;
-        }
-        
-        .landing-page .footer-col ul a:hover { 
-          color: #0057ff; 
-          transform: translateX(4px);
-        }
-        
-        .landing-page .footer-bottom { 
-          max-width: 1200px; 
-          margin: 40px auto 0; 
-          display: flex; 
-          justify-content: space-between; 
-          align-items: center;
-          position: relative;
-          z-index: 1;
-        }
-        
-        .landing-page .footer-bottom p { 
-          font-size: 14px; 
-          color: rgba(255,255,255,0.3); 
-        }
-        
-        .landing-page .footer-bottom-links {
-          display: flex;
-          gap: 24px;
-        }
-        
-        .landing-page .footer-bottom-links a {
-          color: rgba(255,255,255,0.4);
+          gap: 10px;
+          background: #fff;
+          color: #5665a9;
+          padding: 16px 36px;
+          border-radius: 50px;
+          font-size: 15px;
+          font-weight: 700;
           text-decoration: none;
-          font-size: 13px;
-          transition: color 0.2s;
+          white-space: nowrap;
+          box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+          transition: all 0.3s;
+          flex-shrink: 0;
         }
-        
-        .landing-page .footer-bottom-links a:hover {
-          color: rgba(255,255,255,0.7);
+        .landing-page .footer-top-cta:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.2); }
+        .landing-page .footer-inner {
+          max-width: 1200px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 2fr 1fr 1fr 1fr;
+          gap: 48px;
+          padding-bottom: 48px;
+          border-bottom: 1px solid rgba(86,101,169,0.12);
+          position: relative; z-index: 1;
         }
-        
+        .landing-page .footer-brand { max-width: 300px; }
+        .landing-page .footer-brand .logo {
+          font-size: 26px;
+          font-weight: 800;
+          color: #1a1a3e;
+          text-decoration: none;
+          display: block;
+          margin-bottom: 16px;
+        }
+        .landing-page .footer-brand .logo span { color: #5665a9; }
+        .landing-page .footer-brand p {
+          font-size: 14px;
+          color: #6b7280;
+          line-height: 1.7;
+          margin-bottom: 24px;
+        }
+        .landing-page .footer-social { display: flex; gap: 10px; }
+        .landing-page .social-link {
+          width: 38px; height: 38px;
+          border-radius: 12px;
+          background: #fff;
+          border: 1px solid rgba(86,101,169,0.15);
+          display: flex; align-items: center; justify-content: center;
+          text-decoration: none;
+          font-size: 16px;
+          transition: all 0.3s;
+          box-shadow: 0 2px 8px rgba(86,101,169,0.08);
+        }
+        .landing-page .social-link:hover {
+          background: #5665a9;
+          border-color: #5665a9;
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(86,101,169,0.3);
+        }
         .landing-page .footer-badge {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          background: rgba(0, 87, 255, 0.1);
-          border: 1px solid rgba(0, 87, 255, 0.2);
-          padding: 8px 16px;
+          background: rgba(86,101,169,0.08);
+          border: 1px solid rgba(86,101,169,0.15);
+          padding: 7px 14px;
           border-radius: 50px;
           font-size: 12px;
-          color: rgba(255, 255, 255, 0.8);
+          color: #5665a9;
+          font-weight: 500;
           margin-top: 16px;
         }
-        
         .landing-page .footer-badge-icon {
-          width: 16px;
-          height: 16px;
-          background: #0057ff;
+          width: 14px; height: 14px;
+          background: #5665a9;
           border-radius: 50%;
-          display: flex;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 8px; color: #fff;
+        }
+        .landing-page .footer-col h5 {
+          font-family: 'Roboto', sans-serif;
+          font-weight: 700;
+          font-size: 13px;
+          color: #1a1a3e;
+          letter-spacing: 0.8px;
+          text-transform: uppercase;
+          margin-bottom: 20px;
+        }
+        .landing-page .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .landing-page .footer-col ul a {
+          text-decoration: none;
+          font-size: 14px;
+          color: #6b7280;
+          transition: all 0.2s;
+          display: inline-flex;
           align-items: center;
-          justify-content: center;
-          font-size: 8px;
-          color: #fff;
+          gap: 6px;
+        }
+        .landing-page .footer-col ul a:hover { color: #5665a9; transform: translateX(4px); }
+        .landing-page .footer-bottom {
+          max-width: 1200px;
+          margin: 32px auto 0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          position: relative; z-index: 1;
+        }
+        .landing-page .footer-bottom p { font-size: 13px; color: #9ca3af; }
+        .landing-page .footer-bottom-links { display: flex; gap: 24px; }
+        .landing-page .footer-bottom-links a {
+          color: #9ca3af;
+          text-decoration: none;
+          font-size: 13px;
+          transition: color 0.2s;
+        }
+        .landing-page .footer-bottom-links a:hover { color: #5665a9; }
+        @media (max-width: 900px) {
+          .landing-page .footer-top { flex-direction: column; text-align: center; padding: 40px 32px; }
+          .landing-page .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+        }
+        @media (max-width: 768px) {
+          .landing-page footer { padding: 60px 20px 32px; }
+          .landing-page .footer-top { padding: 32px 24px; margin-bottom: 40px; }
+          .landing-page .footer-top-text h3 { font-size: 20px; }
+          .landing-page .footer-inner { grid-template-columns: 1fr; gap: 28px; padding-bottom: 32px; }
+          .landing-page .footer-brand { max-width: 100%; }
+          .landing-page .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+          .landing-page .footer-bottom-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
         }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
         .landing-page .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
         .landing-page .reveal.visible { opacity: 1; transform: translateY(0); }
-        /* Enhanced Mobile Responsiveness */
+        /* Mobile Responsiveness */
         @media (max-width: 1200px) {
-          .landing-page .mockup-frame { max-width: 680px; }
           .landing-page .features-grid { max-width: 900px; }
         }
 
@@ -775,7 +820,6 @@ export default function Home() {
           .landing-page .how-inner { grid-template-columns: 1fr; }
           .landing-page .how-visual { display: none; }
           .landing-page .footer-inner { grid-template-columns: 1fr 1fr; }
-          .landing-page .mockup-stats { grid-template-columns: 1fr; }
           .mobile-menu-toggle {
             display: block;
           }
@@ -788,15 +832,6 @@ export default function Home() {
         @media (max-width: 768px) {
           .landing-page nav { padding: 12px 20px; }
           .landing-page .logo { font-size: 18px; }
-          .landing-page .hero { padding: 100px 20px 60px; text-align: center; }
-          .landing-page .hero h1 { font-size: clamp(36px, 6vw, 56px); }
-          .landing-page .hero-sub { font-size: 16px; max-width: 100%; }
-          .landing-page .hero-actions { flex-direction: column; align-items: center; gap: 16px; }
-          .landing-page .btn-primary, .landing-page .btn-secondary { width: 100%; max-width: 280px; justify-content: center; padding: 18px 32px; font-size: 15px; }
-          .landing-page .hero-stats { flex-direction: column; gap: 20px; margin-top: 40px; }
-          .landing-page .hero-stat-number { font-size: 28px; }
-          .landing-page .hero-stat-label { font-size: 12px; }
-          .landing-page .hero-particles { display: none; }
           .landing-page section { padding: 60px 20px; }
           .landing-page .features-header { margin-bottom: 48px; }
           .landing-page .feature-cell { padding: 30px 24px; }
@@ -810,40 +845,11 @@ export default function Home() {
           .landing-page .step-content p { font-size: 13px; }
           .landing-page .cta-band { padding: 80px 20px; }
           .landing-page .cta-band .btn-primary { padding: 18px 36px; font-size: 15px; }
-          .landing-page .footer { padding: 60px 20px 40px; }
-          .landing-page .footer-inner { 
-            grid-template-columns: 1fr; 
-            gap: 40px; 
-            padding-bottom: 40px; 
-          }
-          .landing-page .footer-brand { max-width: 100%; }
-          .landing-page .footer-brand .logo { font-size: 24px; }
-          .landing-page .footer-brand p { font-size: 14px; }
-          .landing-page .footer-social { gap: 10px; }
-          .landing-page .social-link { width: 36px; height: 36px; }
-          .landing-page .footer-badge { font-size: 11px; padding: 6px 12px; }
-          .landing-page .footer-bottom { 
-            flex-direction: column; 
-            gap: 16px; 
-            text-align: center; 
-          }
-          .landing-page .footer-bottom-links { 
-            flex-direction: column; 
-            gap: 12px; 
-          }
         }
 
         @media (max-width: 640px) {
           .landing-page nav { padding: 10px 16px; }
           .landing-page .logo { font-size: 16px; }
-          .landing-page .hero { padding: 80px 16px 50px; }
-          .landing-page .hero h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.2; }
-          .landing-page .hero-sub { font-size: 15px; margin: 20px 0 32px; }
-          .landing-page .badge { font-size: 11px; padding: 6px 14px; margin-bottom: 24px; }
-          .landing-page .btn-primary, .landing-page .btn-secondary { padding: 16px 28px; font-size: 14px; }
-          .landing-page .hero-stats { gap: 16px; margin-top: 32px; }
-          .landing-page .hero-stat-number { font-size: 24px; }
-          .landing-page .hero-stat-label { font-size: 11px; }
           .landing-page section { padding: 48px 16px; }
           .landing-page .section-title { font-size: clamp(28px, 4vw, 40px); }
           .landing-page .section-desc { font-size: 16px; }
@@ -880,14 +886,6 @@ export default function Home() {
         }
 
         @media (max-width: 480px) {
-          .landing-page .hero { padding: 60px 12px 40px; }
-          .landing-page .hero h1 { font-size: clamp(28px, 4.5vw, 42px); }
-          .landing-page .hero-sub { font-size: 14px; margin: 16px 0 28px; }
-          .landing-page .badge { font-size: 10px; padding: 5px 12px; }
-          .landing-page .btn-primary, .landing-page .btn-secondary { padding: 14px 24px; font-size: 13px; }
-          .landing-page .hero-stats { gap: 12px; margin-top: 24px; }
-          .landing-page .hero-stat-number { font-size: 20px; }
-          .landing-page .hero-stat-label { font-size: 10px; }
           .landing-page .section-title { font-size: clamp(24px, 3.5vw, 36px); }
           .landing-page .section-desc { font-size: 15px; }
           .landing-page .feature-cell { padding: 20px 16px; }
@@ -1030,8 +1028,8 @@ export default function Home() {
 
       <nav>
         <Link to="/" className="logo">
-          <div className="logo-icon"></div>
-          Kaira<span>.</span>
+          <img src="/favicon.png" alt="Kaira" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+          Kaira<span>Technology</span>
         </Link>
         <ul className="nav-links">
           <li><a href="#features">Features</a></li>
@@ -1058,46 +1056,38 @@ export default function Home() {
         </ul>
       </div>
 
-      <section className="hero">
-        <div className="hero-particles">
-          {[...Array(20)].map((_, i) => (
-            <div 
-              key={i} 
-              className="particle" 
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 8}s`,
-                animationDuration: `${8 + Math.random() * 4}s`
-              }}
-            />
+      <section className="hero" onClick={handleHeroClick}>
+        {slides.map((s, i) => {
+          const isActive = slideIndex === i
+          if (!s.label) {
+            return (
+              <div key={i} className={`slide slide-fullbg${isActive ? ' active' : ''}`}
+                style={{ backgroundImage: `url(${s.bg})`, '--mobile-bg': `url(${s.mobileBg})` }} />
+            )
+          }
+          return (
+            <div key={i} className={`slide slide-fullbg${s.contain ? ' slide-contain' : ''}${isActive ? ' active' : ''}`}
+              style={{ backgroundImage: `url(${s.bg})`, '--mobile-bg': `url(${s.mobileBg})` }}>
+              <div className="slide-overlay" />
+              <div className="slide-content">
+                <div className="slide-badge">{s.label}</div>
+                <h1 className="slide-h1">{s.title}</h1>
+                <p className="slide-p">{s.sub}</p>
+                <Link to="/register" className="slide-btn" onClick={e => e.stopPropagation()}>{s.cta} →</Link>
+                <div className="slide-trust">Trusted by 5,000+ professionals across India</div>
+              </div>
+            </div>
+          )
+        })}
+        {slideIndex === 0 && (
+          <Link to="/register" className="slide1-cta" onClick={e => e.stopPropagation()}>
+            Create Your Card <span>→</span>
+          </Link>
+        )}
+        <div className="slider-dots">
+          {slides.map((_, i) => (
+            <button key={i} className={`dot${slideIndex === i ? ' active' : ''}`} onClick={e => { e.stopPropagation(); setSlideIndex(i) }} aria-label={`Slide ${i + 1}`} />
           ))}
-        </div>
-        <div className="badge">
-          <div className="badge-dot"></div>
-          Digital Business Cards — Reimagined
-        </div>
-        <h1>Your Identity,<br />One <em>Smart</em> Card</h1>
-        <p className="hero-sub">
-          Create stunning digital vCards in seconds. Share with a tap, scan, or link — and track every connection you make.
-        </p>
-        <div className="hero-actions">
-          <Link to="/register" className="btn-primary">Create Your vCard <span className="arrow">→</span></Link>
-          <a href="#how" className="btn-secondary">See how it works</a>
-        </div>
-        
-        <div className="hero-stats">
-          <div className="hero-stat">
-            <div className="hero-stat-number">50K+</div>
-            <div className="hero-stat-label">Active Users</div>
-          </div>
-          <div className="hero-stat">
-            <div className="hero-stat-number">1.2M</div>
-            <div className="hero-stat-label">Cards Shared</div>
-          </div>
-          <div className="hero-stat">
-            <div className="hero-stat-number">98%</div>
-            <div className="hero-stat-label">Satisfaction</div>
-          </div>
         </div>
       </section>
 
@@ -1149,49 +1139,7 @@ export default function Home() {
           </div>
 
           <div className="how-visual">
-            <div className="phone-mock">
-              <div className="phone-screen">
-                <div className="phone-notch"></div>
-                <div className="phone-content">
-                  {!showQR ? (
-                    <div style={{ animation: 'phoneFadeIn 0.5s ease' }}>
-                      <div className="phone-header-card">
-                        <div className="phone-avatar">RK</div>
-                        <div className="phone-name">Riya Krishnan</div>
-                        <div className="phone-role">Co-Founder · Kaira Technology</div>
-                      </div>
-                      <div className="phone-action-row">
-                        <div className="phone-btn">💬 Message</div>
-                        <div className="phone-btn">📥 Save</div>
-                        <div className="phone-btn">🔗 Share</div>
-                      </div>
-                      <div className="phone-divider"></div>
-                      <div className="phone-row"><div className="phone-row-icon">📞</div><div><div className="phone-row-text">+91 90000 12345</div><div className="phone-row-sub">Mobile</div></div></div>
-                      <div className="phone-row"><div className="phone-row-icon">✉️</div><div><div className="phone-row-text">riya@kairatechnology.com</div><div className="phone-row-sub">Work Email</div></div></div>
-                      <div className="phone-row"><div className="phone-row-icon">🌐</div><div><div className="phone-row-text">kairatechnology.com</div><div className="phone-row-sub">Website</div></div></div>
-                      <div className="phone-row"><div className="phone-row-icon">💼</div><div><div className="phone-row-text">LinkedIn Profile</div><div className="phone-row-sub">Professional</div></div></div>
-                    </div>
-                  ) : (
-                    <div className="phone-qr-container">
-                      <div className="phone-qr-code">
-                        {[...Array(64)].map((_, i) => (
-                          <div key={i} className="phone-qr-dot" style={{ opacity: Math.random() > 0.3 ? 1 : 0 }}></div>
-                        ))}
-                      </div>
-                      <div className="phone-qr-text">Scan and save<br />the profile</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="floating-badge fb-1">
-              <div className="floating-badge-icon">✅</div>
-              <div><div style={{ fontSize: 12, fontWeight: 600, color: '#0a0a0f' }}>Card saved!</div><div style={{ fontSize: 11, color: '#7a7a8e' }}>Added to contacts</div></div>
-            </div>
-            <div className="floating-badge fb-2">
-              <div className="floating-badge-icon">👁</div>
-              <div><div style={{ fontSize: 12, fontWeight: 600, color: '#0a0a0f' }}>12 views today</div><div style={{ fontSize: 11, color: '#7a7a8e' }}>Last scan: 2 min ago</div></div>
-            </div>
+            <img src="/phone/cha1 (1).png" alt="How it works" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
         </div>
       </section>
@@ -1229,9 +1177,19 @@ export default function Home() {
       </div>
 
       <footer>
+        <div className="footer-top">
+          <div className="footer-top-text">
+            <h3>Start networking smarter today</h3>
+            <p>Join 5,000+ professionals already using Kaira across India.</p>
+          </div>
+          <Link to="/register" className="footer-top-cta">Create Free Card →</Link>
+        </div>
         <div className="footer-inner">
           <div className="footer-brand">
-            <Link to="/" className="logo">Kaira<span>.</span></Link>
+            <Link to="/" className="logo">
+              <img src="/favicon.png" alt="Kaira" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+              Kaira Technologies<span>.</span>
+            </Link>
             <p>Professional digital vCards built for the way modern India networks. From freelancers to Fortune 500 teams.</p>
             <div className="footer-social">
               <a href="#" className="social-link">📧</a>
@@ -1250,7 +1208,6 @@ export default function Home() {
               <li><Link to="/editor">Features</Link></li>
               <li><Link to="/editor">Templates</Link></li>
               <li><Link to="/register">Pricing</Link></li>
-              <li><Link to="/editor">Integrations</Link></li>
               <li><Link to="/editor">Analytics</Link></li>
             </ul>
           </div>
@@ -1261,7 +1218,6 @@ export default function Home() {
               <li><Link to="/editor">For Teams</Link></li>
               <li><Link to="/editor">For Enterprise</Link></li>
               <li><Link to="/editor">API Access</Link></li>
-              <li><Link to="/editor">White Label</Link></li>
             </ul>
           </div>
           <div className="footer-col">
@@ -1271,17 +1227,6 @@ export default function Home() {
               <li><Link to="/">Blog</Link></li>
               <li><Link to="/">Careers</Link></li>
               <li><Link to="/">Contact</Link></li>
-              <li><Link to="/">Press Kit</Link></li>
-            </ul>
-          </div>
-          <div className="footer-col">
-            <h5>Support</h5>
-            <ul>
-              <li><Link to="/">Help Center</Link></li>
-              <li><Link to="/">Documentation</Link></li>
-              <li><Link to="/">Community</Link></li>
-              <li><Link to="/">Status</Link></li>
-              <li><Link to="/">Partners</Link></li>
             </ul>
           </div>
         </div>

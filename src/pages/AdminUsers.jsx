@@ -15,7 +15,7 @@ const DEFAULT_MAX_CARDS = { admin: 50, premium: 10, free: 1 }
 
 export default function AdminUsers() {
   const navigate = useNavigate()
-  const { isAdmin } = useAuth()
+  const { isAdmin, loading: authLoading } = useAuth()
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
@@ -24,9 +24,10 @@ export default function AdminUsers() {
   const [toast, setToast] = useState('')
 
   useEffect(() => {
+    if (authLoading) return
     if (!isAdmin()) { navigate('/dashboard'); return }
     loadUsers()
-  }, [filter])
+  }, [authLoading, filter])
 
   const loadUsers = async () => {
     setLoading(true)
@@ -73,6 +74,10 @@ export default function AdminUsers() {
   const filtered = users.filter(u =>
     u.email?.toLowerCase().includes(search.toLowerCase()) ||
     u.name?.toLowerCase().includes(search.toLowerCase())
+  )
+
+  if (authLoading) return (
+    <><Navbar /><div className="flex items-center justify-center min-h-[70vh]"><div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" /></div></>
   )
 
   return (

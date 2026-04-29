@@ -509,6 +509,7 @@ export default function ProfileEditor() {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
@@ -707,5 +708,6 @@ export default function ProfileEditor() {
         <Check size={14} className="text-green-400" /> Link copied!
       </div>
     )}
+    </>
   )
 }

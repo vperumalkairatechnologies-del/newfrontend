@@ -64,8 +64,8 @@ export default function Register() {
 
         <div className="relative z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl backdrop-blur-sm">🪪</div>
-            <span className="text-white font-bold text-xl tracking-tight">Kaira SmartCard</span>
+            <img src="/favicon.png" alt="Kaira" className="w-10 h-10 object-contain" />
+            <span className="text-white font-bold text-xl tracking-tight">Kaira Technologies</span>
           </div>
         </div>
 
@@ -101,9 +101,17 @@ export default function Register() {
         <div className="w-full max-w-md">
 
           {/* Mobile logo */}
-          <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-9 h-9 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center text-lg">🪪</div>
-            <span className="font-bold text-gray-900 text-lg">Kaira SmartCard</span>
+          <div className="flex items-center justify-between mb-8 lg:hidden">
+            <div className="flex items-center gap-2">
+   
+              <span className="font-bold text-gray-900 text-lg">Kaira Technologies</span>
+            </div>
+            <Link to="/" className="text-sm text-gray-500 hover:text-violet-600 transition-colors">← Home</Link>
+          </div>
+
+          {/* Desktop back button */}
+          <div className="hidden lg:flex justify-end mb-6">
+            <Link to="/" className="text-sm text-gray-500 hover:text-violet-600 transition-colors">← Back to Home</Link>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">

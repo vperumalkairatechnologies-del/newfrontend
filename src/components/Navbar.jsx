@@ -14,7 +14,8 @@ export default function Navbar() {
   const logout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
-    navigate('/login')
+    localStorage.removeItem('smartcard_editor')
+    navigate('/')
     setMobileMenuOpen(false)
   }
 

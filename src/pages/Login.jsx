@@ -63,9 +63,12 @@ export default function Login() {
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
 
         <div className="relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl backdrop-blur-sm">🪪</div>
-            <span className="text-white font-bold text-xl tracking-tight">Kaira SmartCard</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img src="/favicon.png" alt="Kaira" className="w-10 h-10 object-contain" />
+              <span className="text-white font-bold text-xl tracking-tight">Kaira Technologies</span>
+            </div>
+            <Link to="/" className="text-white/70 hover:text-white text-sm transition-colors">← Home</Link>
           </div>
         </div>
 
@@ -106,9 +109,17 @@ export default function Login() {
         <div className="w-full max-w-md">
 
           {/* Mobile logo */}
-          <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center text-lg">🪪</div>
-            <span className="font-bold text-gray-900 text-lg">Kaira SmartCard</span>
+          <div className="flex items-center justify-between mb-8 lg:hidden">
+            <div className="flex items-center gap-2">
+              
+              <span className="font-bold text-gray-900 text-lg">Kaira Technologies</span>
+            </div>
+            <Link to="/" className="text-sm text-gray-500 hover:text-indigo-600 transition-colors">← Home</Link>
+          </div>
+
+          {/* Desktop back button */}
+          <div className="hidden lg:flex justify-end mb-6">
+            <Link to="/" className="text-sm text-gray-500 hover:text-indigo-600 transition-colors flex items-center gap-1">← Back to Home</Link>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
