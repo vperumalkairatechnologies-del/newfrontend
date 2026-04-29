@@ -15,7 +15,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (authLoading) return
     if (!isAdmin()) { navigate('/dashboard'); return }
-    Promise.all([axios.get('/admin'), axios.get('/admin?action=analytics')])
+    Promise.all([axios.get('/admin'), axios.get('/admin/analytics')])
       .then(([s, a]) => { setStats(s.data.stats); setAnalytics(a.data) })
       .catch(console.error)
       .finally(() => setLoading(false))

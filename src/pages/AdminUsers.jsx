@@ -28,7 +28,7 @@ export default function AdminUsers() {
     setLoading(true)
     try {
       const params = filter !== 'all' ? { role: filter } : {}
-      const res = await axios.get('/admin?action=users', { params })
+      const res = await axios.get('/admin/users', { params })
       setUsers(res.data.users || [])
     } catch (err) {
       console.error(err)
@@ -39,7 +39,7 @@ export default function AdminUsers() {
 
   const updateUser = async (userId, updates) => {
     try {
-      await axios.put(`/admin?action=user&id=${userId}`, updates)
+      await axios.put(`/admin/user?id=${userId}`, updates)
       loadUsers()
     } catch { alert('Failed to update user') }
   }
@@ -47,7 +47,7 @@ export default function AdminUsers() {
   const deleteUser = async (userId) => {
     if (!confirm('Delete this user permanently?')) return
     try {
-      await axios.delete(`/admin?action=user&id=${userId}`)
+      await axios.delete(`/admin/user?id=${userId}`)
       loadUsers()
     } catch { alert('Failed to delete user') }
   }

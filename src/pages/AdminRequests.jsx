@@ -111,8 +111,8 @@ export default function AdminRequests() {
                       <p className="text-sm text-gray-500 mb-2 leading-relaxed">{req.message}</p>
                     )}
                     <div className="flex items-center gap-3 text-xs text-gray-400">
-                      <span className="flex items-center gap-1"><Clock size={11} /> {new Date(req.created_at).toLocaleString()}</span>
-                      {req.reviewed_at && <span>Reviewed: {new Date(req.reviewed_at).toLocaleString()}</span>}
+                      <span className="flex items-center gap-1"><Clock size={11} /> {new Date(req.requested_at).toLocaleString()}</span>
+                      {req.processed_at && <span>Reviewed: {new Date(req.processed_at).toLocaleString()}</span>}
                     </div>
                   </div>
 
