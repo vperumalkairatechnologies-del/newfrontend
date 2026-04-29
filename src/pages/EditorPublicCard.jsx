@@ -3,8 +3,6 @@ import { useParams } from 'react-router-dom'
 import { Mail, Phone, Globe, MapPin, AtSign, MessageCircle, Calendar, GitBranch, Link as LinkIcon, Share2, Download } from 'lucide-react'
 import api from '../api/axios'
 
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeNiaF_qV0h8GoMSq90Guhwu2PbStUx_M942fQnPtKw0mPRKhej89A1fvjXQEp2U_u/exec'
-
 const ICON_MAP = {
   email: <Mail size={16} />, phone: <Phone size={16} />, companyUrl: <Globe size={16} />,
   address: <MapPin size={16} />, twitter: <AtSign size={16} />, instagram: <AtSign size={16} />,
@@ -153,16 +151,18 @@ export default function EditorPublicCard() {
     e.preventDefault()
     setSendingLead(true)
     try {
-      await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ slug, name: lead.name, email: lead.email, mobile: lead.phone, message: lead.note }),
+      await api.post('/leads', {
+        slug: slug || String(cardId),
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone,
+        note: lead.note,
       })
       alert('Thanks! Your details were shared successfully.')
       setLead({ name: '', email: '', phone: '', note: '' })
-    } catch {
-      alert('Failed to submit your details.')
+      setShowLeadForm(false)
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to submit your details.')
     } finally {
       setSendingLead(false)
     }

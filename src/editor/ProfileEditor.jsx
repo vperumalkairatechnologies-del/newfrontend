@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { User, Globe, AtSign, MessageCircle, Briefcase, Download, Share2, RotateCcw, Eye, EyeOff, Upload, FileJson, Sparkles, Target, Check } from 'lucide-react'
+import { User, Globe, AtSign, MessageCircle, Briefcase, Download, Share2, RotateCcw, Eye, EyeOff, Upload, FileJson, Save, Target, Check } from 'lucide-react'
 import html2canvas from 'html2canvas'
 import { useCardStore } from './useCardStore'
 import CardPreview from './CardPreview'
@@ -567,7 +567,7 @@ export default function ProfileEditor() {
                 </>
               ) : (
                 <>
-                  <Sparkles size={12} className="sm:text-base" />
+                  <Save size={12} className="sm:text-base" />
                   <span className="hidden sm:inline">Save Card</span>
                 </>
               )}

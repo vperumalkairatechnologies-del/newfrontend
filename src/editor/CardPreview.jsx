@@ -162,7 +162,7 @@ export default function CardPreview({ card }) {
 
         {/* CTA */}
         <div className="flex gap-2 pt-3">
-          <button className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all" style={{ background: card.themeColor }}>
+          <button className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all" style={{ background: card.themeColor || '#6366f1' }}>
             Share
           </button>
           <a
@@ -170,7 +170,7 @@ export default function CardPreview({ card }) {
             target={card.ctaUrl ? '_blank' : undefined}
             rel={card.ctaUrl ? 'noreferrer' : undefined}
             className="flex-1 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all text-center"
-            style={{ borderColor: card.themeColor, color: card.themeColor }}
+            style={{ borderColor: card.themeColor || '#6366f1', color: card.themeColor || '#6366f1' }}
           >
             {card.ctaLabel || 'Save Contact'}
           </a>
