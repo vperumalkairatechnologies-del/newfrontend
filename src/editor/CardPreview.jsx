@@ -13,13 +13,14 @@ const ICON_MAP = {
 }
 
 export default function CardPreview({ card }) {
+  const theme = card.themeColor || '#6366f1'
   const bgStyle = card.virtualBg?.enabled
     ? card.virtualBg.custom
       ? { backgroundImage: `url(${card.virtualBg.custom})`, backgroundSize: 'cover', backgroundPosition: 'center' }
       : card.virtualBg.preset
         ? { background: card.virtualBg.preset }
-        : { background: '#f3f4f6' }
-    : { background: '#f3f4f6' }
+        : { background: `linear-gradient(160deg, ${theme}18 0%, #ffffff 60%)` }
+    : { background: `linear-gradient(160deg, ${theme}18 0%, #ffffff 60%)` }
 
   const fields = [
     card.email && { key: 'email', label: 'Email', value: card.email },
@@ -56,7 +57,7 @@ export default function CardPreview({ card }) {
     .filter(Boolean)
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden" style={bgStyle}>
+    <div className="w-full max-w-md mx-auto rounded-3xl shadow-2xl overflow-hidden" style={bgStyle}>
       {/* Cover */}
       {card.coverPhoto && (
         <div 
@@ -100,7 +101,7 @@ export default function CardPreview({ card }) {
             }}
           />
         ) : (
-          <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-3xl font-bold" style={{ background: card.themeColor, color: '#fff' }}>
+          <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-3xl font-bold" style={{ background: theme, color: '#fff' }}>
             {card.name?.[0]?.toUpperCase() || '?'}
           </div>
         )}
@@ -149,8 +150,8 @@ export default function CardPreview({ card }) {
         {fields.length > 0 && (
           <div className="space-y-2 pt-2">
             {fields.map((f, i) => (
-              <div key={i} className="flex items-center gap-3 px-3 py-2 rounded-xl" style={{ background: `${card.themeColor}10` }}>
-                <span style={{ color: card.themeColor }}>{ICON_MAP[f.key] || <LinkIcon size={16} />}</span>
+              <div key={i} className="flex items-center gap-3 px-3 py-2 rounded-xl" style={{ background: `${theme}12` }}>
+                <span style={{ color: theme }}>{ICON_MAP[f.key] || <LinkIcon size={16} />}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-gray-400">{f.label}</p>
                   <p className="text-sm text-gray-700 truncate">{f.value}</p>
@@ -162,7 +163,7 @@ export default function CardPreview({ card }) {
 
         {/* CTA */}
         <div className="flex gap-2 pt-3">
-          <button className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all" style={{ background: card.themeColor || '#6366f1' }}>
+          <button className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all" style={{ background: theme }}>
             Share
           </button>
           <a
@@ -170,7 +171,7 @@ export default function CardPreview({ card }) {
             target={card.ctaUrl ? '_blank' : undefined}
             rel={card.ctaUrl ? 'noreferrer' : undefined}
             className="flex-1 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all text-center"
-            style={{ borderColor: card.themeColor || '#6366f1', color: card.themeColor || '#6366f1' }}
+            style={{ borderColor: theme, color: theme }}
           >
             {card.ctaLabel || 'Save Contact'}
           </a>

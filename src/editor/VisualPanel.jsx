@@ -131,9 +131,9 @@ export default function VisualPanel({ card, update, updateNested }) {
   return (
     <div className="space-y-5">
       {/* Photos row */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-4">
+      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md hover:border-pink-100 transition-all">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 flex items-center gap-2">
-          <Image size={14} /> Photos & Logo
+          <Image size={14} className="text-pink-400" /> Photos & Logo
         </p>
         <div className="grid grid-cols-3 gap-3">
           <FeatureGate feature={FEATURES.COVER_PHOTO}>
@@ -147,9 +147,9 @@ export default function VisualPanel({ card, update, updateNested }) {
       </div>
 
       {/* Theme color */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-4">
+      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
-          <Palette size={14} /> Theme Color {maxColors !== -1 && <span className="text-xs text-gray-400">({maxColors} colors available)</span>}
+          <Palette size={14} className="text-indigo-400" /> Theme Color {maxColors !== -1 && <span className="text-xs text-gray-400">({maxColors} colors available)</span>}
         </p>
         <div className="grid grid-cols-10 gap-2 mb-3">
           {allowedColors.map(color => (
@@ -224,10 +224,10 @@ export default function VisualPanel({ card, update, updateNested }) {
 
       {/* Virtual background */}
       <FeatureGate feature={FEATURES.VIRTUAL_BACKGROUND}>
-        <div className="bg-white rounded-2xl border border-gray-100 p-4">
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md hover:border-teal-100 transition-all">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
-              <Monitor size={14} /> Virtual Background
+              <Monitor size={14} className="text-teal-400" /> Virtual Background
             </p>
             <button
               onClick={() => updateNested('virtualBg', 'enabled', !card.virtualBg.enabled)}

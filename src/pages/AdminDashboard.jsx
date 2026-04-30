@@ -94,7 +94,7 @@ export default function AdminDashboard() {
   return (
     <>
       <Navbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 min-h-screen bg-gray-50/50">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -144,11 +144,16 @@ export default function AdminDashboard() {
                 <div
                   key={i}
                   onClick={s.onClick}
-                  className={`bg-white border border-gray-100 rounded-2xl p-4 shadow-sm ${s.onClick ? 'cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all' : ''}`}
+                  className={`bg-white border border-gray-100 rounded-2xl p-4 shadow-sm transition-all group ${
+                    s.onClick
+                      ? 'cursor-pointer hover:shadow-md hover:border-indigo-200 hover:bg-indigo-50/40'
+                      : 'hover:shadow-md'
+                  }`}
                 >
-                  <div className={`w-8 h-8 ${s.bg} rounded-xl flex items-center justify-center ${s.color} mb-3`}>{s.icon}</div>
+                  <div className={`w-9 h-9 ${s.bg} rounded-xl flex items-center justify-center ${s.color} mb-3 group-hover:scale-110 transition-transform`}>{s.icon}</div>
                   <p className="text-2xl font-bold text-gray-900">{s.value}</p>
                   <p className="text-xs text-gray-400 mt-0.5">{s.label}</p>
+                  {s.onClick && <p className="text-xs text-indigo-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Click to view →</p>}
                 </div>
               ))}
             </div>
@@ -251,7 +256,7 @@ function LimitPanel({ title, color, limits, onChange }) {
       </div>
       <div className="divide-y divide-gray-50">
         {limits.map(l => (
-          <div key={l.id} className="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
+          <div key={l.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-indigo-50/40 transition-colors group">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-800">{FEATURE_LABELS[l.feature_name] || l.feature_name}</p>
               <p className="text-xs text-gray-400">{l.feature_name}</p>

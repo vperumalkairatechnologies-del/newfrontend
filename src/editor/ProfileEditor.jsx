@@ -510,11 +510,11 @@ export default function ProfileEditor() {
 
   return (
     <>
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #fafbff 50%, #f5f0ff 100%)' }}>
       <Navbar />
 
       {/* Top bar */}
-      <div className="bg-white border-b border-gray-100 sticky top-16 z-30">
+      <div className="bg-white border-b border-gray-100 sticky top-16 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 h-12 sm:h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
@@ -528,9 +528,13 @@ export default function ProfileEditor() {
               <Eye size={14} className="sm:text-base" />
               <span className="hidden sm:inline">Preview</span>
             </button>
-            <div className="hidden sm:flex items-center gap-1 text-xs text-gray-400">
-              <div className={`w-2 h-2 rounded-full ${completionPct >= 80 ? 'bg-green-400' : completionPct >= 50 ? 'bg-yellow-400' : 'bg-gray-300'}`} />
-              <span>{completionPct}% complete</span>
+            {/* Completion indicator moved into top bar */}
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg">
+              <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full rounded-full transition-all" style={{ width: `${completionPct}%`, background: card.themeColor || '#6366f1' }} />
+              </div>
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${completionPct >= 80 ? 'bg-green-400' : completionPct >= 50 ? 'bg-yellow-400' : 'bg-gray-300'}`} />
+              <span className="text-xs text-gray-500 font-medium">{completionPct}%</span>
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
@@ -540,13 +544,6 @@ export default function ProfileEditor() {
             >
               <RotateCcw size={12} className="sm:text-base" />
               <span className="hidden sm:inline">Reset</span>
-            </button>
-            <button
-              onClick={() => importRef.current?.click()}
-              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all"
-            >
-              <Upload size={12} className="sm:text-base" />
-              <span className="hidden sm:inline">Import</span>
             </button>
             <button
               onClick={exportJSON}
@@ -581,7 +578,7 @@ export default function ProfileEditor() {
 
           {/* LEFT — Live Preview */}
           <div className={`lg:w-[420px] lg:flex-shrink-0 lg:sticky lg:top-28 self-start ${previewVisible ? 'block' : 'hidden lg:block'}`}>
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-6 card-shadow">
+            <div className="bg-white rounded-2xl border border-indigo-100/60 p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center gap-2 mb-3 sm:mb-5">
                 <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Live Preview</p>
@@ -594,33 +591,15 @@ export default function ProfileEditor() {
 
           {/* RIGHT — Editor */}
           <div className="flex-1 min-w-0 space-y-3 sm:space-y-4">
-            <div className="bg-white rounded-2xl border border-gray-100 p-4">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Card Completeness</p>
-                <p className="text-xs font-semibold text-gray-600">{completionPct}%</p>
-              </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full rounded-full transition-all" style={{ width: `${completionPct}%`, background: card.themeColor }} />
-              </div>
-              <p className="text-xs text-gray-400 mt-2">Complete key fields to improve sharing and lead capture quality.</p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
-                <button onClick={shareLink} className="btn-secondary text-xs py-2"><Share2 size={12} /> Copy Link</button>
-                <button onClick={shareWhatsApp} className="btn-secondary text-xs py-2">WhatsApp</button>
-                <button onClick={shareEmail} className="btn-secondary text-xs py-2">Email</button>
-                <button onClick={downloadQR} className="btn-secondary text-xs py-2">QR PNG</button>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl border border-gray-100 p-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
-                <Sparkles size={14} /> Quick Profile Presets
+            <div className="bg-white rounded-2xl border border-blue-100/60 p-4 shadow-sm hover:shadow-md hover:border-blue-200 transition-all group">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 flex items-center gap-2">
+                <Share2 size={13} className="text-blue-400" /> Share Your Card
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                {presets.map((preset) => (
-                  <button key={preset.id} onClick={() => applyPreset(preset)} className="btn-secondary text-xs py-2">
-                    Apply {preset.label}
-                  </button>
-                ))}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button onClick={shareLink} className="btn-secondary text-xs py-2 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 transition-all"><Share2 size={12} /> Copy Link</button>
+                <button onClick={shareWhatsApp} className="btn-secondary text-xs py-2 hover:bg-green-50 hover:border-green-200 hover:text-green-600 transition-all">WhatsApp</button>
+                <button onClick={shareEmail} className="btn-secondary text-xs py-2 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all">Email</button>
+                <button onClick={downloadQR} className="btn-secondary text-xs py-2 hover:bg-violet-50 hover:border-violet-200 hover:text-violet-600 transition-all">QR PNG</button>
               </div>
             </div>
 
@@ -636,6 +615,20 @@ export default function ProfileEditor() {
               <Field label="Accreditations" name="accreditations" value={card.accreditations} onChange={update} placeholder="PhD, MBA, CPA (comma-separated)" />
               <TextareaField label="Headline" name="headline" value={card.headline} onChange={update} placeholder="Short bio or tagline…" maxLength={120} />
             </Section>
+
+            {/* Quick Profile Presets — below Personal */}
+            <div className="bg-white rounded-2xl border border-amber-100/60 p-4 shadow-sm hover:shadow-md hover:border-amber-200 transition-all">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 flex items-center gap-2">
+                <Sparkles size={14} className="text-amber-400" /> Quick Profile Presets
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {presets.map((preset) => (
+                  <button key={preset.id} onClick={() => applyPreset(preset)} className="btn-secondary text-xs py-2 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 transition-all">
+                    Apply {preset.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* General */}
             <Section title="General" icon={<Globe size={15} />} {...sectionProps('general')}>

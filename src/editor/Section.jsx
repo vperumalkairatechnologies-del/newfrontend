@@ -45,13 +45,13 @@ export default function Section({ title, icon, section, children, customFields, 
   }
 
   return (
-    <div className="border border-gray-100 rounded-2xl overflow-hidden">
+    <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-indigo-100 transition-all">
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-4 py-3.5 bg-gray-50 hover:bg-gray-100 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3.5 bg-gray-50/80 hover:bg-indigo-50/50 transition-colors"
       >
         <div className="flex items-center gap-2.5">
-          <span className="text-gray-400">{icon}</span>
+          <span className="text-indigo-400">{icon}</span>
           <span className="text-sm font-semibold text-gray-700">{title}</span>
         </div>
         <ChevronDown size={16} className={`text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />

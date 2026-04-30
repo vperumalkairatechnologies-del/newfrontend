@@ -83,7 +83,7 @@ export default function AdminUsers() {
   return (
     <>
       <Navbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-5">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-5 min-h-screen bg-gray-50/50">
 
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/admin')} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors">
@@ -131,13 +131,13 @@ export default function AdminUsers() {
             <div className="hidden sm:block bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50">
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Plan</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Max Cards</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Joined</th>
-                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                  <tr className="border-b border-gray-100 bg-gray-50/80">
+                    <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
+                    <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
+                    <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Plan</th>
+                    <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Max Cards</th>
+                    <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Joined</th>
+                    <th className="px-5 py-3.5 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -189,7 +189,7 @@ function UserRow({ u, saving, onUpdate, onDelete }) {
   const isDirty = role !== u.role || parseInt(maxCards) !== (u.max_cards ?? DEFAULT_MAX_CARDS[u.role] ?? 1)
 
   return (
-    <tr className="hover:bg-gray-50 transition-colors">
+    <tr className="hover:bg-indigo-50/30 transition-colors group">
       <td className="px-5 py-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
@@ -262,7 +262,7 @@ function UserCard({ u, saving, onUpdate, onDelete }) {
   const isDirty = role !== u.role || parseInt(maxCards) !== (u.max_cards ?? DEFAULT_MAX_CARDS[u.role] ?? 1)
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm space-y-3">
+    <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm space-y-3 hover:shadow-md hover:border-indigo-100 transition-all">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white text-sm font-bold">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Check, X, Crown, Zap, Star, Loader } from 'lucide-react'
+import { Check, X, Crown, Zap, Star, Loader, ChevronDown, ChevronUp } from 'lucide-react'
 import { useAuth } from '../api/useAuth'
 import api from '../api/axios'
 import Navbar from '../components/Navbar'
@@ -8,20 +8,14 @@ import Navbar from '../components/Navbar'
 export default function Upgrade() {
   const navigate = useNavigate()
   const { user, isPremium, isPending, isAdmin } = useAuth()
-  const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [requestStatus, setRequestStatus] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showTable, setShowTable] = useState(false)
 
   useEffect(() => {
-    if (isAdmin()) {
-      navigate('/admin')
-      return
-    }
-    if (isPremium()) {
-      navigate('/dashboard')
-      return
-    }
+    if (isAdmin()) { navigate('/admin'); return }
+    if (isPremium()) { navigate('/dashboard'); return }
     loadRequestStatus()
   }, [])
 
@@ -40,10 +34,9 @@ export default function Upgrade() {
     e.preventDefault()
     setSubmitting(true)
     try {
-      await api.post('/premium/request', { message })
+      await api.post('/premium/request', { message: '' })
       alert('Premium request submitted successfully! We will review your request soon.')
       loadRequestStatus()
-      setMessage('')
     } catch (err) {
       alert(err.response?.data?.error || 'Failed to submit request.')
     } finally {
@@ -83,50 +76,111 @@ export default function Upgrade() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-12 px-4">
-        <div className="max-w-6xl mx-auto">
-          
+      <div className="min-h-screen bg-white py-16 px-4 relative overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-50 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-50 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-2xl mx-auto relative z-10">
+
           {/* Header */}
-          <div className="text-center mb-12 animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm mb-4">
-              <Crown className="text-yellow-500" size={20} />
-              <span className="text-sm font-semibold text-gray-700">Upgrade to Premium</span>
+          <div className="text-center mb-10 animate-fade-in-up">
+            <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-full mb-5">
+              <Crown className="text-indigo-500" size={16} />
+              <span className="text-sm font-semibold text-indigo-700">Premium Access</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Unlock <span className="gradient-text">Premium Features</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+              Unlock Everything
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Get access to advanced features and take your digital business card to the next level
+            <p className="text-gray-500 text-lg max-w-md mx-auto">
+              One request. Full access. No credit card needed.
             </p>
           </div>
 
+          {/* Perks row */}
+          <div className="grid grid-cols-3 gap-3 mb-8">
+            {[
+              { icon: '🪪', label: 'Unlimited Cards' },
+              { icon: '📊', label: 'Advanced Analytics' },
+              { icon: '🎨', label: 'Custom Themes' },
+            ].map((p, i) => (
+              <div key={i} className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 text-center">
+                <div className="text-2xl mb-2">{p.icon}</div>
+                <p className="text-xs font-semibold text-indigo-700">{p.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Request Form — TOP */}
+          {!requestStatus && (
+            <div className="animate-fade-in-up">
+              <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-lg">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                    <Crown size={18} className="text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Request Premium Access</h2>
+                    <p className="text-sm text-gray-500">Admin will approve within 24 hours</p>
+                  </div>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Account Email</label>
+                    <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+                      <div className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0" />
+                      <span className="text-gray-700 font-medium text-sm">{user?.email || ''}</span>
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full py-4 rounded-2xl font-bold text-base transition-all duration-300 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200 hover:shadow-indigo-300 hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    {submitting ? (
+                      <><Loader className="animate-spin" size={18} /> Submitting Request...</>
+                    ) : (
+                      <><Zap size={18} /> Request Premium Access &rarr;</>
+                    )}
+                  </button>
+                  <div className="flex items-center justify-center gap-4 pt-1">
+                    {['No credit card', 'Free forever', 'Instant access'].map((t, i) => (
+                      <div key={i} className="flex items-center gap-1.5">
+                        <Check size={12} className="text-green-500" />
+                        <span className="text-xs text-gray-400">{t}</span>
+                      </div>
+                    ))}
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
           {/* Request Status */}
           {requestStatus && (
-            <div className={`max-w-2xl mx-auto mb-8 p-6 rounded-2xl border-2 animate-fade-in-up ${
+            <div className={`animate-fade-in-up rounded-3xl border-2 p-8 ${
               requestStatus.status === 'pending' ? 'bg-yellow-50 border-yellow-200' :
               requestStatus.status === 'approved' ? 'bg-green-50 border-green-200' :
               'bg-red-50 border-red-200'
             }`}>
               <div className="flex items-start gap-4">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${
                   requestStatus.status === 'pending' ? 'bg-yellow-100' :
-                  requestStatus.status === 'approved' ? 'bg-green-100' :
-                  'bg-red-100'
+                  requestStatus.status === 'approved' ? 'bg-green-100' : 'bg-red-100'
                 }`}>
-                  {requestStatus.status === 'pending' && <Loader className="text-yellow-600 animate-spin" size={20} />}
-                  {requestStatus.status === 'approved' && <Check className="text-green-600" size={20} />}
-                  {requestStatus.status === 'rejected' && <X className="text-red-600" size={20} />}
+                  {requestStatus.status === 'pending' && <Loader className="text-yellow-500 animate-spin" size={22} />}
+                  {requestStatus.status === 'approved' && <Check className="text-green-600" size={22} />}
+                  {requestStatus.status === 'rejected' && <X className="text-red-500" size={22} />}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-gray-900 mb-1">
-                    {requestStatus.status === 'pending' && 'Request Pending Review'}
-                    {requestStatus.status === 'approved' && 'Request Approved!'}
-                    {requestStatus.status === 'rejected' && 'Request Not Approved'}
+                  <h3 className="font-bold text-gray-900 text-lg mb-1">
+                    {requestStatus.status === 'pending' && '⏳ Request Under Review'}
+                    {requestStatus.status === 'approved' && '🎉 Request Approved!'}
+                    {requestStatus.status === 'rejected' && '❌ Request Not Approved'}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-2">
-                    {requestStatus.status === 'pending' && 'Your premium access request is being reviewed by our admin team. We will notify you once it\'s processed.'}
-                    {requestStatus.status === 'approved' && 'Congratulations! Your premium access has been approved. Refresh the page to access premium features.'}
-                    {requestStatus.status === 'rejected' && (requestStatus.admin_note || 'Your request was not approved. Please contact support for more information.')}
+                  <p className="text-sm text-gray-600 mb-3">
+                    {requestStatus.status === 'pending' && "Your request is being reviewed. We'll notify you once processed."}
+                    {requestStatus.status === 'approved' && 'Your premium access is active. Refresh the page to access all features.'}
+                    {requestStatus.status === 'rejected' && (requestStatus.admin_note || 'Your request was not approved. Please contact support.')}
                   </p>
                   <p className="text-xs text-gray-400">
                     Requested: {new Date(requestStatus.requested_at).toLocaleDateString()}
@@ -137,137 +191,58 @@ export default function Upgrade() {
             </div>
           )}
 
-          {/* Comparison Table */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-12 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-100">
-              
-              {/* Feature Names */}
-              <div className="p-8 bg-gray-50">
-                <div className="h-24 flex items-center">
-                  <h3 className="text-lg font-bold text-gray-900">Features</h3>
-                </div>
-                <div className="space-y-4">
-                  {features.map((feature, i) => (
-                    <div key={i} className="h-12 flex items-center gap-3">
-                      <span className="text-2xl">{feature.icon}</span>
-                      <span className="text-sm font-medium text-gray-700">{feature.name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          {/* Comparison Table — collapsible */}
+          <div className="mt-8">
+            <button
+              onClick={() => setShowTable(v => !v)}
+              className="flex items-center gap-2 mx-auto px-5 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-all shadow-sm"
+            >
+              {showTable ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              {showTable ? 'Hide' : 'View'} full feature comparison
+            </button>
 
-              {/* Free Plan */}
-              <div className="p-8">
-                <div className="h-24 flex flex-col justify-center">
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">Free Plan</h3>
-                  <p className="text-sm text-gray-500">Basic features</p>
-                </div>
-                <div className="space-y-4">
-                  {features.map((feature, i) => (
-                    <div key={i} className="h-12 flex items-center">
-                      {typeof feature.free === 'boolean' ? (
-                        feature.free ? (
-                          <Check className="text-green-500" size={20} />
-                        ) : (
-                          <X className="text-gray-300" size={20} />
-                        )
-                      ) : (
-                        <span className="text-sm text-gray-600">{feature.free}</span>
-                      )}
+            {showTable && (
+              <div className="mt-4 bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-lg">
+                <div className="grid grid-cols-3 divide-x divide-gray-100">
+                  <div className="p-6 bg-gray-50">
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Feature</p>
+                    <div className="space-y-3">
+                      {features.map((f, i) => (
+                        <div key={i} className="h-10 flex items-center gap-2">
+                          <span className="text-lg">{f.icon}</span>
+                          <span className="text-xs font-medium text-gray-700">{f.name}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Premium Plan */}
-              <div className="p-8 bg-gradient-to-br from-indigo-50 to-purple-50">
-                <div className="h-24 flex flex-col justify-center">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-xl font-bold gradient-text">Premium Plan</h3>
-                    <Star className="text-yellow-500 fill-yellow-500" size={20} />
                   </div>
-                  <p className="text-sm text-indigo-600 font-medium">All features unlocked</p>
-                </div>
-                <div className="space-y-4">
-                  {features.map((feature, i) => (
-                    <div key={i} className="h-12 flex items-center">
-                      {typeof feature.premium === 'boolean' ? (
-                        feature.premium ? (
-                          <Check className="text-indigo-600" size={20} />
-                        ) : (
-                          <X className="text-gray-300" size={20} />
-                        )
-                      ) : (
-                        <span className="text-sm font-medium text-indigo-600">{feature.premium}</span>
-                      )}
+                  <div className="p-6">
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Free</p>
+                    <div className="space-y-3">
+                      {features.map((f, i) => (
+                        <div key={i} className="h-10 flex items-center">
+                          {typeof f.free === 'boolean'
+                            ? f.free ? <Check size={16} className="text-green-500" /> : <X size={16} className="text-gray-300" />
+                            : <span className="text-xs text-gray-600">{f.free}</span>}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                  <div className="p-6 bg-indigo-50">
+                    <p className="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-4">Premium ✦</p>
+                    <div className="space-y-3">
+                      {features.map((f, i) => (
+                        <div key={i} className="h-10 flex items-center">
+                          {typeof f.premium === 'boolean'
+                            ? f.premium ? <Check size={16} className="text-indigo-500" /> : <X size={16} className="text-gray-300" />
+                            : <span className="text-xs font-semibold text-indigo-600">{f.premium}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
-
-          {/* Request Form */}
-          {!requestStatus && (
-            <div className="max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              <div className="bg-white rounded-2xl shadow-xl p-8">
-                <div className="text-center mb-6">
-                  <Zap className="text-indigo-500 mx-auto mb-3" size={40} />
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Request Premium Access</h2>
-                  <p className="text-gray-600">Tell us why you need premium features</p>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Your Email
-                    </label>
-                    <input
-                      type="email"
-                      className="input-field"
-                      value={user?.email || ''}
-                      disabled
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Message (Optional)
-                    </label>
-                    <textarea
-                      rows={4}
-                      className="input-field resize-none"
-                      placeholder="Tell us about your use case, business needs, or why you need premium access..."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="btn-primary w-full py-3 text-base"
-                  >
-                    {submitting ? (
-                      <>
-                        <Loader className="animate-spin" size={18} />
-                        Submitting...
-                      </>
-                    ) : (
-                      <>
-                        <Crown size={18} />
-                        Request Premium Access
-                      </>
-                    )}
-                  </button>
-
-                  <p className="text-xs text-center text-gray-500">
-                    Your request will be reviewed by our admin team within 24-48 hours
-                  </p>
-                </form>
-              </div>
-            </div>
-          )}
 
         </div>
       </div>

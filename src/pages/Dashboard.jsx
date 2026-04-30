@@ -107,17 +107,17 @@ export default function Dashboard() {
     </>
   )
 
-  const stats = analytics ? [
-    { label: 'Total Views', value: analytics.total_views ?? 0, icon: <Eye size={15} />, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { label: 'This Week', value: analytics.last_7_days?.reduce((s, d) => s + d.views, 0) ?? 0, icon: <TrendingUp size={15} />, color: 'text-violet-600', bg: 'bg-violet-50' },
-    { label: 'Total Leads', value: analytics.total_leads ?? 0, icon: <Users size={15} />, color: 'text-pink-600', bg: 'bg-pink-50' },
-    { label: 'Avg / Day', value: analytics.last_7_days?.length ? Math.round(analytics.last_7_days.reduce((s, d) => s + d.views, 0) / 7) : 0, icon: <BarChart2 size={15} />, color: 'text-teal-600', bg: 'bg-teal-50' },
-  ] : []
+  const stats = [
+    { label: 'Total Views', value: analytics?.total_views ?? 0, icon: <Eye size={15} />, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { label: 'This Week', value: analytics?.last_7_days?.reduce((s, d) => s + d.views, 0) ?? 0, icon: <TrendingUp size={15} />, color: 'text-violet-600', bg: 'bg-violet-50' },
+    { label: 'Total Leads', value: analytics?.total_leads ?? 0, icon: <Users size={15} />, color: 'text-pink-600', bg: 'bg-pink-50' },
+    { label: 'Avg / Day', value: analytics?.last_7_days?.length ? Math.round(analytics.last_7_days.reduce((s, d) => s + d.views, 0) / 7) : 0, icon: <BarChart2 size={15} />, color: 'text-teal-600', bg: 'bg-teal-50' },
+  ]
 
   return (
     <>
       <Navbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 min-h-screen bg-gray-50/50">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -203,50 +203,75 @@ export default function Dashboard() {
             </div>
 
             {/* Stats */}
-            {stats.length > 0 && (
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                {stats.map((s, i) => (
-                  <div key={i} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
-                    <div className={`w-8 h-8 ${s.bg} rounded-xl flex items-center justify-center ${s.color} mb-3`}>{s.icon}</div>
-                    <p className="text-2xl font-bold text-gray-900">{s.value}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{s.label}</p>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {stats.map((s, i) => (
+                <div key={i} className={`bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-opacity-60 transition-all cursor-default group`}
+                  style={{ '--hover-color': s.bg }}
+                >
+                  <div className={`w-9 h-9 ${s.bg} rounded-xl flex items-center justify-center ${s.color} mb-3 group-hover:scale-110 transition-transform`}>{s.icon}</div>
+                  <p className="text-2xl font-bold text-gray-900">{s.value}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{s.label}</p>
+                </div>
+              ))}
+            </div>
 
             {/* Chart + Preview */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-              {/* Chart */}
-              {analytics?.last_7_days?.length > 0 && (
-                <div className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-violet-50 rounded-xl flex items-center justify-center">
-                      <TrendingUp size={14} className="text-violet-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-800">Views — Last 7 days</p>
-                      <p className="text-xs text-gray-400">{analytics.last_7_days.reduce((s, d) => s + d.views, 0)} total</p>
-                    </div>
+              {/* Chart — always visible */}
+              <div className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-violet-100 transition-all">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-9 h-9 bg-violet-50 rounded-xl flex items-center justify-center">
+                    <TrendingUp size={15} className="text-violet-500" />
                   </div>
-                  <div className="flex items-end gap-1.5 h-24">
-                    {analytics.last_7_days.map((d) => {
-                      const max = Math.max(...analytics.last_7_days.map(x => x.views), 1)
-                      const pct = Math.max(Math.round((d.views / max) * 100), 4)
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">Views — Last 7 days</p>
+                    <p className="text-xs text-gray-400">
+                      {analytics?.last_7_days?.reduce((s, d) => s + d.views, 0) ?? 0} total
+                      {!analytics && <span className="ml-1 text-gray-300">(sample)</span>}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-end gap-1.5 h-24">
+                  {(() => {
+                    const totalViews = analytics?.last_7_days?.reduce((s, d) => s + d.views, 0) ?? 0
+                    const hasDays = totalViews > 0
+                    const days = analytics?.last_7_days?.length > 0
+                      ? analytics.last_7_days
+                      : Array.from({ length: 7 }, (_, i) => {
+                          const d = new Date()
+                          d.setDate(d.getDate() - (6 - i))
+                          return { date: d.toISOString().slice(0, 10), views: 0 }
+                        })
+                    const dummyHeights = [30, 50, 40, 70, 55, 85, 60]
+                    const max = Math.max(...days.map(x => x.views), 1)
+                    return days.map((d, idx) => {
+                      const pct = hasDays
+                        ? Math.max(Math.round((d.views / max) * 100), 4)
+                        : dummyHeights[idx]
                       return (
-                        <div key={d.date} className="flex-1 flex flex-col items-center gap-1 group" title={`${d.date}: ${d.views}`}>
-                          <span className="text-[9px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">{d.views}</span>
-                          <div className="w-full rounded-t-md bg-gradient-to-t from-indigo-500 to-violet-400 transition-all" style={{ height: `${pct}%` }} />
+                        <div key={d.date} className="flex-1 flex flex-col items-center gap-1 group" title={hasDays ? `${d.date}: ${d.views}` : 'No data yet'}>
+                          <span className="text-[9px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">{hasDays ? d.views : '-'}</span>
+                          <div
+                            className={`w-full rounded-t-md transition-all ${
+                              hasDays
+                                ? 'bg-gradient-to-t from-indigo-500 to-violet-400'
+                                : 'bg-gradient-to-t from-gray-200 to-gray-100'
+                            }`}
+                            style={{ height: `${pct}%` }}
+                          />
                           <span className="text-[9px] text-gray-300">{d.date?.slice(5)}</span>
                         </div>
                       )
-                    })}
-                  </div>
+                    })
+                  })()}
                 </div>
-              )}
+                {!analytics && (
+                  <p className="text-[10px] text-gray-300 text-center mt-2">Sample preview — share your card to see real data</p>
+                )}
+              </div>
 
               {/* Card preview */}
-              <div className={analytics?.last_7_days?.length > 0 ? 'lg:col-span-3' : 'lg:col-span-5'}>
+              <div className="lg:col-span-3">
                 <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm h-full">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
@@ -270,18 +295,18 @@ export default function Dashboard() {
             {/* Quick actions */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { label: 'Edit Card', icon: <Pencil size={16} />, href: `/editor?cardId=${selectedCard.id}`, primary: true },
-                { label: 'View Card', icon: <Eye size={16} />, href: publicUrl, external: true },
-                { label: 'Share QR', icon: <QrCode size={16} />, onClick: () => setShowQR(true) },
-                { label: 'Copy Link', icon: copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />, onClick: copyLink },
+                { label: 'Edit Card', icon: <Pencil size={16} />, href: `/editor?cardId=${selectedCard.id}`, primary: true, hover: 'hover:bg-indigo-700' },
+                { label: 'View Card', icon: <Eye size={16} />, href: publicUrl, external: true, hover: 'hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700' },
+                { label: 'Share QR', icon: <QrCode size={16} />, onClick: () => setShowQR(true), hover: 'hover:bg-violet-50 hover:border-violet-200 hover:text-violet-700' },
+                { label: 'Copy Link', icon: copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />, onClick: copyLink, hover: 'hover:bg-green-50 hover:border-green-200 hover:text-green-700' },
               ].map((a, i) => a.href ? (
                 <a key={i} href={a.href} target={a.external ? '_blank' : undefined} rel="noreferrer"
-                  className={`flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all ${a.primary ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm' : 'bg-white border border-gray-200 hover:border-gray-300 text-gray-700'}`}>
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all ${a.primary ? `bg-indigo-600 ${a.hover} text-white shadow-sm hover:shadow-md` : `bg-white border border-gray-200 text-gray-700 ${a.hover}`}`}>
                   {a.icon} {a.label}
                 </a>
               ) : (
                 <button key={i} onClick={a.onClick}
-                  className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold bg-white border border-gray-200 hover:border-gray-300 text-gray-700 transition-all">
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold bg-white border border-gray-200 text-gray-700 transition-all ${a.hover}`}>
                   {a.icon} {a.label}
                 </button>
               ))}

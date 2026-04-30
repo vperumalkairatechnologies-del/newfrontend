@@ -57,7 +57,7 @@ export default function AdminRequests() {
   return (
     <>
       <Navbar />
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-5">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-5 min-h-screen bg-gray-50/50">
 
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/admin')} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors">
@@ -88,14 +88,18 @@ export default function AdminRequests() {
         {loading ? (
           <div className="flex justify-center py-12"><div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" /></div>
         ) : requests.length === 0 ? (
-          <div className="bg-white border border-gray-100 rounded-2xl p-12 text-center shadow-sm">
+          <div className="bg-white border border-gray-100 rounded-2xl p-12 text-center shadow-sm hover:shadow-md transition-all">
             <CreditCard size={32} className="mx-auto mb-3 text-gray-300" />
             <p className="text-sm text-gray-400">No {filter !== 'all' ? filter : ''} requests found</p>
           </div>
         ) : (
           <div className="space-y-3">
             {requests.map(req => (
-              <div key={req.id} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+              <div key={req.id} className={`bg-white border rounded-2xl p-5 shadow-sm transition-all hover:shadow-md ${
+                req.status === 'pending' ? 'border-yellow-100 hover:border-yellow-200' :
+                req.status === 'approved' ? 'border-green-100 hover:border-green-200' :
+                'border-red-100 hover:border-red-200'
+              }`}>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
