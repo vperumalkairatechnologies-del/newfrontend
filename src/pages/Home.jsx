@@ -199,7 +199,23 @@ export default function Home() {
           font-size: 15px;
           transition: all 0.3s ease !important;
           box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+          position: relative;
+          overflow: hidden;
         }
+        .landing-page .nav-cta::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #ff4444, #ff0000);
+          opacity: 0;
+          transition: opacity 0.3s;
+          border-radius: 50px;
+        }
+        .landing-page .nav-cta:hover {
+          transform: translateY(-3px) scale(1.04) !important;
+          box-shadow: 0 10px 28px rgba(255,0,0,0.45) !important;
+        }
+        .landing-page .nav-cta:hover::after { opacity: 1; }
         /* ── Hero Slider ── */
         .landing-page .hero {
           margin-top: 70px;
@@ -401,11 +417,23 @@ export default function Home() {
           width: fit-content;
           box-shadow: 0 8px 28px rgba(86,101,169,0.45);
           transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
         }
+        .landing-page .slide-btn::before {
+          content: '';
+          position: absolute;
+          top: 0; left: -100%;
+          width: 100%; height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+          transition: left 0.5s ease;
+        }
+        .landing-page .slide-btn:hover::before { left: 100%; }
         .landing-page .slide-btn:hover {
           background: #4554a0;
-          transform: translateY(-3px);
-          box-shadow: 0 14px 36px rgba(86,101,169,0.55);
+          transform: translateY(-4px) scale(1.03);
+          box-shadow: 0 16px 40px rgba(86,101,169,0.6);
+          letter-spacing: 0.3px;
         }
         .landing-page .slide-trust {
           margin-top: 14px;
@@ -429,8 +457,18 @@ export default function Home() {
           z-index: 3;
           box-shadow: 0 10px 40px rgba(255,0,0,0.4);
           transition: all 0.3s ease;
+          overflow: hidden;
         }
-        .landing-page .slide1-cta:hover { transform: translateY(-4px); box-shadow: 0 18px 50px rgba(255,0,0,0.5); }
+        .landing-page .slide1-cta::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+          opacity: 0;
+          transition: opacity 0.3s;
+        }
+        .landing-page .slide1-cta:hover { transform: translateY(-5px) scale(1.04); box-shadow: 0 20px 50px rgba(255,0,0,0.55); }
+        .landing-page .slide1-cta:hover::before { opacity: 1; }
         /* dots */
         .landing-page .slider-dots {
           position: absolute;
@@ -450,6 +488,7 @@ export default function Home() {
           transition: all 0.3s;
           padding: 0;
         }
+        .landing-page .dot:hover { background: rgba(255,255,255,0.75); width: 38px; }
         .landing-page .dot.active { background: #fff; width: 52px; }
         /* mobile */
         @media (max-width: 768px) {
@@ -592,28 +631,23 @@ export default function Home() {
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           overflow: hidden;
           border: none;
+          border-radius: 50px;
         }
-        
         .landing-page .cta-band .btn-primary::before {
           content: '';
           position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+          top: 0; left: -100%;
+          width: 100%; height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
           transition: left 0.6s ease;
         }
-        
-        .landing-page .cta-band .btn-primary:hover::before {
-          left: 100%;
-        }
-        
+        .landing-page .cta-band .btn-primary:hover::before { left: 100%; }
         .landing-page .cta-band .btn-primary:hover { 
-          background: #f8fafc; 
-          transform: translateY(-4px) scale(1.02); 
-          box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-          color: #0057ff;
+          background: #f0f4ff;
+          transform: translateY(-5px) scale(1.04); 
+          box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+          color: #5665a9;
+          letter-spacing: 0.3px;
         }
         /* ── Footer ── */
         .landing-page footer {
@@ -687,8 +721,21 @@ export default function Home() {
           box-shadow: 0 8px 30px rgba(0,0,0,0.15);
           transition: all 0.3s;
           flex-shrink: 0;
+          position: relative;
+          overflow: hidden;
         }
-        .landing-page .footer-top-cta:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.2); }
+        .landing-page .footer-top-cta::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #5665a9, #7c3aed);
+          opacity: 0;
+          transition: opacity 0.3s;
+          border-radius: 50px;
+        }
+        .landing-page .footer-top-cta span { position: relative; z-index: 1; }
+        .landing-page .footer-top-cta:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 16px 44px rgba(0,0,0,0.22); color: #fff; }
+        .landing-page .footer-top-cta:hover::before { opacity: 1; }
         .landing-page .footer-inner {
           max-width: 1200px;
           margin: 0 auto;
@@ -798,8 +845,11 @@ export default function Home() {
           .landing-page footer { padding: 60px 20px 32px; }
           .landing-page .footer-top { padding: 32px 24px; margin-bottom: 40px; }
           .landing-page .footer-top-text h3 { font-size: 20px; }
-          .landing-page .footer-inner { grid-template-columns: 1fr; gap: 28px; padding-bottom: 32px; }
-          .landing-page .footer-brand { max-width: 100%; }
+          .landing-page .footer-inner { grid-template-columns: 1fr; gap: 0; padding-bottom: 32px; }
+          .landing-page .footer-brand { max-width: 100%; padding-bottom: 28px; border-bottom: 1px solid rgba(86,101,169,0.1); margin-bottom: 8px; }
+          .landing-page .footer-col { padding: 20px 0; border-bottom: 1px solid rgba(86,101,169,0.08); }
+          .landing-page .footer-col:last-child { border-bottom: none; }
+          .landing-page .footer-col h5 { margin-bottom: 14px; }
           .landing-page .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
           .landing-page .footer-bottom-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
         }
@@ -1119,7 +1169,7 @@ export default function Home() {
         <div className="how-inner">
           <div>
             <div className="section-label">Simple Process</div>
-            <h2 className="section-title">Up and running<br />in 3 minutes</h2>
+            <h2 className="section-title">Up and running in 3 minutes</h2>
             <p className="section-desc">No design skills needed. Create a card that impresses everyone.</p>
             <div className="steps">
               {[
