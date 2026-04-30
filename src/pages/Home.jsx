@@ -182,18 +182,23 @@ export default function Home() {
           letter-spacing: 0.2px; 
           transition: all 0.3s ease;
           position: relative;
-          padding: 8px 19px;
+          padding: 8px 4px;
         }
-        
-        .landing-page .nav-links a:hover { 
-          color: #5665a9; 
-          transform: translateY(-2px);
+        .landing-page .nav-links a::after {
+          content: '';
+          position: absolute;
+          bottom: 0; left: 0;
+          width: 0; height: 2px;
+          background: #5665a9;
+          border-radius: 2px;
+          transition: width 0.3s ease;
         }
-        
+        .landing-page .nav-links a:hover { color: #5665a9; transform: translateY(-2px); }
+        .landing-page .nav-links a:hover::after { width: 100%; }
         .landing-page .nav-cta { 
           background: linear-gradient(135deg, #ff0000, #ff4444) !important; 
           color: #fff !important; 
-          padding: 20px 60px; 
+          padding: 12px 28px; 
           border-radius: 50px; 
           font-weight: 600 !important; 
           font-size: 15px;
@@ -201,19 +206,24 @@ export default function Home() {
           box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
           position: relative;
           overflow: hidden;
+          display: inline-flex;
+          align-items: center;
+          z-index: 0;
         }
         .landing-page .nav-cta::after {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, #ff4444, #ff0000);
+          background: linear-gradient(135deg, #cc0000, #ff2222);
           opacity: 0;
           transition: opacity 0.3s;
           border-radius: 50px;
+          z-index: -1;
         }
         .landing-page .nav-cta:hover {
           transform: translateY(-3px) scale(1.04) !important;
           box-shadow: 0 10px 28px rgba(255,0,0,0.45) !important;
+          color: #fff !important;
         }
         .landing-page .nav-cta:hover::after { opacity: 1; }
         /* ── Hero Slider ── */
@@ -1056,13 +1066,13 @@ export default function Home() {
         }
 
         .mobile-nav-links .nav-cta {
-          background: linear-gradient(135deg, #0057ff, #0084ff);
+          background: linear-gradient(135deg, #ff0000, #ff4444);
           color: white;
           margin-top: 24px;
         }
-
         .mobile-nav-links .nav-cta:hover {
-          background: linear-gradient(135deg, #0084ff, #0057ff);
+          background: linear-gradient(135deg, #cc0000, #ff2222);
+          transform: translateY(-3px);
         }
 
         @media (max-width: 900px) {
