@@ -1020,15 +1020,17 @@ export default function Home() {
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(255, 255, 255, 0.98);
+          background: linear-gradient(160deg, #eef4ff 0%, #f0f4ff 40%, #f5f0ff 100%);
           backdrop-filter: blur(20px);
           z-index: 200;
-          padding: 100px 20px 20px;
+          padding: 100px 24px 40px;
           overflow-y: auto;
         }
 
         .mobile-nav.active {
-          display: block;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
 
         .mobile-nav-links {
@@ -1036,43 +1038,54 @@ export default function Home() {
           padding: 0;
           margin: 0;
           max-width: 400px;
+          width: 100%;
           margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
         }
 
         .mobile-nav-links li {
-          margin-bottom: 16px;
+          margin-bottom: 0;
         }
 
         .mobile-nav-links a {
-          display: block;
-          padding: 18px 24px;
-          background: white;
-          border-radius: 16px;
+          display: flex;
+          align-items: center;
+          padding: 18px 28px;
+          background: rgba(255,255,255,0.85);
+          border-radius: 20px;
           text-decoration: none;
-          color: #0a0a0f;
-          font-size: 16px;
+          color: #1a1a3e;
+          font-size: 17px;
           font-weight: 600;
-          transition: all 0.3s;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-          border: 1px solid rgba(0, 87, 255, 0.1);
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 20px rgba(86,101,169,0.1);
+          border: 1px solid rgba(86,101,169,0.12);
+          backdrop-filter: blur(8px);
+          letter-spacing: 0.2px;
         }
 
         .mobile-nav-links a:hover {
-          background: linear-gradient(135deg, #0057ff, #0084ff);
+          background: linear-gradient(135deg, #5665a9, #7c3aed);
           color: white;
-          transform: translateY(-3px);
-          box-shadow: 0 8px 30px rgba(0, 87, 255, 0.3);
+          transform: translateX(6px) scale(1.02);
+          box-shadow: 0 8px 30px rgba(86,101,169,0.35);
           border-color: transparent;
         }
 
         .mobile-nav-links .nav-cta {
           background: linear-gradient(135deg, #ff0000, #ff4444);
           color: white;
-          margin-top: 24px;
+          margin-top: 8px;
+          border-color: transparent;
+          box-shadow: 0 8px 24px rgba(255,0,0,0.3);
+          justify-content: center;
         }
         .mobile-nav-links .nav-cta:hover {
           background: linear-gradient(135deg, #cc0000, #ff2222);
-          transform: translateY(-3px);
+          transform: translateX(0) scale(1.03);
+          box-shadow: 0 12px 32px rgba(255,0,0,0.45);
         }
 
         @media (max-width: 900px) {
