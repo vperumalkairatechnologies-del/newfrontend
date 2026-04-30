@@ -5,9 +5,10 @@ import api from '../api/axios'
 import Navbar from '../components/Navbar'
 import CardPreview from '../components/CardPreview'
 import QRModal from '../components/QRModal'
+import { useAuth } from '../api/useAuth'
 
 export default function Dashboard() {
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const { user } = useAuth()
   const [cards, setCards] = useState([])
   const [selectedCard, setSelectedCard] = useState(null)
   const [analytics, setAnalytics] = useState(null)
@@ -117,7 +118,7 @@ export default function Dashboard() {
   return (
     <>
       <Navbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 min-h-screen bg-gray-50/50">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 min-h-screen bg-white">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -130,7 +131,7 @@ export default function Dashboard() {
           <button
             onClick={createNewCard}
             disabled={creating}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
           >
             {creating ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Plus size={16} />}
             New Card
@@ -139,13 +140,13 @@ export default function Dashboard() {
 
         {!selectedCard ? (
           /* Empty state */
-          <div className="bg-gradient-to-br from-indigo-50 via-violet-50 to-purple-50 border-2 border-dashed border-indigo-200 rounded-2xl p-12 text-center">
+          <div className="bg-gradient-to-br from-indigo-50 via-violet-50 to-purple-50 border-2 border-dashed border-indigo-200 rounded-2xl p-12 text-center shadow-sm">
             <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
               <Sparkles size={24} className="text-white" />
             </div>
             <h3 className="text-lg font-bold text-gray-800 mb-1">Create your first digital card</h3>
             <p className="text-gray-500 text-sm mb-5 max-w-xs mx-auto">Share your contact info with a beautiful, shareable link.</p>
-            <button onClick={createNewCard} disabled={creating} className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all">
+            <button onClick={createNewCard} disabled={creating} className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-semibold rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
               {creating ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Plus size={15} />}
               Create Card
             </button>
@@ -161,10 +162,10 @@ export default function Dashboard() {
                     <button
                       key={card.id}
                       onClick={() => selectCard(card)}
-                      className={`flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-xl border-2 text-left transition-all ${
+                      className={`flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-xl border-2 text-left transition-all shadow-sm ${
                         selectedCard?.id === card.id
-                          ? 'border-indigo-500 bg-indigo-50'
-                          : 'border-gray-200 bg-white hover:border-gray-300'
+                          ? 'border-indigo-500 bg-indigo-50 shadow-indigo-100 shadow-md'
+                          : 'border-slate-200 bg-white hover:border-indigo-300 hover:bg-indigo-50/40 hover:shadow-md'
                       }`}
                     >
                       <div className={`w-2 h-2 rounded-full flex-shrink-0 ${card.is_active ? 'bg-green-400' : 'bg-gray-300'}`} />
@@ -179,7 +180,7 @@ export default function Dashboard() {
             )}
 
             {/* Public URL bar */}
-            <div className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all">
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center flex-shrink-0">
                   <ExternalLink size={15} className="text-indigo-500" />
@@ -190,13 +191,13 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="flex gap-2 flex-shrink-0">
-                <a href={publicUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 text-xs font-medium rounded-lg transition-all">
+                <a href={publicUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-gray-600 hover:text-blue-700 text-xs font-semibold rounded-lg transition-all shadow-sm">
                   <ArrowUpRight size={13} /> View
                 </a>
-                <button onClick={copyLink} className="flex items-center gap-1.5 px-3 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 text-xs font-medium rounded-lg transition-all">
+                <button onClick={copyLink} className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-gray-600 hover:text-indigo-700 text-xs font-semibold rounded-lg transition-all shadow-sm">
                   {copied ? <><Check size={13} className="text-green-500" /> Copied</> : <><Copy size={13} /> Copy</>}
                 </button>
-                <button onClick={() => setShowQR(true)} className="flex items-center gap-1.5 px-3 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 text-xs font-medium rounded-lg transition-all">
+                <button onClick={() => setShowQR(true)} className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-violet-50 border border-slate-200 hover:border-violet-300 text-gray-600 hover:text-violet-700 text-xs font-semibold rounded-lg transition-all shadow-sm">
                   <QrCode size={13} /> QR
                 </button>
               </div>
@@ -205,9 +206,7 @@ export default function Dashboard() {
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {stats.map((s, i) => (
-                <div key={i} className={`bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-opacity-60 transition-all cursor-default group`}
-                  style={{ '--hover-color': s.bg }}
-                >
+                <div key={i} className="card-stat rounded-2xl p-4 cursor-default group">
                   <div className={`w-9 h-9 ${s.bg} rounded-xl flex items-center justify-center ${s.color} mb-3 group-hover:scale-110 transition-transform`}>{s.icon}</div>
                   <p className="text-2xl font-bold text-gray-900">{s.value}</p>
                   <p className="text-xs text-gray-400 mt-0.5">{s.label}</p>
@@ -218,7 +217,7 @@ export default function Dashboard() {
             {/* Chart + Preview */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
               {/* Chart — always visible */}
-              <div className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-violet-100 transition-all">
+              <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-violet-200 transition-all">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-9 h-9 bg-violet-50 rounded-xl flex items-center justify-center">
                     <TrendingUp size={15} className="text-violet-500" />
@@ -272,17 +271,17 @@ export default function Dashboard() {
 
               {/* Card preview */}
               <div className="lg:col-span-3">
-                <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm h-full">
+                <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all h-full">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                       <p className="text-sm font-semibold text-gray-800">Live Preview</p>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Link to={`/editor?cardId=${selectedCard.id}`} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all">
+                      <Link to={`/editor?cardId=${selectedCard.id}`} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-indigo-600 hover:bg-indigo-50 border border-transparent hover:border-indigo-200 rounded-lg transition-all">
                         <Pencil size={11} /> Edit
                       </Link>
-                      <button onClick={handleDeleteCard} disabled={deleting} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-red-400 hover:bg-red-50 rounded-lg transition-all">
+                      <button onClick={handleDeleteCard} disabled={deleting} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-red-400 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-all">
                         <Trash2 size={11} /> {deleting ? 'Deleting…' : 'Delete'}
                       </button>
                     </div>
@@ -301,12 +300,12 @@ export default function Dashboard() {
                 { label: 'Copy Link', icon: copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />, onClick: copyLink, hover: 'hover:bg-green-50 hover:border-green-200 hover:text-green-700' },
               ].map((a, i) => a.href ? (
                 <a key={i} href={a.href} target={a.external ? '_blank' : undefined} rel="noreferrer"
-                  className={`flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all ${a.primary ? `bg-indigo-600 ${a.hover} text-white shadow-sm hover:shadow-md` : `bg-white border border-gray-200 text-gray-700 ${a.hover}`}`}>
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 ${a.primary ? `bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white` : `bg-white border-2 border-slate-200 text-gray-700 ${a.hover}`}`}>
                   {a.icon} {a.label}
                 </a>
               ) : (
                 <button key={i} onClick={a.onClick}
-                  className={`flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold bg-white border border-gray-200 text-gray-700 transition-all ${a.hover}`}>
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold bg-white border-2 border-slate-200 text-gray-700 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 ${a.hover}`}>
                   {a.icon} {a.label}
                 </button>
               ))}

@@ -510,19 +510,19 @@ export default function ProfileEditor() {
 
   return (
     <>
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #fafbff 50%, #f5f0ff 100%)' }}>
+    <div className="min-h-screen bg-white">
       <Navbar />
 
       {/* Top bar */}
-      <div className="bg-white border-b border-gray-100 sticky top-16 z-30 shadow-sm">
+      <div className="bg-white border-b border-slate-200 sticky top-16 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 h-12 sm:h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPreviewVisible(!previewVisible)}
-              className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
                 previewVisible
-                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
-                  : 'bg-gray-50 text-gray-600 border border-gray-200'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-300 shadow-sm'
+                  : 'bg-white text-gray-600 border border-slate-200 hover:border-indigo-200 hover:bg-indigo-50/40'
               }`}
             >
               <Eye size={14} className="sm:text-base" />
@@ -540,14 +540,14 @@ export default function ProfileEditor() {
           <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={reset}
-              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all"
+              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-600 hover:bg-red-50 hover:text-red-600 border border-transparent hover:border-red-200 transition-all"
             >
               <RotateCcw size={12} className="sm:text-base" />
               <span className="hidden sm:inline">Reset</span>
             </button>
             <button
               onClick={exportJSON}
-              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-gray-600 hover:bg-gray-100 transition-all"
+              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-600 hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-all"
             >
               <FileJson size={12} className="sm:text-base" />
               <span className="hidden sm:inline">Export</span>
@@ -578,7 +578,7 @@ export default function ProfileEditor() {
 
           {/* LEFT — Live Preview */}
           <div className={`lg:w-[420px] lg:flex-shrink-0 lg:sticky lg:top-28 self-start ${previewVisible ? 'block' : 'hidden lg:block'}`}>
-            <div className="bg-white rounded-2xl border border-indigo-100/60 p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white rounded-2xl border-2 border-indigo-100 p-4 sm:p-6 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all">
               <div className="flex items-center gap-2 mb-3 sm:mb-5">
                 <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Live Preview</p>
@@ -591,7 +591,7 @@ export default function ProfileEditor() {
 
           {/* RIGHT — Editor */}
           <div className="flex-1 min-w-0 space-y-3 sm:space-y-4">
-            <div className="bg-white rounded-2xl border border-blue-100/60 p-4 shadow-sm hover:shadow-md hover:border-blue-200 transition-all group">
+            <div className="bg-white rounded-2xl border-2 border-blue-100 p-4 shadow-sm hover:shadow-md hover:border-blue-300 transition-all group">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 flex items-center gap-2">
                 <Share2 size={13} className="text-blue-400" /> Share Your Card
               </p>
@@ -617,7 +617,7 @@ export default function ProfileEditor() {
             </Section>
 
             {/* Quick Profile Presets — below Personal */}
-            <div className="bg-white rounded-2xl border border-amber-100/60 p-4 shadow-sm hover:shadow-md hover:border-amber-200 transition-all">
+            <div className="bg-white rounded-2xl border-2 border-amber-100 p-4 shadow-sm hover:shadow-md hover:border-amber-300 transition-all">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 flex items-center gap-2">
                 <Sparkles size={14} className="text-amber-400" /> Quick Profile Presets
               </p>

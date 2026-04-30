@@ -7,17 +7,18 @@ import Navbar from '../components/Navbar'
 
 export default function Upgrade() {
   const navigate = useNavigate()
-  const { user, isPremium, isPending, isAdmin } = useAuth()
+  const { user, isPremium, isPending, isAdmin, loading: authLoading } = useAuth()
   const [submitting, setSubmitting] = useState(false)
   const [requestStatus, setRequestStatus] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showTable, setShowTable] = useState(false)
 
   useEffect(() => {
+    if (authLoading) return  // wait for fresh user data from /auth/me
     if (isAdmin()) { navigate('/admin'); return }
     if (isPremium()) { navigate('/dashboard'); return }
     loadRequestStatus()
-  }, [])
+  }, [authLoading, user])
 
   const loadRequestStatus = async () => {
     try {
@@ -103,7 +104,7 @@ export default function Upgrade() {
               { icon: '📊', label: 'Advanced Analytics' },
               { icon: '🎨', label: 'Custom Themes' },
             ].map((p, i) => (
-              <div key={i} className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 text-center">
+              <div key={i} className="bg-white border-2 border-indigo-100 rounded-2xl p-4 text-center shadow-sm hover:shadow-md hover:border-indigo-300 hover:-translate-y-0.5 transition-all">
                 <div className="text-2xl mb-2">{p.icon}</div>
                 <p className="text-xs font-semibold text-indigo-700">{p.label}</p>
               </div>
@@ -113,7 +114,7 @@ export default function Upgrade() {
           {/* Request Form — TOP */}
           {!requestStatus && (
             <div className="animate-fade-in-up">
-              <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-lg">
+              <div className="bg-white border-2 border-slate-100 rounded-3xl p-8 shadow-lg hover:shadow-xl hover:border-indigo-200 transition-all">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
                     <Crown size={18} className="text-white" />
@@ -134,7 +135,7 @@ export default function Upgrade() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-4 rounded-2xl font-bold text-base transition-all duration-300 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200 hover:shadow-indigo-300 hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full py-4 rounded-2xl font-bold text-base transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
                   >
                     {submitting ? (
                       <><Loader className="animate-spin" size={18} /> Submitting Request...</>
@@ -179,9 +180,17 @@ export default function Upgrade() {
                   </h3>
                   <p className="text-sm text-gray-600 mb-3">
                     {requestStatus.status === 'pending' && "Your request is being reviewed. We'll notify you once processed."}
-                    {requestStatus.status === 'approved' && 'Your premium access is active. Refresh the page to access all features.'}
+                    {requestStatus.status === 'approved' && 'Your premium access is active!'}
                     {requestStatus.status === 'rejected' && (requestStatus.admin_note || 'Your request was not approved. Please contact support.')}
                   </p>
+                  {requestStatus.status === 'approved' && (
+                    <button
+                      onClick={() => navigate('/dashboard')}
+                      className="mt-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-xl transition-all"
+                    >
+                      Go to Dashboard →
+                    </button>
+                  )}
                   <p className="text-xs text-gray-400">
                     Requested: {new Date(requestStatus.requested_at).toLocaleDateString()}
                     {requestStatus.processed_at && ` • Processed: ${new Date(requestStatus.processed_at).toLocaleDateString()}`}
@@ -195,14 +204,14 @@ export default function Upgrade() {
           <div className="mt-8">
             <button
               onClick={() => setShowTable(v => !v)}
-              className="flex items-center gap-2 mx-auto px-5 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-all shadow-sm"
+              className="flex items-center gap-2 mx-auto px-5 py-2.5 bg-white border-2 border-slate-200 rounded-xl text-sm font-semibold text-gray-600 hover:text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
             >
               {showTable ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               {showTable ? 'Hide' : 'View'} full feature comparison
             </button>
 
             {showTable && (
-              <div className="mt-4 bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-lg">
+              <div className="mt-4 bg-white border-2 border-slate-100 rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all">
                 <div className="grid grid-cols-3 divide-x divide-gray-100">
                   <div className="p-6 bg-gray-50">
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Feature</p>

@@ -45,7 +45,7 @@ export default function Section({ title, icon, section, children, customFields, 
   }
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-indigo-100 transition-all">
+    <div className="bg-white border-2 border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-indigo-200 transition-all">
       <button
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between px-4 py-3.5 bg-gray-50/80 hover:bg-indigo-50/50 transition-colors"

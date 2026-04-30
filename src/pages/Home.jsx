@@ -53,18 +53,17 @@ export default function Home() {
     }, { threshold: 0.1 })
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
 
-    // Add scroll effect to navigation
     const handleScroll = () => {
       const nav = document.querySelector('nav')
-      if (window.scrollY > 50) {
-        nav.classList.add('scrolled')
-      } else {
-        nav.classList.remove('scrolled')
-      }
+      if (!nav) return
+      nav.classList.toggle('scrolled', window.scrollY > 50)
     }
 
     window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
   useEffect(() => {
@@ -780,16 +779,21 @@ export default function Home() {
           border: 1px solid rgba(86,101,169,0.15);
           display: flex; align-items: center; justify-content: center;
           text-decoration: none;
-          font-size: 16px;
           transition: all 0.3s;
           box-shadow: 0 2px 8px rgba(86,101,169,0.08);
         }
+        .landing-page .social-link svg { width: 18px; height: 18px; display: block; }
         .landing-page .social-link:hover {
-          background: #5665a9;
-          border-color: #5665a9;
           transform: translateY(-3px);
           box-shadow: 0 8px 20px rgba(86,101,169,0.3);
         }
+        .landing-page .social-link.wa:hover  { background: #25d366; border-color: #25d366; }
+        .landing-page .social-link.fb:hover  { background: #1877f2; border-color: #1877f2; }
+        .landing-page .social-link.ig:hover  { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); border-color: #e1306c; }
+        .landing-page .social-link.li:hover  { background: #0077b5; border-color: #0077b5; }
+        .landing-page .social-link.yt:hover  { background: #ff0000; border-color: #ff0000; }
+        .landing-page .social-link.pin:hover { background: #e60023; border-color: #e60023; }
+        .landing-page .social-link:hover svg { fill: #fff; }
         .landing-page .footer-badge {
           display: inline-flex;
           align-items: center;
@@ -850,6 +854,8 @@ export default function Home() {
         @media (max-width: 900px) {
           .landing-page .footer-top { flex-direction: column; text-align: center; padding: 40px 32px; }
           .landing-page .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+          .landing-page .testi-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+          .landing-page .cta-band { margin: 40px auto 60px; }
         }
         @media (max-width: 768px) {
           .landing-page footer { padding: 60px 20px 32px; }
@@ -862,6 +868,11 @@ export default function Home() {
           .landing-page .footer-col h5 { margin-bottom: 14px; }
           .landing-page .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
           .landing-page .footer-bottom-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+          .landing-page .testi-grid { grid-template-columns: 1fr; }
+          .landing-page .cta-band { margin: 24px 16px 48px; border-radius: 24px; }
+          .landing-page .slide1-cta { left: 16px; bottom: 60px; padding: 11px 22px; font-size: 13px; }
+          .landing-page .footer-social { flex-wrap: wrap; gap: 8px; }
+          .landing-page .social-link { width: 36px; height: 36px; }
         }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
         .landing-page .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -1097,6 +1108,45 @@ export default function Home() {
             display: none;
           }
         }
+
+        /* WhatsApp Floating Button */
+        .wa-float {
+          position: fixed;
+          bottom: 28px;
+          right: 28px;
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background: #25d366;
+          color: #fff;
+          padding: 13px 22px 13px 16px;
+          border-radius: 50px;
+          text-decoration: none;
+          font-family: 'Roboto', sans-serif;
+          font-weight: 600;
+          font-size: 14px;
+          box-shadow: 0 6px 24px rgba(37,211,102,0.5);
+          transition: all 0.3s ease;
+        }
+        .wa-float:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 14px 36px rgba(37,211,102,0.6);
+          background: #20c05a;
+        }
+        .wa-float span { display: inline; }
+        @media (max-width: 480px) {
+          .wa-float {
+            bottom: 16px;
+            right: 16px;
+            padding: 13px;
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            justify-content: center;
+          }
+          .wa-float span { display: none; }
+        }
       `}</style>
 
       <nav>
@@ -1255,20 +1305,22 @@ export default function Home() {
             <h3>Start networking smarter today</h3>
             <p>Join 5,000+ professionals already using Kaira across India.</p>
           </div>
-          <Link to="/register" className="footer-top-cta"><span>Create Free Card →</span></Link>
+          <a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer" className="footer-top-cta"><span>Visit Our Website →</span></a>
         </div>
         <div className="footer-inner">
           <div className="footer-brand">
-            <Link to="/" className="logo">
+            <a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer" className="logo">
               <img src="/favicon.png" alt="Kaira" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
               Kaira Technologies<span>.</span>
-            </Link>
+            </a>
             <p>Professional digital vCards built for the way modern India networks. From freelancers to Fortune 500 teams.</p>
             <div className="footer-social">
-              <a href="#" className="social-link">📧</a>
-              <a href="#" className="social-link">💬</a>
-              <a href="#" className="social-link">📱</a>
-              <a href="#" className="social-link">🔗</a>
+              <a href="https://wa.me/916379430293" target="_blank" rel="noreferrer" className="social-link" title="WhatsApp">💬</a>
+              <a href="https://www.facebook.com/profile.php?id=100082309272540" target="_blank" rel="noreferrer" className="social-link" title="Facebook">📘</a>
+              <a href="https://www.instagram.com/kaira_technologies/" target="_blank" rel="noreferrer" className="social-link" title="Instagram">📸</a>
+              <a href="https://www.linkedin.com/company/kairatechnologies/" target="_blank" rel="noreferrer" className="social-link" title="LinkedIn">💼</a>
+              <a href="https://www.youtube.com/@KairaTechnologies-ht9mh" target="_blank" rel="noreferrer" className="social-link" title="YouTube">▶️</a>
+              <a href="https://pin.it/3KSN3YI8" target="_blank" rel="noreferrer" className="social-link" title="Pinterest">📌</a>
             </div>
             <div className="footer-badge">
               <div className="footer-badge-icon">✓</div>
@@ -1296,22 +1348,34 @@ export default function Home() {
           <div className="footer-col">
             <h5>Company</h5>
             <ul>
-              <li><Link to="/">About Us</Link></li>
-              <li><Link to="/">Blog</Link></li>
-              <li><Link to="/">Careers</Link></li>
-              <li><Link to="/">Contact</Link></li>
+              <li><a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer">About Us</a></li>
+              <li><a href="https://wa.me/916379430293" target="_blank" rel="noreferrer">Contact Us</a></li>
+              <li><a href="https://www.linkedin.com/company/kairatechnologies/" target="_blank" rel="noreferrer">LinkedIn</a></li>
+              <li><a href="https://www.youtube.com/@KairaTechnologies-ht9mh" target="_blank" rel="noreferrer">YouTube</a></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© 2026 Kaira Technology. All rights reserved.</p>
+          <p>© 2026 <a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer" style={{color:'#5665a9', textDecoration:'none'}}>Kaira Technology</a>. All rights reserved.</p>
           <div className="footer-bottom-links">
-            <Link to="/">Privacy Policy</Link>
-            <Link to="/">Terms of Service</Link>
-            <Link to="/">Cookie Policy</Link>
+            <a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer">Privacy Policy</a>
+            <a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer">Terms of Service</a>
+            <a href="https://wa.me/916379430293" target="_blank" rel="noreferrer">Contact</a>
           </div>
         </div>
       </footer>
+
+      {/* WhatsApp Floating Button */}
+      <a
+        href="https://wa.me/916379430293"
+        target="_blank"
+        rel="noreferrer"
+        className="wa-float"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span>Chat with us</span>
+      </a>
+
     </div>
   )
 }

@@ -7,8 +7,7 @@ import Notifications from './Notifications'
 export default function Navbar() {
   const navigate = useNavigate()
   const location = useLocation()
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
-  const { isAdmin, isPremium, isFree } = useAuth()
+  const { user, isAdmin, isPremium, isFree } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const logout = () => {

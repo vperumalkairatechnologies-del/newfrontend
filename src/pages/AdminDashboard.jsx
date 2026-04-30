@@ -23,7 +23,7 @@ const FEATURE_LABELS = {
 
 export default function AdminDashboard() {
   const navigate = useNavigate()
-  const { isAdmin, loading: authLoading } = useAuth()
+  const { user, isAdmin, loading: authLoading } = useAuth()
   const [stats, setStats] = useState(null)
   const [analytics, setAnalytics] = useState(null)
   const [limits, setLimits] = useState([])
@@ -34,9 +34,10 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (authLoading) return
+    if (!user) return
     if (!isAdmin()) { navigate('/dashboard'); return }
     loadAll()
-  }, [authLoading])
+  }, [authLoading, user])
 
   const loadAll = async () => {
     try {
@@ -94,7 +95,7 @@ export default function AdminDashboard() {
   return (
     <>
       <Navbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 min-h-screen bg-gray-50/50">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 min-h-screen bg-white">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -108,10 +109,10 @@ export default function AdminDashboard() {
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
           </div>
           <div className="flex gap-2 flex-wrap">
-            <button onClick={() => navigate('/admin/users')} className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all">
+            <button onClick={() => navigate('/admin/users')} className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-sm font-semibold rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
               <Users size={15} /> Users
             </button>
-            <button onClick={() => navigate('/admin/requests')} className="flex items-center gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold rounded-xl transition-all">
+            <button onClick={() => navigate('/admin/requests')} className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-600 to-violet-700 hover:from-violet-700 hover:to-violet-800 text-white text-sm font-semibold rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
               <Clock size={15} /> Requests
               {(stats?.pending_requests ?? 0) > 0 && (
                 <span className="bg-white/25 text-white text-xs px-1.5 py-0.5 rounded-full">{stats.pending_requests}</span>
@@ -129,7 +130,7 @@ export default function AdminDashboard() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.id ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.id ? 'bg-white text-indigo-700 shadow-sm border border-indigo-100' : 'text-gray-500 hover:text-gray-700 hover:bg-white/60'}`}
             >
               {tab.icon} {tab.label}
             </button>
@@ -144,10 +145,10 @@ export default function AdminDashboard() {
                 <div
                   key={i}
                   onClick={s.onClick}
-                  className={`bg-white border border-gray-100 rounded-2xl p-4 shadow-sm transition-all group ${
+                  className={`card-stat rounded-2xl p-4 group ${
                     s.onClick
-                      ? 'cursor-pointer hover:shadow-md hover:border-indigo-200 hover:bg-indigo-50/40'
-                      : 'hover:shadow-md'
+                      ? 'cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30'
+                      : ''
                   }`}
                 >
                   <div className={`w-9 h-9 ${s.bg} rounded-xl flex items-center justify-center ${s.color} mb-3 group-hover:scale-110 transition-transform`}>{s.icon}</div>
@@ -160,7 +161,7 @@ export default function AdminDashboard() {
 
             {/* Quick actions */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button onClick={() => navigate('/admin/users')} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm hover:border-indigo-200 hover:bg-indigo-50 transition-all group">
+              <button onClick={() => navigate('/admin/users')} className="flex items-center justify-between p-4 bg-white border-2 border-slate-100 rounded-2xl shadow-sm hover:border-indigo-300 hover:bg-indigo-50/40 hover:shadow-md transition-all group">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
                     <Users size={16} className="text-indigo-600" />
@@ -172,7 +173,7 @@ export default function AdminDashboard() {
                 </div>
                 <ArrowRight size={16} className="text-gray-400 group-hover:text-indigo-500 transition-colors" />
               </button>
-              <button onClick={() => navigate('/admin/requests')} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm hover:border-violet-200 hover:bg-violet-50 transition-all group">
+              <button onClick={() => navigate('/admin/requests')} className="flex items-center justify-between p-4 bg-white border-2 border-slate-100 rounded-2xl shadow-sm hover:border-violet-300 hover:bg-violet-50/40 hover:shadow-md transition-all group">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 bg-violet-50 rounded-xl flex items-center justify-center group-hover:bg-violet-100 transition-colors">
                     <CreditCard size={16} className="text-violet-600" />
@@ -184,7 +185,7 @@ export default function AdminDashboard() {
                 </div>
                 <ArrowRight size={16} className="text-gray-400 group-hover:text-violet-500 transition-colors" />
               </button>
-              <button onClick={() => setActiveTab('limits')} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm hover:border-teal-200 hover:bg-teal-50 transition-all group">
+              <button onClick={() => setActiveTab('limits')} className="flex items-center justify-between p-4 bg-white border-2 border-slate-100 rounded-2xl shadow-sm hover:border-teal-300 hover:bg-teal-50/40 hover:shadow-md transition-all group">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 bg-teal-50 rounded-xl flex items-center justify-center group-hover:bg-teal-100 transition-colors">
                     <Settings size={16} className="text-teal-600" />
@@ -210,7 +211,7 @@ export default function AdminDashboard() {
               <button
                 onClick={saveLimits}
                 disabled={savingLimits}
-                className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
               >
                 {savingLimits ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check size={15} />}
                 Save Changes
@@ -243,20 +244,20 @@ export default function AdminDashboard() {
 
 function LimitPanel({ title, color, limits, onChange }) {
   const colorMap = {
-    blue:   { badge: 'bg-blue-100 text-blue-700', border: 'border-blue-100', header: 'bg-blue-50' },
-    violet: { badge: 'bg-violet-100 text-violet-700', border: 'border-violet-100', header: 'bg-violet-50' },
+    blue:   { badge: 'bg-blue-100 text-blue-700', border: 'border-blue-200', header: 'bg-blue-50/60' },
+    violet: { badge: 'bg-violet-100 text-violet-700', border: 'border-violet-200', header: 'bg-violet-50/60' },
   }
   const c = colorMap[color]
 
   return (
-    <div className={`bg-white border ${c.border} rounded-2xl shadow-sm overflow-hidden`}>
+    <div className={`bg-white border-2 ${c.border} rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-all`}>
       <div className={`${c.header} px-5 py-3 flex items-center justify-between`}>
         <p className="text-sm font-bold text-gray-800">{title}</p>
         <span className={`text-xs font-semibold px-2 py-0.5 rounded-lg ${c.badge}`}>{limits.length} features</span>
       </div>
       <div className="divide-y divide-gray-50">
         {limits.map(l => (
-          <div key={l.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-indigo-50/40 transition-colors group">
+          <div key={l.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition-colors group border-b border-slate-50 last:border-0">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-800">{FEATURE_LABELS[l.feature_name] || l.feature_name}</p>
               <p className="text-xs text-gray-400">{l.feature_name}</p>

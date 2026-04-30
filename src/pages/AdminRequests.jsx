@@ -13,7 +13,7 @@ const STATUS_STYLES = {
 
 export default function AdminRequests() {
   const navigate = useNavigate()
-  const { isAdmin, loading: authLoading } = useAuth()
+  const { user, isAdmin, loading: authLoading } = useAuth()
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('pending')
@@ -21,9 +21,10 @@ export default function AdminRequests() {
 
   useEffect(() => {
     if (authLoading) return
+    if (!user) return
     if (!isAdmin()) { navigate('/dashboard'); return }
     loadRequests()
-  }, [filter, authLoading])
+  }, [filter, authLoading, user])
 
   const loadRequests = async () => {
     setLoading(true)
@@ -41,10 +42,13 @@ export default function AdminRequests() {
   const handleRequest = async (id, action) => {
     setActionLoading(`${id}-${action}`)
     try {
-      await axios.post(`/admin/requests/${id}/${action}`)
-      loadRequests()
+      const res = await axios.post(`/admin/requests/${id}/${action}`)
+      if (res.status === 200) {
+        loadRequests()
+      }
     } catch (err) {
-      alert(err.response?.data?.error || `Failed to ${action} request`)
+      console.error('Request action failed:', err)
+      alert(err.response?.data?.error || `Failed to ${action} request. Please try again.`)
     } finally {
       setActionLoading(null)
     }

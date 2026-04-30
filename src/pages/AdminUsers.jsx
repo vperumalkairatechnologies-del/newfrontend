@@ -15,7 +15,7 @@ const DEFAULT_MAX_CARDS = { admin: 50, premium: 10, free: 1 }
 
 export default function AdminUsers() {
   const navigate = useNavigate()
-  const { isAdmin, loading: authLoading } = useAuth()
+  const { user, isAdmin, loading: authLoading } = useAuth()
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
@@ -25,9 +25,10 @@ export default function AdminUsers() {
 
   useEffect(() => {
     if (authLoading) return
+    if (!user) return
     if (!isAdmin()) { navigate('/dashboard'); return }
     loadUsers()
-  }, [authLoading, filter])
+  }, [authLoading, user, filter])
 
   const loadUsers = async () => {
     setLoading(true)
@@ -52,6 +53,12 @@ export default function AdminUsers() {
     try {
       await axios.put(`/admin/user?id=${userId}`, updates)
       setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updates } : u))
+      // If the updated user is the currently logged-in admin, sync localStorage
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
+      if (currentUser.id === userId) {
+        const updated = { ...currentUser, ...updates }
+        localStorage.setItem('user', JSON.stringify(updated))
+      }
       showToast('User updated successfully')
     } catch {
       showToast('Failed to update user')
@@ -181,12 +188,16 @@ export default function AdminUsers() {
 function UserRow({ u, saving, onUpdate, onDelete }) {
   const [maxCards, setMaxCards] = useState(u.max_cards ?? DEFAULT_MAX_CARDS[u.role] ?? 1)
   const [role, setRole] = useState(u.role)
+  const [savedRole, setSavedRole] = useState(u.role)
+  const [savedMaxCards, setSavedMaxCards] = useState(u.max_cards ?? DEFAULT_MAX_CARDS[u.role] ?? 1)
 
-  const handleSave = () => {
-    onUpdate(u.id, { role, max_cards: parseInt(maxCards) })
+  const handleSave = async () => {
+    await onUpdate(u.id, { role, max_cards: parseInt(maxCards) })
+    setSavedRole(role)
+    setSavedMaxCards(parseInt(maxCards))
   }
 
-  const isDirty = role !== u.role || parseInt(maxCards) !== (u.max_cards ?? DEFAULT_MAX_CARDS[u.role] ?? 1)
+  const isDirty = role !== savedRole || parseInt(maxCards) !== savedMaxCards
 
   return (
     <tr className="hover:bg-indigo-50/30 transition-colors group">
@@ -257,9 +268,15 @@ function UserRow({ u, saving, onUpdate, onDelete }) {
 function UserCard({ u, saving, onUpdate, onDelete }) {
   const [maxCards, setMaxCards] = useState(u.max_cards ?? DEFAULT_MAX_CARDS[u.role] ?? 1)
   const [role, setRole] = useState(u.role)
+  const [savedRole, setSavedRole] = useState(u.role)
+  const [savedMaxCards, setSavedMaxCards] = useState(u.max_cards ?? DEFAULT_MAX_CARDS[u.role] ?? 1)
 
-  const handleSave = () => onUpdate(u.id, { role, max_cards: parseInt(maxCards) })
-  const isDirty = role !== u.role || parseInt(maxCards) !== (u.max_cards ?? DEFAULT_MAX_CARDS[u.role] ?? 1)
+  const handleSave = async () => {
+    await onUpdate(u.id, { role, max_cards: parseInt(maxCards) })
+    setSavedRole(role)
+    setSavedMaxCards(parseInt(maxCards))
+  }
+  const isDirty = role !== savedRole || parseInt(maxCards) !== savedMaxCards
 
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm space-y-3 hover:shadow-md hover:border-indigo-100 transition-all">

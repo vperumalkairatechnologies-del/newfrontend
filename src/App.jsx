@@ -5,7 +5,6 @@ const Home = lazy(() => import('./pages/Home'))
 const Login = lazy(() => import('./pages/Login'))
 const Register = lazy(() => import('./pages/Register'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
-const PublicCard = lazy(() => import('./pages/PublicCard'))
 const EditorPublicCard = lazy(() => import('./pages/EditorPublicCard'))
 const ProfileEditor = lazy(() => import('./editor/ProfileEditor'))
 const Upgrade = lazy(() => import('./pages/Upgrade'))
@@ -20,7 +19,18 @@ const Spinner = () => (
 )
 
 function PrivateRoute({ children }) {
-  return localStorage.getItem('token') ? children : <Navigate to="/login" replace />
+  const token = localStorage.getItem('token')
+  if (!token) return <Navigate to="/login" replace />
+  // Check JWT expiry client-side to avoid stale token loops
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    if (payload.exp && payload.exp * 1000 < Date.now()) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      return <Navigate to="/login" replace />
+    }
+  } catch {}
+  return children
 }
 
 export default function App() {
@@ -32,7 +42,6 @@ export default function App() {
           <Route path="/register"  element={<Register />} />
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/editor"    element={<PrivateRoute><ProfileEditor /></PrivateRoute>} />
-          <Route path="/builder"   element={<Navigate to="/editor" replace />} />
           <Route path="/upgrade"   element={<PrivateRoute><Upgrade /></PrivateRoute>} />
           <Route path="/admin"     element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
           <Route path="/admin/users" element={<PrivateRoute><AdminUsers /></PrivateRoute>} />
@@ -40,7 +49,7 @@ export default function App() {
           <Route path="/card/id/:cardId" element={<EditorPublicCard />} />
           <Route path="/card/:slug" element={<EditorPublicCard />} />
           <Route path="/"          element={<Home />} />
-          <Route path="/:slug"     element={<PublicCard />} />
+          <Route path="/:slug"     element={<EditorPublicCard />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

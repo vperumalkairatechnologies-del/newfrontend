@@ -26,12 +26,13 @@ export default function Notifications() {
 
   const markAsRead = async (id) => {
     try {
-      await axios.put(`/premium/notifications/${id}/read`);
-      loadNotifications();
+      await axios.put(`/premium/notification?id=${id}`)
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: 1 } : n))
+      setUnreadCount(prev => Math.max(0, prev - 1))
     } catch (err) {
-      console.error('Failed to mark notification as read:', err);
+      console.error('Failed to mark notification as read:', err)
     }
-  };
+  }
 
   return (
     <div className="relative">

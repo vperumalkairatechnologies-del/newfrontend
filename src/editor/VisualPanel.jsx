@@ -20,62 +20,27 @@ function ImageUpload({ label, icon, value, onChange, round }) {
   const handleFile = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    
-    console.log(`[${label}] File selected:`, file.name, file.type, file.size)
     setUploading(true)
-    
     try {
-      // Step 1: Create blob URL for immediate preview
       const blobUrl = URL.createObjectURL(file)
-      console.log(`[${label}] Blob URL created:`, blobUrl)
       setPreview(blobUrl)
-      
-      // Step 2: Upload to server
-      console.log(`[${label}] Starting upload...`)
       const formData = new FormData()
       formData.append('photo', file)
-      
-      // Let axios automatically set Content-Type for FormData
       const res = await api.post('/cards/upload', formData)
-      
-      console.log(`[${label}] RAW Response:`, res)
-      console.log(`[${label}] Response status:`, res.status)
-      console.log(`[${label}] Response data:`, res.data)
-      console.log(`[${label}] Response data type:`, typeof res.data)
-      console.log(`[${label}] Response data stringified:`, JSON.stringify(res.data))
-      
       const filename = res.data?.filename
-      
-      if (!filename) {
-        console.error(`[${label}] No filename in response. Full response:`, res)
-        throw new Error('No filename in response')
-      }
-      
-      // Step 3: Construct server URL dynamically
+      if (!filename) throw new Error('No filename in response')
       const baseUrl = import.meta.env.MODE === 'production'
         ? (import.meta.env.VITE_API_BASE?.replace('/api', '') || '')
         : 'http://localhost:8000'
       const serverUrl = `${baseUrl}/uploads/${filename}`
-      console.log(`[${label}] Server URL:`, serverUrl)
-      
-      // Step 4: Update parent state with server URL
       onChange(serverUrl)
-      
-      // Step 5: Wait a bit, then update preview to server URL
       setTimeout(() => {
-        console.log(`[${label}] Switching to server URL`)
         setPreview(serverUrl)
         URL.revokeObjectURL(blobUrl)
       }, 500)
-      
-      console.log(`[${label}] Upload complete!`)
     } catch (err) {
-      console.error(`[${label}] Upload failed:`, err)
-      console.error('Error response:', err.response)
-      console.error('Error data:', err.response?.data)
-      console.error('Error status:', err.response?.status)
       alert(`Failed to upload ${label.toLowerCase()}. ${err.response?.data?.error || err.message}`)
-      setPreview(value || '') // Revert to original
+      setPreview(value || '')
     } finally {
       setUploading(false)
     }
@@ -131,7 +96,7 @@ export default function VisualPanel({ card, update, updateNested }) {
   return (
     <div className="space-y-5">
       {/* Photos row */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md hover:border-pink-100 transition-all">
+      <div className="bg-white rounded-2xl border-2 border-slate-100 p-4 shadow-sm hover:shadow-md hover:border-pink-200 transition-all">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 flex items-center gap-2">
           <Image size={14} className="text-pink-400" /> Photos & Logo
         </p>
@@ -147,7 +112,7 @@ export default function VisualPanel({ card, update, updateNested }) {
       </div>
 
       {/* Theme color */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all">
+      <div className="bg-white rounded-2xl border-2 border-slate-100 p-4 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
           <Palette size={14} className="text-indigo-400" /> Theme Color {maxColors !== -1 && <span className="text-xs text-gray-400">({maxColors} colors available)</span>}
         </p>
@@ -256,33 +221,22 @@ export default function VisualPanel({ card, update, updateNested }) {
                   <input type="file" accept="image/*" className="hidden" onChange={async e => {
                     const file = e.target.files[0]
                     if (!file) return
-                    
-                    console.log('[Virtual BG] File selected:', file.name)
-                    
-                    // Show blob preview immediately
                     const blobUrl = URL.createObjectURL(file)
                     updateNested('virtualBg', 'custom', blobUrl)
-                    
                     try {
-                      // Upload to server
                       const formData = new FormData()
                       formData.append('photo', file)
                       const res = await api.post('/cards/upload', formData)
-                      
                       const filename = res.data.filename
                       const baseUrl = import.meta.env.MODE === 'production'
                         ? (import.meta.env.VITE_API_BASE?.replace('/api', '') || '')
                         : 'http://localhost:8000'
                       const serverUrl = `${baseUrl}/uploads/${filename}`
-                      console.log('[Virtual BG] Server URL:', serverUrl)
-                      
-                      // Update with server URL
                       setTimeout(() => {
                         updateNested('virtualBg', 'custom', serverUrl)
                         URL.revokeObjectURL(blobUrl)
                       }, 500)
                     } catch (err) {
-                      console.error('[Virtual BG] Upload failed:', err)
                       alert('Failed to upload virtual background.')
                       updateNested('virtualBg', 'custom', '')
                     }

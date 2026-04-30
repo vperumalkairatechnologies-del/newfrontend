@@ -27,7 +27,11 @@ export default function EditorPublicCard() {
       ? `/cards/public/id/${cardId}`
       : `/cards/public/${slug}`
     api.get(endpoint)
-      .then((res) => setCard(res.data.card))
+      .then((res) => {
+        const c = res.data.card
+        setCard(c)
+        api.post('/analytics/view', { card_id: c.id }).catch(() => {})
+      })
       .catch(() => setCard(null))
       .finally(() => setLoading(false))
   }, [slug, cardId])

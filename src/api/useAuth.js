@@ -1,104 +1,103 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext, createContext } from 'react'
 import api from './axios'
 
+export const FEATURES = {
+  COVER_PHOTO:        'cover_photo',
+  COMPANY_LOGO:       'company_logo',
+  VIRTUAL_BACKGROUND: 'virtual_background',
+  CUSTOM_COLORS:      'custom_colors',
+  THEME_COLORS:       'theme_colors',
+  SOCIAL_LINKS:       'social_links',
+  ADVANCED_ANALYTICS: 'advanced_analytics',
+  CUSTOM_FIELDS:      'custom_fields',
+  LEAD_CAPTURE:       'lead_capture',
+}
+
+export const AuthContext = createContext(null)
+
 export const useAuth = () => {
-  const [user, setUser] = useState(null)
+  const ctx = useContext(AuthContext)
+  if (!ctx) throw new Error('useAuth must be used inside AuthProvider')
+  return ctx
+}
+
+export function useAuthState() {
+  const [user, setUser] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
+  })
   const [features, setFeatures] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const userData = localStorage.getItem('user')
-    if (userData) {
+    const token = localStorage.getItem('token')
+    if (!token) { setLoading(false); return }
+    const init = async () => {
       try {
-        const parsed = JSON.parse(userData)
-        setUser(parsed)
-        loadFeatures()
-      } catch (e) {
-        console.error('Failed to parse user data:', e)
+        const res = await api.get('/auth/me')
+        const freshUser = res.data.user
+        localStorage.setItem('user', JSON.stringify(freshUser))
+        setUser(freshUser)
+        try {
+          const fr = await api.get('/premium/features')
+          setFeatures(fr.data.features)
+        } catch {}
+      } catch (err) {
+        if (err.response?.status !== 401) {
+          const cached = localStorage.getItem('user')
+          if (cached) try { setUser(JSON.parse(cached)) } catch {}
+        }
+      } finally {
+        setLoading(false)
       }
     }
-    setLoading(false)
+    init()
   }, [])
 
-  const loadFeatures = async () => {
-    try {
-      const res = await api.get('/premium/features')
-      setFeatures(res.data.features)
-    } catch (err) {
-      console.error('Failed to load features:', err)
-    }
-  }
-
-  const isAdmin = () => user?.role === 'admin'
+  const isAdmin   = () => user?.role === 'admin'
   const isPremium = () => user?.role === 'premium' || user?.role === 'admin' || user?.plan_status === 'active'
-  const isFree = () => {
+  const isFree    = () => {
     if (!user) return false
-    // Handle legacy 'user' role as 'free'
     if (user.role === 'free' || user.role === 'user') return true
-    // If no specific role and not premium/admin, consider as free
     if (!user.role || (user.role !== 'admin' && user.role !== 'premium' && user.plan_status !== 'active')) return true
     return false
   }
   const isPending = () => user?.plan_status === 'pending'
 
   const canAccessFeature = (featureName) => {
-    if (isAdmin()) return true
-    if (isPremium()) return true
+    if (isAdmin() || isPremium()) return true
     if (!features) return false
     return features[featureName]?.enabled || false
   }
 
   const getFeatureLimit = (featureName) => {
-    if (isAdmin()) return -1 // -1 means unlimited
-    if (isPremium()) return -1
-    
-    // For free users, implement specific limits
+    if (isAdmin() || isPremium()) return -1
     if (isFree()) {
       switch (featureName) {
-        case 'theme_colors':
-          return 10 // Free users get 10 colors
+        case 'theme_colors':        return 10
         case 'cover_photo':
         case 'company_logo':
         case 'virtual_background':
-        case 'custom_colors':
-          return 0 // Not available for free users
-        default:
-          return -1 // Unlimited for other features
+        case 'custom_colors':       return 0
+        default:                    return -1
       }
     }
-    
-    // Fallback to features object if available
     if (!features) return 0
     const limit = features[featureName]?.limit
     return limit !== undefined ? limit : -1
   }
 
-  return {
-    user,
-    features,
-    loading,
-    isAdmin,
-    isPremium,
-    isFree,
-    isPending,
-    canAccessFeature,
-    getFeatureLimit,
-    refreshUser: () => {
-      const userData = localStorage.getItem('user')
-      if (userData) setUser(JSON.parse(userData))
-    }
+  const refreshUser = async () => {
+    try {
+      const res = await api.get('/auth/me')
+      const freshUser = res.data.user
+      localStorage.setItem('user', JSON.stringify(freshUser))
+      setUser(freshUser)
+    } catch {}
   }
-}
 
-// Feature names constants
-export const FEATURES = {
-  COVER_PHOTO: 'cover_photo',
-  COMPANY_LOGO: 'company_logo',
-  VIRTUAL_BACKGROUND: 'virtual_background',
-  CUSTOM_COLORS: 'custom_colors',
-  THEME_COLORS: 'theme_colors',
-  SOCIAL_LINKS: 'social_links',
-  ADVANCED_ANALYTICS: 'advanced_analytics',
-  CUSTOM_FIELDS: 'custom_fields',
-  LEAD_CAPTURE: 'lead_capture',
+  return {
+    user, features, loading,
+    isAdmin, isPremium, isFree, isPending,
+    canAccessFeature, getFeatureLimit, refreshUser,
+  }
 }
