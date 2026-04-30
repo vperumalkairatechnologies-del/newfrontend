@@ -8,11 +8,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['lucide-react', 'react-colorful'],
-          'form-vendor': ['react-hook-form'],
-          'dnd-vendor': ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'react-vendor'
+            if (id.includes('lucide-react') || id.includes('react-colorful')) return 'ui-vendor'
+            if (id.includes('react-hook-form')) return 'form-vendor'
+            if (id.includes('@dnd-kit')) return 'dnd-vendor'
+          }
         },
       },
     },
