@@ -1,15 +1,23 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Dashboard from './pages/Dashboard'
-import PublicCard from './pages/PublicCard'
-import EditorPublicCard from './pages/EditorPublicCard'
-import ProfileEditor from './editor/ProfileEditor'
-import Upgrade from './pages/Upgrade'
-import AdminDashboard from './pages/AdminDashboard'
-import AdminUsers from './pages/AdminUsers'
-import AdminRequests from './pages/AdminRequests'
+import { lazy, Suspense } from 'react'
+
+const Home = lazy(() => import('./pages/Home'))
+const Login = lazy(() => import('./pages/Login'))
+const Register = lazy(() => import('./pages/Register'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const PublicCard = lazy(() => import('./pages/PublicCard'))
+const EditorPublicCard = lazy(() => import('./pages/EditorPublicCard'))
+const ProfileEditor = lazy(() => import('./editor/ProfileEditor'))
+const Upgrade = lazy(() => import('./pages/Upgrade'))
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
+const AdminUsers = lazy(() => import('./pages/AdminUsers'))
+const AdminRequests = lazy(() => import('./pages/AdminRequests'))
+
+const Spinner = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+  </div>
+)
 
 function PrivateRoute({ children }) {
   return localStorage.getItem('token') ? children : <Navigate to="/login" replace />
@@ -18,21 +26,23 @@ function PrivateRoute({ children }) {
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login"     element={<Login />} />
-        <Route path="/register"  element={<Register />} />
-        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-        <Route path="/editor"    element={<PrivateRoute><ProfileEditor /></PrivateRoute>} />
-        <Route path="/builder"   element={<Navigate to="/editor" replace />} />
-        <Route path="/upgrade"   element={<PrivateRoute><Upgrade /></PrivateRoute>} />
-        <Route path="/admin"     element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
-        <Route path="/admin/users" element={<PrivateRoute><AdminUsers /></PrivateRoute>} />
-        <Route path="/admin/requests" element={<PrivateRoute><AdminRequests /></PrivateRoute>} />
-        <Route path="/card/id/:cardId" element={<EditorPublicCard />} />
-        <Route path="/card/:slug" element={<EditorPublicCard />} />
-        <Route path="/"          element={<Home />} />
-        <Route path="/:slug"     element={<PublicCard />} />
-      </Routes>
+      <Suspense fallback={<Spinner />}>
+        <Routes>
+          <Route path="/login"     element={<Login />} />
+          <Route path="/register"  element={<Register />} />
+          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <Route path="/editor"    element={<PrivateRoute><ProfileEditor /></PrivateRoute>} />
+          <Route path="/builder"   element={<Navigate to="/editor" replace />} />
+          <Route path="/upgrade"   element={<PrivateRoute><Upgrade /></PrivateRoute>} />
+          <Route path="/admin"     element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
+          <Route path="/admin/users" element={<PrivateRoute><AdminUsers /></PrivateRoute>} />
+          <Route path="/admin/requests" element={<PrivateRoute><AdminRequests /></PrivateRoute>} />
+          <Route path="/card/id/:cardId" element={<EditorPublicCard />} />
+          <Route path="/card/:slug" element={<EditorPublicCard />} />
+          <Route path="/"          element={<Home />} />
+          <Route path="/:slug"     element={<PublicCard />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }
