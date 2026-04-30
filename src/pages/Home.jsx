@@ -728,7 +728,7 @@ export default function Home() {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, #5665a9, #7c3aed);
+          background: linear-gradient(135deg, #5665a9, #eaf1f3);
           opacity: 0;
           transition: opacity 0.3s;
           border-radius: 50px;
@@ -1232,7 +1232,7 @@ export default function Home() {
             <h3>Start networking smarter today</h3>
             <p>Join 5,000+ professionals already using Kaira across India.</p>
           </div>
-          <Link to="/register" className="footer-top-cta">Create Free Card →</Link>
+          <Link to="/register" className="footer-top-cta"><span>Create Free Card →</span></Link>
         </div>
         <div className="footer-inner">
           <div className="footer-brand">

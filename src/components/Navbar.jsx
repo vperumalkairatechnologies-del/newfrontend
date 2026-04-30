@@ -25,20 +25,20 @@ export default function Navbar() {
     <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40 mobile-safe-area">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between">
         <Link to="/dashboard" className="flex items-center gap-2 sm:gap-2.5 group flex-shrink-0">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-sm group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
             <CreditCard size={14} className="sm:text-base text-white" />
           </div>
-          <span className="font-bold text-base sm:text-lg gradient-text">SmartCard</span>
+          <span className="font-bold text-base sm:text-lg gradient-text group-hover:opacity-80 transition-opacity">SmartCard</span>
         </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-0.5 sm:gap-1">
           <Link
             to="/dashboard"
-            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
               isActive('/dashboard')
-                ? 'bg-indigo-50 text-indigo-600'
-                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                ? 'bg-indigo-50 text-indigo-600 shadow-sm'
+                : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 hover:shadow-sm hover:scale-105'
             }`}
           >
             <LayoutDashboard size={14} className="sm:text-base" />
@@ -47,10 +47,10 @@ export default function Navbar() {
 
           <Link
             to="/editor"
-            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
               isActive('/editor')
-                ? 'bg-indigo-50 text-indigo-600'
-                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                ? 'bg-indigo-50 text-indigo-600 shadow-sm'
+                : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 hover:shadow-sm hover:scale-105'
             }`}
           >
             <Pencil size={14} className="sm:text-base" />
@@ -60,10 +60,10 @@ export default function Navbar() {
           {isPremium() && (
             <Link
               to="/upgrade"
-              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                 isActive('/upgrade')
-                  ? 'bg-indigo-50 text-indigo-600'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  ? 'bg-indigo-50 text-indigo-600 shadow-sm'
+                  : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 hover:shadow-sm hover:scale-105'
               }`}
             >
               <Crown size={14} className="sm:text-base" />
@@ -72,7 +72,7 @@ export default function Navbar() {
           )}
 
           {isFree() && (
-            <Link to="/upgrade" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 transition-all">
+            <Link to="/upgrade" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 hover:scale-105 hover:shadow-md transition-all duration-200">
               <Sparkles size={14} className="sm:text-base" />
               <span className="hidden sm:inline">Upgrade</span>
             </Link>
@@ -81,10 +81,10 @@ export default function Navbar() {
           {isAdmin() && (
             <Link
               to="/admin"
-              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                 location.pathname.startsWith('/admin')
-                  ? 'bg-purple-50 text-purple-600'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  ? 'bg-purple-50 text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:bg-purple-50 hover:text-purple-600 hover:shadow-sm hover:scale-105'
               }`}
             >
               <Shield size={14} className="sm:text-base" />
@@ -100,8 +100,8 @@ export default function Navbar() {
           <Notifications />
 
           {user.name && (
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-50">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-50 hover:bg-indigo-50 transition-all duration-200 cursor-default">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                 {user.name[0].toUpperCase()}
               </div>
               <span className="text-sm text-gray-600 font-medium">{user.name}</span>
@@ -111,7 +111,7 @@ export default function Navbar() {
 
           <button
             onClick={logout}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-500 hover:scale-105 hover:shadow-sm transition-all duration-200"
           >
             <LogOut size={16} />
             <span className="hidden sm:inline">Logout</span>
