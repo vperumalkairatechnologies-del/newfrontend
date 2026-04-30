@@ -27,7 +27,7 @@ export default function Dashboard() {
         setCards(userCards)
         if (userCards.length > 0) {
           setSelectedCard(userCards[0])
-          api.get(`/analytics/${userCards[0].id}`).then(r => setAnalytics(r.data)).catch(() => {})
+          api.get(`/analytics?card_id=${userCards[0].id}`).then(r => setAnalytics(r.data)).catch(() => {})
         }
       } catch (err) {
         if (err.response?.status !== 404) console.error(err)
@@ -46,7 +46,7 @@ export default function Dashboard() {
         setCards(userCards)
         if (selectedCard) {
           const found = userCards.find(c => c.id === selectedCard.id)
-          if (found) api.get(`/analytics/${found.id}`).then(r => setAnalytics(r.data)).catch(() => {})
+          if (found) api.get(`/analytics?card_id=${found.id}`).then(r => setAnalytics(r.data)).catch(() => {})
         }
       } catch {}
     }
@@ -70,7 +70,7 @@ export default function Dashboard() {
       setCards(remaining)
       setSelectedCard(remaining[0] || null)
       setAnalytics(null)
-      if (remaining[0]) api.get(`/analytics/${remaining[0].id}`).then(r => setAnalytics(r.data)).catch(() => {})
+      if (remaining[0]) api.get(`/analytics?card_id=${remaining[0].id}`).then(r => setAnalytics(r.data)).catch(() => {})
       localStorage.removeItem('smartcard_editor')
     } catch (err) {
       alert(err.response?.data?.error || 'Failed to delete card.')
@@ -92,7 +92,7 @@ export default function Dashboard() {
 
   const selectCard = (card) => {
     setSelectedCard(card)
-    api.get(`/analytics/${card.id}`).then(r => setAnalytics(r.data)).catch(() => setAnalytics(null))
+    api.get(`/analytics?card_id=${card.id}`).then(r => setAnalytics(r.data)).catch(() => setAnalytics(null))
   }
 
   if (loading) return (
