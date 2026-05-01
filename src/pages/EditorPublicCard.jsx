@@ -77,6 +77,28 @@ export default function EditorPublicCard() {
   const followUpDate = metaByType('meta_followUpDate')
   const ctaLabel = metaByType('meta_ctaLabel')
   const themeColor = metaByType('meta_themeColor') || card.theme || '#6366f1'
+
+  // Layout values stored as meta links
+  const layoutRaw = metaByType('meta_layout')
+  const DEFAULT_LAYOUT = { coverHeight: 128, overlap: 48, profileSize: 96, logoSize: 56, cardBgColor: '', cover: { zoom:1,x:50,y:50 }, profile: { zoom:1,x:50,y:50 }, logo: { zoom:1,x:50,y:50 } }
+  const layout = layoutRaw ? { ...DEFAULT_LAYOUT, ...JSON.parse(layoutRaw) } : DEFAULT_LAYOUT
+  const coverH   = layout.coverHeight
+  const overlap  = layout.overlap
+  const profSize = layout.profileSize
+  const logoSize = layout.logoSize
+  const cardBg   = layout.cardBgColor
+
+  const imgStyle = (imgKey) => {
+    const v = layout[imgKey] || { zoom: 1, x: 50, y: 50 }
+    return {
+      objectFit: 'cover',
+      objectPosition: `${v.x}% ${v.y}%`,
+      transform: `scale(${v.zoom})`,
+      transformOrigin: `${v.x}% ${v.y}%`,
+      width: '100%',
+      height: '100%',
+    }
+  }
   
   const vBgEnabled = metaByType('meta_vBg_enabled') === 'true'
   const vBgPreset = metaByType('meta_vBg_preset') || ''
@@ -87,11 +109,13 @@ export default function EditorPublicCard() {
     ? `${import.meta.env.VITE_API_BASE?.replace('/api', '') || 'https://kairatechnologies.co.in/demo/vcard'}/uploads/`
     : 'http://localhost:8000/uploads/'
 
-  const bgStyle = vBgEnabled
-    ? vBgCustomFile
-      ? { backgroundImage: `url(${vBgCustomFile.startsWith('http') ? vBgCustomFile : uploadsBase + vBgCustomFile})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-      : { background: vBgPreset ? `linear-gradient(135deg, ${vBgPreset})` : '#f3f4f6' }
-    : { background: '#f3f4f6' }
+  const bgStyle = cardBg
+    ? { background: cardBg }
+    : vBgEnabled
+      ? vBgCustomFile
+        ? { backgroundImage: `url(${vBgCustomFile.startsWith('http') ? vBgCustomFile : uploadsBase + vBgCustomFile})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+        : { background: vBgPreset ? `linear-gradient(135deg, ${vBgPreset})` : '#f3f4f6' }
+      : { background: '#f3f4f6' }
 
   const fields = [
     displayEmail && { key: 'email', label: 'Email', value: displayEmail, href: `mailto:${displayEmail}` },
@@ -191,31 +215,47 @@ export default function EditorPublicCard() {
           }
         `}</style>
         <div className="w-full max-w-md mx-auto bg-white rounded-3xl overflow-hidden" style={bgStyle}>
-          {/* Cover */}
-          {coverPhotoUrl ? (
-            <div className="h-36 bg-cover bg-center" style={{ backgroundImage: `url(${coverPhotoUrl})` }} />
-          ) : (
-            <div className="h-28" style={{ background: `linear-gradient(135deg, ${themeColor}cc, ${themeColor}55)` }} />
-          )}
+          {/* Cover — position relative so profile/logo can overlap */}
+          <div className="relative rounded-t-3xl overflow-hidden" style={{ height: `${coverH}px` }}>
+            {coverPhotoUrl ? (
+              <img src={coverPhotoUrl} alt="cover"
+                style={{ ...imgStyle('cover'), position: 'absolute', inset: 0 }} />
+            ) : (
+              <div className="w-full h-full rounded-t-3xl"
+                style={{ background: `linear-gradient(135deg, ${themeColor}cc, ${themeColor}55)` }} />
+            )}
+          </div>
 
-          {/* Profile + Logo overlapping cover by 50% */}
-          <div className="relative px-6 pb-3" style={{ marginTop: '-48px' }}>
-            <div className="flex items-end justify-between">
-              {profilePhotoUrl ? (
-                <img src={profilePhotoUrl} alt={displayName} className="w-24 h-24 rounded-full border-4 border-white shadow-xl object-cover flex-shrink-0" />
-              ) : (
-                <div className="w-24 h-24 rounded-full border-4 border-white shadow-xl flex items-center justify-center text-3xl font-bold flex-shrink-0" style={{ background: themeColor, color: '#fff' }}>
-                  {displayName?.[0]?.toUpperCase() || '?'}
-                </div>
-              )}
-              {logoUrl && (
-                <img src={logoUrl} alt="logo" className="w-14 h-14 object-contain rounded-xl bg-white shadow-lg p-1.5 border border-gray-100 flex-shrink-0 mb-1" />
-              )}
+          {/* Profile + Logo — absolutely positioned to overlap cover */}
+          <div className="relative" style={{ height: `${profSize - overlap}px` }}>
+            {/* Profile photo — left */}
+            <div className="absolute" style={{ left: '24px', top: `-${overlap}px` }}>
+              <div className="rounded-full border-4 border-white shadow-xl overflow-hidden"
+                style={{ width: `${profSize}px`, height: `${profSize}px` }}>
+                {profilePhotoUrl ? (
+                  <img src={profilePhotoUrl} alt={displayName} style={imgStyle('profile')} />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center font-bold"
+                    style={{ background: themeColor, color: '#fff', fontSize: `${profSize * 0.33}px` }}>
+                    {displayName?.[0]?.toUpperCase() || '?'}
+                  </div>
+                )}
+              </div>
             </div>
+
+            {/* Company logo — right */}
+            {logoUrl && (
+              <div className="absolute" style={{ right: '24px', top: `-${Math.round(logoSize / 2)}px` }}>
+                <div className="rounded-xl bg-white shadow-lg border border-gray-100 overflow-hidden p-1.5"
+                  style={{ width: `${logoSize}px`, height: `${logoSize}px` }}>
+                  <img src={logoUrl} alt="logo" style={imgStyle('logo')} className="rounded-lg" />
+                </div>
+              </div>
+            )}
           </div>
 
         {/* Info */}
-        <div className="px-6 pb-6 space-y-3">
+        <div className="px-6 pb-6 space-y-3 pt-2">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{displayName}</h1>
             {displayTitle && <p className="text-sm text-gray-600 mt-0.5">{displayTitle}</p>}

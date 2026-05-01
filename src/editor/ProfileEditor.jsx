@@ -44,7 +44,7 @@ function TextareaField({ label, name, value, onChange, placeholder, maxLength })
 }
 
 export default function ProfileEditor() {
-  const { card, update, setAll, updateNested, addCustomField, removeCustomField, updateCustomField, reorderCustomFields } = useCardStore()
+  const { card, update, setAll, updateNested, updateLayout, updateLayoutImage, addCustomField, removeCustomField, updateCustomField, reorderCustomFields } = useCardStore()
   const previewRef = useRef()
   const importRef = useRef()
   const [previewVisible, setPreviewVisible] = useState(true)
@@ -259,6 +259,7 @@ export default function ProfileEditor() {
           ...(card.ctaLabel?.trim() ? [{ type: 'meta_ctaLabel', label: 'CTA Label', url: card.ctaLabel.trim() }] : []),
           ...(card.ctaUrl?.trim() ? [{ type: 'meta_ctaUrl', label: 'CTA URL', url: card.ctaUrl.trim() }] : []),
           ...(card.themeColor?.trim() ? [{ type: 'meta_themeColor', label: 'Theme Color', url: card.themeColor.trim() }] : []),
+          ...(card.layout ? [{ type: 'meta_layout', label: 'Card Layout', url: JSON.stringify(card.layout) }] : []),
           ...(card.virtualBg?.enabled ? [{ type: 'meta_vBg_enabled', label: 'Virtual BG Enabled', url: 'true' }] : []),
           ...(card.virtualBg?.preset ? [{ type: 'meta_vBg_preset', label: 'Virtual BG Preset', url: card.virtualBg.preset }] : []),
           ...(virtualBgFilename ? [{ type: 'meta_vBg_custom', label: 'Virtual BG Custom', url: virtualBgFilename }] : []),
@@ -583,7 +584,11 @@ export default function ProfileEditor() {
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Live Preview</p>
               </div>
               <div ref={previewRef}>
-                <CardPreview card={card} />
+                <CardPreview
+                  card={card}
+                  editable={true}
+                  onLayoutChange={(newLayout) => update('layout', newLayout)}
+                />
               </div>
             </div>
           </div>

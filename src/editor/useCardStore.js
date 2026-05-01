@@ -20,6 +20,16 @@ const DEFAULT_CARD = {
   coverPhoto: '', profilePhoto: '', companyLogo: '',
   themeColor: '#6366f1',
   virtualBg: { enabled: false, preset: '', custom: '' },
+  layout: {
+    coverHeight: 128,
+    overlap: 48,
+    profileSize: 96,
+    logoSize: 56,
+    cardBgColor: '',
+    cover:   { zoom: 1, x: 50, y: 50 },
+    profile: { zoom: 1, x: 50, y: 50 },
+    logo:    { zoom: 1, x: 50, y: 50 },
+  },
   name: '', jobTitle: '', department: '', companyName: '',
   accreditations: '', headline: '',
   email: '', phone: '', companyUrl: '', customLink: '',
@@ -91,5 +101,20 @@ export function useCardStore() {
       customFields: { ...prev.customFields, [section]: fields },
     })), [])
 
-  return { card, update, setAll, updateNested, addCustomField, removeCustomField, updateCustomField, reorderCustomFields }
+  const updateLayout = useCallback((key, value) =>
+    setCard(prev => ({
+      ...prev,
+      layout: { ...prev.layout, [key]: value },
+    })), [])
+
+  const updateLayoutImage = useCallback((imgKey, subKey, value) =>
+    setCard(prev => ({
+      ...prev,
+      layout: {
+        ...prev.layout,
+        [imgKey]: { ...prev.layout[imgKey], [subKey]: value },
+      },
+    })), [])
+
+  return { card, update, setAll, updateNested, updateLayout, updateLayoutImage, addCustomField, removeCustomField, updateCustomField, reorderCustomFields }
 }

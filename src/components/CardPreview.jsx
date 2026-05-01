@@ -1,4 +1,6 @@
-import { Mail, Phone, Globe, MapPin, AtSign, MessageCircle, Calendar, GitBranch, Link as LinkIcon } from 'lucide-react'
+import { useState } from 'react'
+import { Mail, Phone, Globe, MapPin, AtSign, MessageCircle, Calendar, GitBranch, Link as LinkIcon, Pencil, Settings, Palette } from 'lucide-react'
+import ImageAdjustModal from '../editor/ImageAdjustModal'
 
 const ICON_MAP = {
   email: <Mail size={16} />, phone: <Phone size={16} />, website: <Globe size={16} />,
@@ -11,7 +13,18 @@ const ICON_MAP = {
   github: <GitBranch size={16} />, calendly: <Calendar size={16} />,
 }
 
-export default function CardPreview({ card = {} }) {
+const DEFAULT_LAYOUT = {
+  coverHeight: 128, overlap: 48, profileSize: 96, logoSize: 56, cardBgColor: '',
+  cover:   { zoom: 1, x: 50, y: 50 },
+  profile: { zoom: 1, x: 50, y: 50 },
+  logo:    { zoom: 1, x: 50, y: 50 },
+}
+
+// editable=true → show edit icons (editor preview only)
+// onLayoutChange → callback to save layout back to card store
+export default function CardPreview({ card = {}, editable = false, onLayoutChange }) {
+  const [modal, setModal] = useState(null) // null | 'cover' | 'profile' | 'logo' | 'layout' | 'bg'
+
   const uploadsBase = import.meta.env.MODE === 'production'
     ? `${import.meta.env.VITE_API_BASE?.replace('/api', '') || 'https://kairatechnologies.co.in/demo/vcard'}/uploads/`
     : 'http://localhost:8000/uploads/'
@@ -24,11 +37,20 @@ export default function CardPreview({ card = {} }) {
   const vBgPreset  = metaByType('meta_vBg_preset') || ''
   const vBgCustomFile = metaByType('meta_vBg_custom') || ''
 
-  const bgStyle = vBgEnabled
-    ? vBgCustomFile
-      ? { backgroundImage: `url(${vBgCustomFile.startsWith('http') ? vBgCustomFile : uploadsBase + vBgCustomFile})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-      : vBgPreset ? { background: vBgPreset } : { background: '#f3f4f6' }
-    : { background: '#f3f4f6' }
+  const layout = { ...DEFAULT_LAYOUT, ...(card.layout || {}) }
+  const coverH   = layout.coverHeight
+  const overlap  = layout.overlap
+  const profSize = layout.profileSize
+  const logoSize = layout.logoSize
+  const cardBg   = layout.cardBgColor
+
+  const bgStyle = cardBg
+    ? { background: cardBg }
+    : vBgEnabled
+      ? vBgCustomFile
+        ? { backgroundImage: `url(${vBgCustomFile.startsWith('http') ? vBgCustomFile : uploadsBase + vBgCustomFile})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+        : vBgPreset ? { background: vBgPreset } : { background: '#f3f4f6' }
+      : { background: '#f3f4f6' }
 
   const getImageUrl = (filename) => {
     if (!filename) return ''
@@ -54,83 +76,172 @@ export default function CardPreview({ card = {} }) {
     })),
   ].filter(Boolean)
 
+  // Image style with zoom + position
+  const imgStyle = (imgKey) => {
+    const v = layout[imgKey] || { zoom: 1, x: 50, y: 50 }
+    return {
+      objectFit: 'cover',
+      objectPosition: `${v.x}% ${v.y}%`,
+      transform: `scale(${v.zoom})`,
+      transformOrigin: `${v.x}% ${v.y}%`,
+      width: '100%',
+      height: '100%',
+    }
+  }
+
+  const EditBtn = ({ onClick, className = '' }) => (
+    <button onClick={onClick}
+      className={`absolute flex items-center justify-center w-6 h-6 bg-black/60 hover:bg-indigo-600 text-white rounded-full transition-all opacity-0 group-hover:opacity-100 z-10 ${className}`}>
+      <Pencil size={10} />
+    </button>
+  )
+
+  const handleSave = (newLayout) => {
+    if (onLayoutChange) onLayoutChange(newLayout)
+  }
+
   return (
-    <div className="w-full max-w-sm mx-auto" style={{ padding: '2px', borderRadius: '1.5rem', background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4, #6366f1)', backgroundSize: '300% 300%', animation: 'neonBorder 4s ease infinite', boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}>
-      <style>{`
-        @keyframes neonBorder {
-          0%   { background-position: 0% 50%; box-shadow: 0 0 20px rgba(99,102,241,0.4); }
-          50%  { background-position: 100% 50%; box-shadow: 0 0 30px rgba(139,92,246,0.5), 0 0 60px rgba(6,182,212,0.2); }
-          100% { background-position: 0% 50%; box-shadow: 0 0 20px rgba(99,102,241,0.4); }
-        }
-      `}</style>
-      <div className="bg-white rounded-3xl overflow-hidden" style={bgStyle}>
-        {/* Cover photo */}
-        {coverPhotoUrl ? (
-          <div className="h-32 bg-cover bg-center" style={{ backgroundImage: `url(${coverPhotoUrl})` }} />
-        ) : (
-          <div className="h-24" style={{ background: `linear-gradient(135deg, ${themeColor}cc, ${themeColor}66)` }} />
-        )}
+    <>
+      <div className="w-full max-w-sm mx-auto"
+        style={{ padding: '2px', borderRadius: '1.5rem', background: 'linear-gradient(135deg,#6366f1,#8b5cf6,#06b6d4,#6366f1)', backgroundSize: '300% 300%', animation: 'neonBorder 4s ease infinite', boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}>
+        <style>{`
+          @keyframes neonBorder {
+            0%   { background-position:0% 50%; box-shadow:0 0 20px rgba(99,102,241,0.4); }
+            50%  { background-position:100% 50%; box-shadow:0 0 30px rgba(139,92,246,0.5),0 0 60px rgba(6,182,212,0.2); }
+            100% { background-position:0% 50%; box-shadow:0 0 20px rgba(99,102,241,0.4); }
+          }
+        `}</style>
 
-        {/* Profile + Logo overlapping cover */}
-        <div className="relative px-6 pb-3" style={{ marginTop: '-48px' }}>
-          <div className="flex items-end justify-between">
-            {profilePhotoUrl ? (
-              <img src={profilePhotoUrl} alt={displayName} className="w-24 h-24 rounded-full border-4 border-white shadow-xl object-cover flex-shrink-0" />
+        <div className="bg-white rounded-3xl overflow-visible" style={bgStyle}>
+
+          {/* Cover photo */}
+          <div className="relative group rounded-t-3xl overflow-hidden" style={{ height: `${coverH}px` }}>
+            {coverPhotoUrl ? (
+              <div className="w-full h-full overflow-hidden">
+                <img src={coverPhotoUrl} alt="cover"
+                  style={{ ...imgStyle('cover'), position: 'absolute', inset: 0 }} />
+              </div>
             ) : (
-              <div className="w-24 h-24 rounded-full border-4 border-white shadow-xl flex items-center justify-center text-3xl font-bold flex-shrink-0" style={{ background: themeColor, color: '#fff' }}>
-                {displayName?.[0]?.toUpperCase() || '?'}
-              </div>
+              <div className="w-full h-full rounded-t-3xl"
+                style={{ background: `linear-gradient(135deg,${themeColor}cc,${themeColor}66)` }} />
             )}
-            {logoUrl && (
-              <img src={logoUrl} alt="logo" className="w-14 h-14 object-contain rounded-xl bg-white shadow-lg p-1.5 border border-gray-100 flex-shrink-0 mb-1" />
-            )}
-          </div>
-        </div>
-
-        {/* Info */}
-        <div className="px-6 pb-6 space-y-3 pt-2">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{displayName}</h1>
-            {card.title && <p className="text-sm text-gray-600 mt-0.5">{card.title}</p>}
-            {department && <p className="text-xs text-gray-400">{department}</p>}
-            {displayCompany && <p className="text-sm font-medium text-gray-700 mt-1">{displayCompany}</p>}
-            {accreditations && (
-              <div className="flex flex-wrap gap-1 mt-2">
-                {accreditations.split(',').map((a, i) => (
-                  <span key={i} className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${themeColor}20`, color: themeColor }}>
-                    {a.trim()}
-                  </span>
-                ))}
-              </div>
+            {editable && coverPhotoUrl && (
+              <EditBtn onClick={() => setModal('cover')} className="top-2 right-2" />
             )}
           </div>
 
-          {card.bio && <p className="text-sm text-gray-500 leading-relaxed">{card.bio}</p>}
-
-          {fields.length > 0 && (
-            <div className="space-y-2 pt-1">
-              {fields.map((f, i) => (
-                <div key={i} className="flex items-center gap-3 px-3 py-2 rounded-xl" style={{ background: `${themeColor}10` }}>
-                  <span style={{ color: themeColor }}>{ICON_MAP[f.key] || <LinkIcon size={16} />}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400">{f.label}</p>
-                    <p className="text-sm text-gray-700 truncate">{f.value}</p>
+          {/* Profile + Logo — absolutely positioned to overlap cover */}
+          <div className="relative" style={{ height: `${profSize - overlap}px` }}>
+            {/* Profile photo — left */}
+            <div className="absolute group" style={{ left: '24px', top: `-${overlap}px` }}>
+              <div className="rounded-full border-4 border-white shadow-xl overflow-hidden"
+                style={{ width: `${profSize}px`, height: `${profSize}px` }}>
+                {profilePhotoUrl ? (
+                  <img src={profilePhotoUrl} alt={displayName} style={imgStyle('profile')} />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-3xl font-bold"
+                    style={{ background: themeColor, color: '#fff', fontSize: `${profSize * 0.33}px` }}>
+                    {displayName?.[0]?.toUpperCase() || '?'}
                   </div>
+                )}
+              </div>
+              {editable && profilePhotoUrl && (
+                <button onClick={() => setModal('profile')}
+                  className="absolute bottom-0 right-0 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md hover:bg-indigo-700 transition-colors z-10">
+                  <Pencil size={10} />
+                </button>
+              )}
+            </div>
+
+            {/* Company logo — right */}
+            {logoUrl && (
+              <div className="absolute group" style={{ right: '24px', top: `-${Math.round(layout.logoSize / 2)}px` }}>
+                <div className="rounded-xl bg-white shadow-lg border border-gray-100 overflow-hidden p-1.5"
+                  style={{ width: `${logoSize}px`, height: `${logoSize}px` }}>
+                  <img src={logoUrl} alt="logo" style={imgStyle('logo')} className="rounded-lg" />
                 </div>
-              ))}
+                {editable && (
+                  <button onClick={() => setModal('logo')}
+                    className="absolute -bottom-1 -right-1 w-5 h-5 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md hover:bg-indigo-700 transition-colors z-10">
+                    <Pencil size={8} />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Edit toolbar — only in editor */}
+          {editable && (
+            <div className="flex gap-2 px-6 pb-2">
+              <button onClick={() => setModal('layout')}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors border border-gray-200">
+                <Settings size={11} /> Layout
+              </button>
+              <button onClick={() => setModal('bg')}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors border border-gray-200">
+                <Palette size={11} /> Background
+              </button>
             </div>
           )}
 
-          <div className="flex gap-2 pt-2">
-            <button className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: themeColor }}>
-              Share
-            </button>
-            <button className="flex-1 py-2.5 rounded-xl text-sm font-semibold border-2" style={{ borderColor: themeColor, color: themeColor }}>
-              {ctaLabel || 'Save Contact'}
-            </button>
+          {/* Info */}
+          <div className="px-6 pb-6 space-y-3 pt-1">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">{displayName}</h1>
+              {card.title && <p className="text-sm text-gray-600 mt-0.5">{card.title}</p>}
+              {department && <p className="text-xs text-gray-400">{department}</p>}
+              {displayCompany && <p className="text-sm font-medium text-gray-700 mt-1">{displayCompany}</p>}
+              {accreditations && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {accreditations.split(',').map((a, i) => (
+                    <span key={i} className="text-xs px-2 py-0.5 rounded-full"
+                      style={{ background: `${themeColor}20`, color: themeColor }}>
+                      {a.trim()}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {card.bio && <p className="text-sm text-gray-500 leading-relaxed">{card.bio}</p>}
+
+            {fields.length > 0 && (
+              <div className="space-y-2 pt-1">
+                {fields.map((f, i) => (
+                  <div key={i} className="flex items-center gap-3 px-3 py-2 rounded-xl"
+                    style={{ background: `${themeColor}10` }}>
+                    <span style={{ color: themeColor }}>{ICON_MAP[f.key] || <LinkIcon size={16} />}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-gray-400">{f.label}</p>
+                      <p className="text-sm text-gray-700 truncate">{f.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="flex gap-2 pt-2">
+              <button className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white"
+                style={{ background: themeColor }}>Share</button>
+              <button className="flex-1 py-2.5 rounded-xl text-sm font-semibold border-2"
+                style={{ borderColor: themeColor, color: themeColor }}>
+                {ctaLabel || 'Save Contact'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Modal */}
+      {modal && (
+        <ImageAdjustModal
+          type={modal}
+          label={modal === 'cover' ? 'Cover Photo' : modal === 'profile' ? 'Profile Photo' : 'Company Logo'}
+          layout={layout}
+          onSave={handleSave}
+          onClose={() => setModal(null)}
+        />
+      )}
+    </>
   )
 }
