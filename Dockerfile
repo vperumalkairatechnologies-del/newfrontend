@@ -1,5 +1,6 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
+ARG CACHEBUST=2
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
 COPY . .
