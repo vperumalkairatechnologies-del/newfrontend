@@ -417,9 +417,8 @@ export default function ProfileEditor() {
   }
 
   const getShareUrl = () => {
-    return serverCardId
-      ? `${window.location.origin}/card/id/${serverCardId}`
-      : window.location.href
+    const base = import.meta.env.VITE_PUBLIC_BASE_URL || window.location.origin
+    return serverCardId ? `${base}/card/id/${serverCardId}` : window.location.href
   }
 
   const shareLink = () => {

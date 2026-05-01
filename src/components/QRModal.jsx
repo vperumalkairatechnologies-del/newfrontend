@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import html2canvas from 'html2canvas'
 import { X, Download, Copy, Check, Loader } from 'lucide-react'
 
-export default function QRModal({ slug, cardId, onClose }) {
+export default function QRModal({ slug, cardId, userName, onClose }) {
+  const qrCodeContainerRef = useRef(null)
+
   const overlayRef = useRef(null)
   const [copied, setCopied] = useState(false)
   const [qrLoaded, setQrLoaded] = useState(false)
@@ -54,16 +57,17 @@ export default function QRModal({ slug, cardId, onClose }) {
         <h2 className="text-base font-bold text-gray-900 mb-1">Share your card</h2>
         <p className="text-xs text-gray-400 mb-4 break-all">{publicUrl}</p>
 
-        <div className="flex justify-center mb-4 p-3 bg-gray-50 rounded-xl min-h-[160px] items-center">
+        <div ref={qrCodeContainerRef} className="flex flex-col items-center justify-center mb-4 p-6 bg-white border-2 border-slate-200 rounded-2xl min-h-[260px] shadow-lg">
+          {userName && <p className="text-lg font-bold text-gray-800 mb-4 text-center">{userName}</p>}
           {qrError ? (
-            <p className="text-xs text-red-400 text-center">Failed to load QR code.</p>
+            <p className="text-sm text-red-400 text-center">Failed to load QR code.</p>
           ) : (
             <div className="relative">
-              {!qrLoaded && <Loader size={24} className="text-indigo-400 animate-spin absolute inset-0 m-auto" />}
+              {!qrLoaded && <Loader size={28} className="text-indigo-400 animate-spin absolute inset-0 m-auto" />}
               <img
                 src={qrSrc}
                 alt="QR Code"
-                className={`w-40 h-40 rounded-lg transition-opacity ${qrLoaded ? 'opacity-100' : 'opacity-0'}`}
+                className={`w-48 h-48 rounded-lg transition-opacity ${qrLoaded ? 'opacity-100' : 'opacity-0'}`}
                 onLoad={() => setQrLoaded(true)}
                 onError={() => setQrError(true)}
               />

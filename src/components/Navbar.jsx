@@ -7,7 +7,7 @@ import Notifications from './Notifications'
 export default function Navbar() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { user, isAdmin, isPremium, isFree } = useAuth()
+  const { user, isAdmin, isPro, isAdvanced, isBasic } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const logout = () => {
@@ -56,23 +56,17 @@ export default function Navbar() {
             <span className="hidden sm:inline">Editor</span>
           </Link>
 
-          {isPremium() && (
-            <Link
-              to="/upgrade"
-              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                isActive('/upgrade')
-                  ? 'bg-indigo-50 text-indigo-600 shadow-sm'
-                  : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 hover:shadow-sm hover:scale-105'
-              }`}
-            >
-              <Crown size={14} className="sm:text-base" />
-              <span className="hidden sm:inline">Premium</span>
+          {(isPro() || isAdvanced()) && (
+            <Link to="/pricing" className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+              isActive('/pricing') ? 'bg-indigo-50 text-indigo-600 shadow-sm' : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-600'
+            }`}>
+              <Crown size={14} />
+              <span className="hidden sm:inline">{isAdvanced() ? 'Advanced' : 'Pro'}</span>
             </Link>
           )}
-
-          {isFree() && (
-            <Link to="/upgrade" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 hover:scale-105 hover:shadow-md transition-all duration-200">
-              <Sparkles size={14} className="sm:text-base" />
+          {isBasic() && (
+            <Link to="/pricing" className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600 hover:scale-105 hover:shadow-md transition-all duration-200">
+              <Sparkles size={14} />
               <span className="hidden sm:inline">Upgrade</span>
             </Link>
           )}
@@ -104,12 +98,8 @@ export default function Navbar() {
                 {user.name[0].toUpperCase()}
               </div>
               <span className="text-sm text-gray-600 font-medium">{user.name}</span>
-              {isPremium() && <span className="text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded font-semibold">PRO</span>}
-            </div>
-          )}
-
-          <button
-            onClick={logout}
+              {isPro() && !isAdvanced() && <span className="text-xs bg-indigo-100 text-indigo-600 px-1.5 py-0.5 rounded font-semibold">PRO</span>}
+              {isAdvanced() && <span className="text-xs bg-violet-100 text-violet-600 px-1.5 py-0.5 rounded font-semibold">ADV</span>}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-500 hover:scale-105 hover:shadow-sm transition-all duration-200"
           >
             <LogOut size={16} />
@@ -161,27 +151,18 @@ export default function Navbar() {
               <span>Editor</span>
             </Link>
 
-            {isPremium() && (
-              <Link
-                to="/upgrade"
-                onClick={() => setMobileMenuOpen(false)}
+            {(isPro() || isAdvanced()) && (
+              <Link to="/pricing" onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  isActive('/upgrade')
-                    ? 'bg-indigo-50 text-indigo-600'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
+                  isActive('/pricing') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-600 hover:bg-gray-100'
+                }`}>
                 <Crown size={16} />
-                <span>Premium</span>
+                <span>{isAdvanced() ? 'Advanced' : 'Pro'}</span>
               </Link>
             )}
-
-            {isFree() && (
-              <Link
-                to="/upgrade"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white"
-              >
+            {isBasic() && (
+              <Link to="/pricing" onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
                 <Sparkles size={16} />
                 <span>Upgrade</span>
               </Link>
@@ -213,7 +194,8 @@ export default function Navbar() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-medium text-gray-900">{user.name}</span>
-                    {isPremium() && <span className="text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded font-semibold">PRO</span>}
+              {isPro() && !isAdvanced() && <span className="text-xs bg-indigo-100 text-indigo-600 px-1.5 py-0.5 rounded font-semibold">PRO</span>}
+              {isAdvanced() && <span className="text-xs bg-violet-100 text-violet-600 px-1.5 py-0.5 rounded font-semibold">ADV</span>}
                   </div>
                 </div>
               )}

@@ -8,6 +8,8 @@ const Dashboard = lazy(() => import('./pages/Dashboard'))
 const EditorPublicCard = lazy(() => import('./pages/EditorPublicCard'))
 const ProfileEditor = lazy(() => import('./editor/ProfileEditor'))
 const Upgrade = lazy(() => import('./pages/Upgrade'))
+const Pricing = lazy(() => import('./pages/Pricing'))
+const PaymentSuccess = lazy(() => import('./pages/PaymentSuccess'))
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
 const AdminUsers = lazy(() => import('./pages/AdminUsers'))
 const AdminRequests = lazy(() => import('./pages/AdminRequests'))
@@ -43,6 +45,8 @@ export default function App() {
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/editor"    element={<PrivateRoute><ProfileEditor /></PrivateRoute>} />
           <Route path="/upgrade"   element={<PrivateRoute><Upgrade /></PrivateRoute>} />
+          <Route path="/pricing"   element={<PrivateRoute><Pricing /></PrivateRoute>} />
+          <Route path="/payment/success" element={<PrivateRoute><PaymentSuccess /></PrivateRoute>} />
           <Route path="/admin"     element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
           <Route path="/admin/users" element={<PrivateRoute><AdminUsers /></PrivateRoute>} />
           <Route path="/admin/requests" element={<PrivateRoute><AdminRequests /></PrivateRoute>} />

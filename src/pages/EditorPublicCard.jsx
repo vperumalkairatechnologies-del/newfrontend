@@ -22,6 +22,9 @@ export default function EditorPublicCard() {
   const [sendingLead, setSendingLead] = useState(false)
   const [showLeadForm, setShowLeadForm] = useState(false)
 
+  const PUBLIC_BASE = import.meta.env.VITE_PUBLIC_BASE_URL || window.location.origin
+  const cardUrl = cardId ? `${PUBLIC_BASE}/card/id/${cardId}` : `${PUBLIC_BASE}/card/${slug}`
+
   useEffect(() => {
     const endpoint = cardId
       ? `/cards/public/id/${cardId}`
@@ -31,6 +34,10 @@ export default function EditorPublicCard() {
         const c = res.data.card
         setCard(c)
         api.post('/analytics/view', { card_id: c.id }).catch(() => {})
+        // Dynamic page title for link previews
+        const name = c.links?.find(l => l.type === 'meta_name')?.url || c.name || 'Digital Card'
+        const company = c.links?.find(l => l.type === 'meta_company')?.url || c.company || ''
+        document.title = company ? `${name} | ${company} | Kaira Card` : `${name} | Kaira Card`
       })
       .catch(() => setCard(null))
       .finally(() => setLoading(false))

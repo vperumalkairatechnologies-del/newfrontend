@@ -18,7 +18,8 @@ export default function Dashboard() {
   const [copied, setCopied] = useState(false)
   const [creating, setCreating] = useState(false)
 
-  const publicUrl = selectedCard ? `${window.location.origin}/card/id/${selectedCard.id}` : ''
+  const PUBLIC_BASE = import.meta.env.VITE_PUBLIC_BASE_URL || window.location.origin
+  const publicUrl = selectedCard ? `${PUBLIC_BASE}/card/id/${selectedCard.id}` : ''
 
   useEffect(() => {
     const fetchData = async () => {
@@ -314,7 +315,13 @@ export default function Dashboard() {
         )}
       </main>
 
-      {showQR && selectedCard && <QRModal cardId={selectedCard.id} onClose={() => setShowQR(false)} />}
+      {showQR && selectedCard && (
+        <QRModal
+          cardId={selectedCard.id}
+          userName={selectedCard.name || user.name}
+          onClose={() => setShowQR(false)}
+        />
+      )}
     </>
   )
 }
