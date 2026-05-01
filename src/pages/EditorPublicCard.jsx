@@ -181,25 +181,38 @@ export default function EditorPublicCard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden" style={bgStyle}>
-        {/* Cover */}
-        {coverPhotoUrl && (
-          <div className="h-32 bg-cover bg-center" style={{ backgroundImage: `url(${coverPhotoUrl})` }} />
-        )}
-
-        {/* Profile + Logo */}
-        <div className="relative px-6 pt-6 pb-4">
-          {logoUrl && (
-            <img src={logoUrl} alt="logo" className="absolute top-4 right-4 w-12 h-12 object-contain rounded-lg bg-white/80 p-1" />
-          )}
-          {profilePhotoUrl ? (
-            <img src={profilePhotoUrl} alt={displayName} className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover" />
+      {/* Neon border card wrapper */}
+      <div style={{ padding: '2px', borderRadius: '1.5rem', background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4, #6366f1)', backgroundSize: '300% 300%', animation: 'neonBorder 4s ease infinite', boxShadow: '0 0 24px rgba(99,102,241,0.35)' }}>
+        <style>{`
+          @keyframes neonBorder {
+            0%   { background-position: 0% 50%; box-shadow: 0 0 24px rgba(99,102,241,0.4); }
+            50%  { background-position: 100% 50%; box-shadow: 0 0 40px rgba(139,92,246,0.55), 0 0 80px rgba(6,182,212,0.2); }
+            100% { background-position: 0% 50%; box-shadow: 0 0 24px rgba(99,102,241,0.4); }
+          }
+        `}</style>
+        <div className="w-full max-w-md mx-auto bg-white rounded-3xl overflow-hidden" style={bgStyle}>
+          {/* Cover */}
+          {coverPhotoUrl ? (
+            <div className="h-36 bg-cover bg-center" style={{ backgroundImage: `url(${coverPhotoUrl})` }} />
           ) : (
-            <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-3xl font-bold" style={{ background: themeColor, color: '#fff' }}>
-              {displayName?.[0]?.toUpperCase() || '?'}
-            </div>
+            <div className="h-28" style={{ background: `linear-gradient(135deg, ${themeColor}cc, ${themeColor}55)` }} />
           )}
-        </div>
+
+          {/* Profile + Logo overlapping cover by 50% */}
+          <div className="relative px-6 pb-3" style={{ marginTop: '-48px' }}>
+            <div className="flex items-end justify-between">
+              {profilePhotoUrl ? (
+                <img src={profilePhotoUrl} alt={displayName} className="w-24 h-24 rounded-full border-4 border-white shadow-xl object-cover flex-shrink-0" />
+              ) : (
+                <div className="w-24 h-24 rounded-full border-4 border-white shadow-xl flex items-center justify-center text-3xl font-bold flex-shrink-0" style={{ background: themeColor, color: '#fff' }}>
+                  {displayName?.[0]?.toUpperCase() || '?'}
+                </div>
+              )}
+              {logoUrl && (
+                <img src={logoUrl} alt="logo" className="w-14 h-14 object-contain rounded-xl bg-white shadow-lg p-1.5 border border-gray-100 flex-shrink-0 mb-1" />
+              )}
+            </div>
+          </div>
 
         {/* Info */}
         <div className="px-6 pb-6 space-y-3">
@@ -267,13 +280,7 @@ export default function EditorPublicCard() {
             <form onSubmit={submitLead} className="mt-5 border border-gray-100 rounded-2xl p-3 space-y-2 bg-white/80 animate-fade-in-up">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Share your details</p>
-                <button 
-                  type="button" 
-                  onClick={() => setShowLeadForm(false)}
-                  className="text-gray-400 hover:text-gray-600 text-xs"
-                >
-                  ✕ Close
-                </button>
+                <button type="button" onClick={() => setShowLeadForm(false)} className="text-gray-400 hover:text-gray-600 text-xs">✕ Close</button>
               </div>
               <input className="input-field text-sm" placeholder="Your name" value={lead.name} onChange={(e) => setLead((p) => ({ ...p, name: e.target.value }))} />
               <div className="grid grid-cols-2 gap-2">
@@ -286,6 +293,7 @@ export default function EditorPublicCard() {
               </button>
             </form>
           )}
+        </div>
         </div>
       </div>
     </div>
