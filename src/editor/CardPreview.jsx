@@ -89,7 +89,7 @@ export default function CardPreview({ card = {}, editable = false, onLayoutChang
 
   return (
     <>
-      <div className="w-full max-w-md mx-auto"
+      <div className="w-full max-w-md mx-auto group"
         style={{ padding: '2px', borderRadius: '1.5rem', background: 'linear-gradient(135deg,#6366f1,#8b5cf6,#06b6d4,#6366f1)', backgroundSize: '300% 300%', animation: 'neonBorder 4s ease infinite', boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}>
         <style>{`
           @keyframes neonBorder {
@@ -135,7 +135,7 @@ export default function CardPreview({ card = {}, editable = false, onLayoutChang
               </div>
               {editable && card.profilePhoto && (
                 <button onClick={() => setModal('profile')}
-                  className="absolute bottom-0 right-0 w-6 h-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-md transition-colors z-10">
+                  className="absolute bottom-0 right-0 w-6 h-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-md transition-all opacity-0 group-hover:opacity-100 z-10">
                   <Pencil size={10} />
                 </button>
               )}
@@ -150,7 +150,7 @@ export default function CardPreview({ card = {}, editable = false, onLayoutChang
                 </div>
                 {editable && (
                   <button onClick={() => setModal('logo')}
-                    className="absolute -bottom-1 -right-1 w-5 h-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-md transition-colors z-10">
+                    className="absolute -bottom-1 -right-1 w-5 h-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-md transition-all opacity-0 group-hover:opacity-100 z-10">
                     <Pencil size={8} />
                   </button>
                 )}
@@ -160,7 +160,7 @@ export default function CardPreview({ card = {}, editable = false, onLayoutChang
 
           {/* Edit toolbar */}
           {editable && (
-            <div className="flex gap-2 px-6 pb-2 pt-1">
+            <div className="flex gap-2 px-6 pb-2 pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
               <button onClick={() => setModal('layout')}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors border border-gray-200">
                 <Settings size={11} /> Layout
