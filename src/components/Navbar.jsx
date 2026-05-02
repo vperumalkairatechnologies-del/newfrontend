@@ -55,7 +55,6 @@ export default function Navbar() {
               <span className="hidden sm:inline">Upgrade</span>
             </Link>
           )}
-
           {isAdmin() && (
             <Link to="/admin" className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${location.pathname.startsWith('/admin') ? 'bg-purple-50 text-purple-600 shadow-sm' : 'text-gray-600 hover:bg-purple-50 hover:text-purple-600 hover:shadow-sm hover:scale-105'}`}>
               <Shield size={14} />

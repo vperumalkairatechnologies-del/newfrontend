@@ -30,7 +30,7 @@ export default function FeatureGate({ feature, children, fallback = null }) {
             </div>
           ) : (
             <button
-              onClick={() => navigate('/upgrade')}
+              onClick={() => navigate('/pricing')}
               className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-medium rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all"
             >
               Upgrade Now

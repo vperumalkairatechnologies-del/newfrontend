@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 
 export default function Home() {
   const [activeStep, setActiveStep] = useState(0)
-  const [isAnnual, setIsAnnual] = useState(true)
+  const [testiIndex, setTestiIndex] = useState(0)
+  const [isAnnual, setIsAnnual] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [slideIndex, setSlideIndex] = useState(0)
 
@@ -53,22 +54,43 @@ export default function Home() {
     }, { threshold: 0.1 })
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
 
+    // Add scroll effect to navigation
     const handleScroll = () => {
       const nav = document.querySelector('nav')
-      if (!nav) return
-      nav.classList.toggle('scrolled', window.scrollY > 50)
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled')
+      } else {
+        nav.classList.remove('scrolled')
+      }
     }
+
+    const stepsObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = parseInt(entry.target.getAttribute('data-index'))
+          setActiveStep(index)
+        }
+      })
+    }, {
+      threshold: 0.8,
+      rootMargin: '-35% 0px -35% 0px'
+    })
+    document.querySelectorAll('.step').forEach(el => stepsObserver.observe(el))
 
     window.addEventListener('scroll', handleScroll)
     return () => {
-      observer.disconnect()
       window.removeEventListener('scroll', handleScroll)
+      stepsObserver.disconnect()
     }
   }, [])
 
   useEffect(() => {
     const timer = setInterval(() => setSlideIndex(i => (i + 1) % 3), 5000)
-    return () => clearInterval(timer)
+    const testiTimer = setInterval(() => setTestiIndex(i => (i + 1) % 6), 6000)
+    return () => {
+      clearInterval(timer)
+      clearInterval(testiTimer)
+    }
   }, [])
 
   const handleHeroClick = () => setSlideIndex(i => (i + 1) % slides.length)
@@ -181,7 +203,7 @@ export default function Home() {
           letter-spacing: 0.2px; 
           transition: all 0.3s ease;
           position: relative;
-          padding: 8px 4px;
+          padding: 8px 20px;
         }
         .landing-page .nav-links a::after {
           content: '';
@@ -533,16 +555,89 @@ export default function Home() {
         .landing-page .feature-icon { width: 52px; height: 52px; border-radius: 14px; background: #5665a9; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 24px; transition: all 0.3s ease; }
         .landing-page .feature-cell h3 { font-family: 'Roboto', sans-serif; font-weight: 600; font-size: 18px; color: #0a0a0f; margin-bottom: 10px; transition: color 0.3s ease; }
         .landing-page .feature-cell p { font-size: 14px; color: #3a3a4a; line-height: 1.7; transition: color 0.3s ease; }
-        .landing-page .how { background: transparent; }
-        .landing-page .how-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-        .landing-page .steps { margin-top: 48px; display: flex; flex-direction: column; gap: 0; }
-        .landing-page .step { display: flex; gap: 24px; padding: 28px 0; border-bottom: 1px solid rgba(10,10,15,0.08); cursor: pointer; transition: all 0.2s; }
-        .landing-page .step:last-child { border-bottom: none; }
-        .landing-page .step-num { font-family: 'Roboto', sans-serif; font-weight: 800; font-size: 13px; color: #7a7a8e; letter-spacing: 1px; width: 32px; flex-shrink: 0; padding-top: 4px; }
-        .landing-page .step-content h4 { font-family: 'Roboto', sans-serif; font-weight: 600; font-size: 17px; color: #0a0a0f; margin-bottom: 6px; }
-        .landing-page .step-content p { font-size: 14px; color: #3a3a4a; line-height: 1.6; }
-        .landing-page .step.active .step-num, .landing-page .step.active h4 { color: #0057ff; }
-        .landing-page .how-visual { position: relative; height: 480px; display: flex; align-items: center; justify-content: center; }
+        .landing-page .how { background: #fff; position: relative; }
+        .landing-page .how-inner { 
+          max-width: 1100px; 
+          margin: 0 auto; 
+          display: grid; 
+          grid-template-columns: 1.1fr 0.9fr; 
+          gap: 80px; 
+          align-items: flex-start; 
+        }
+        .landing-page .steps { 
+          margin-top: 48px; 
+          display: flex; 
+          flex-direction: column; 
+          gap: 12px; 
+          position: relative;
+        }
+        .landing-page .steps::before {
+          content: '';
+          position: absolute;
+          top: 22px;
+          bottom: 22px;
+          left: 21px;
+          width: 2px;
+          background: rgba(0, 87, 255, 0.1);
+          border-radius: 2px;
+        }
+        .landing-page .timeline-progress {
+          position: absolute;
+          top: 22px;
+          left: 21px;
+          width: 2px;
+          background: #0057ff;
+          transition: height 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+          z-index: 1;
+          box-shadow: 0 0 15px rgba(0, 87, 255, 0.5);
+        }
+        .landing-page .step { 
+          display: flex; 
+          gap: 32px; 
+          padding: 24px 0; 
+          cursor: pointer; 
+          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+          position: relative;
+          z-index: 1;
+        }
+        .landing-page .step-num { 
+          font-family: 'Roboto', sans-serif; 
+          font-weight: 800; 
+          font-size: 18px; 
+          color: #7a7a8e; 
+          letter-spacing: 1px; 
+          width: 44px; 
+          height: 44px;
+          background: #fff;
+          border: 2px solid rgba(0, 87, 255, 0.1);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0; 
+          transition: all 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        .landing-page .step-content h4 { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 22px; color: #0a0a0f; margin-bottom: 8px; transition: color 1.2s ease; }
+        .landing-page .step-content p { font-size: 16px; color: #3a3a4a; line-height: 1.7; }
+        .landing-page .step.passed .step-num { 
+          background: #0057ff; 
+          color: #fff; 
+          border-color: #0057ff;
+          box-shadow: 0 0 20px rgba(0, 87, 255, 0.3);
+        }
+        .landing-page .step.active .step-num {
+          transform: scale(1.15);
+        }
+        .landing-page .step.passed h4 { color: #0057ff; }
+        .landing-page .how-visual { 
+          position: sticky; 
+          top: 120px; 
+          height: calc(100vh - 120px); 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          transition: all 0.5s ease;
+        }
         .landing-page .pricing { background: #0a0a0f; text-align: center; position: relative; overflow: hidden; }
         .landing-page .pricing::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0,87,255,0.18) 0%, transparent 65%), radial-gradient(ellipse 40% 40% at 10% 100%, rgba(201,168,76,0.08) 0%, transparent 60%); pointer-events: none; }
         .landing-page .pricing-dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 32px 32px; pointer-events: none; }
@@ -603,17 +698,76 @@ export default function Home() {
         .landing-page .plan-cta.enterprise-cta:hover { background: rgba(201,168,76,0.2); border-color: rgba(201,168,76,0.5); color: #e0b84f; }
         .landing-page .plan-note { text-align: center; font-size: 11px; color: rgba(255,255,255,0.2); margin-top: 12px; }
         .landing-page .pricing-card.featured .plan-note { color: #7a7a8e; }
-        .landing-page .testimonials { background: transparent; }
-        .landing-page .testi-inner { max-width: 1100px; margin: 0 auto; }
+        .landing-page .testimonials { background: transparent; padding: 100px 20px; overflow: hidden; }
+        .landing-page .testi-inner { max-width: 800px; margin: 0 auto; position: relative; }
         .landing-page .testi-header { text-align: center; margin-bottom: 56px; display: flex; flex-direction: column; align-items: center; }
-        .landing-page .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .landing-page .testi-card { background: rgba(255,255,255,0.72); backdrop-filter: blur(12px); border-radius: 24px; padding: 36px 32px; border: 1px solid rgba(255,255,255,0.85); text-align: left; box-shadow: 0 8px 32px rgba(86,101,169,0.08); }
-        .landing-page .stars { color: #c9a84c; font-size: 14px; letter-spacing: 2px; margin-bottom: 18px; }
-        .landing-page .testi-text { font-size: 15px; line-height: 1.7; color: #3a3a4a; font-style: italic; margin-bottom: 24px; }
-        .landing-page .testi-author { display: flex; align-items: center; gap: 12px; }
-        .landing-page .testi-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 14px; color: white; }
-        .landing-page .testi-name { font-family: 'Roboto', sans-serif; font-weight: 600; font-size: 14px; color: #0a0a0f; }
-        .landing-page .testi-role { font-size: 12px; color: #7a7a8e; }
+        .landing-page .testi-slider { 
+          position: relative; 
+          width: 100%; 
+          height: 380px; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+        }
+        .landing-page .testi-card { 
+          position: absolute; 
+          inset: 0; 
+          background: rgba(255,255,255,0.72); 
+          backdrop-filter: blur(12px); 
+          border-radius: 32px; 
+          padding: 48px 40px; 
+          border: 1px solid rgba(255,255,255,0.85); 
+          text-align: center; 
+          box-shadow: 0 15px 45px rgba(86,101,169,0.12); 
+          opacity: 0;
+          visibility: hidden;
+          transform: translateX(50px) scale(0.95);
+          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+        .landing-page .testi-card.active {
+          opacity: 1;
+          visibility: visible;
+          transform: translateX(0) scale(1);
+        }
+        .landing-page .testi-dots { display: flex; justify-content: center; gap: 12px; margin-top: 40px; }
+        .landing-page .testi-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(86,101,169,0.2); cursor: pointer; transition: all 0.3s; }
+        .landing-page .testi-dot.active { background: #5665a9; width: 32px; border-radius: 10px; }
+        .landing-page .stars { color: #c9a84c; font-size: 20px; letter-spacing: 4px; margin-bottom: 24px; }
+        .landing-page .testi-text { font-size: 20px; line-height: 1.6; color: #1a1a3e; font-weight: 400; margin-bottom: 32px; max-width: 600px; }
+        .landing-page .testi-author { display: flex; align-items: center; gap: 16px; flex-direction: column; }
+        .landing-page .testi-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 18px; color: white; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .landing-page .testi-name { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 18px; color: #0a0a0f; margin-bottom: 4px; }
+        .landing-page .testi-role { font-size: 14px; color: #7a7a8e; }
+        .landing-page .testi-nav { 
+          position: absolute; 
+          top: 50%; 
+          transform: translateY(-50%); 
+          width: 56px; 
+          height: 56px; 
+          border-radius: 50%; 
+          background: #fff; 
+          border: 1px solid rgba(86,101,169,0.15); 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          cursor: pointer; 
+          z-index: 10; 
+          box-shadow: 0 8px 25px rgba(86,101,169,0.1); 
+          transition: all 0.3s;
+          font-size: 20px;
+          color: #5665a9;
+        }
+        .landing-page .testi-nav:hover { background: #5665a9; color: #fff; transform: translateY(-50%) scale(1.1); box-shadow: 0 12px 35px rgba(86,101,169,0.2); }
+        .landing-page .testi-nav.prev { left: -80px; }
+        .landing-page .testi-nav.next { right: -80px; }
+        @media (max-width: 1000px) {
+          .landing-page .testi-nav.prev { left: 10px; }
+          .landing-page .testi-nav.next { right: 10px; }
+        }
         .landing-page .cta-band { 
           background: #5665a9; 
           padding: 80px 40px; 
@@ -660,9 +814,9 @@ export default function Home() {
         }
         /* ── Footer ── */
         .landing-page footer {
-          background: linear-gradient(160deg, #f0f4ff 0%, #faf5ff 50%, #f0f9ff 100%);
-          border-top: 1px solid rgba(86,101,169,0.12);
-          padding: 80px 60px 40px;
+          background: black;
+          color: #ffffff;
+          padding: 50px 60px 30px;
           position: relative;
           overflow: hidden;
         }
@@ -682,92 +836,29 @@ export default function Home() {
           background: radial-gradient(circle, rgba(124,58,237,0.06), transparent 70%);
           pointer-events: none;
         }
-        .landing-page .footer-top {
-          max-width: 1200px;
-          margin: 0 auto 60px;
-          background: linear-gradient(135deg, #5665a9 0%, #7c3aed 100%);
-          border-radius: 24px;
-          padding: 48px 60px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 40px;
-          position: relative;
-          overflow: hidden;
-        }
-        .landing-page .footer-top::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-          pointer-events: none;
-        }
-        .landing-page .footer-top-text h3 {
-          font-family: 'Roboto', sans-serif;
-          font-weight: 800;
-          font-size: 26px;
-          color: #fff;
-          letter-spacing: -0.5px;
-          margin-bottom: 8px;
-        }
-        .landing-page .footer-top-text p {
-          font-size: 15px;
-          color: rgba(255,255,255,0.7);
-          font-weight: 300;
-        }
-        .landing-page .footer-top-cta {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          background: #fff;
-          color: #5665a9;
-          padding: 16px 36px;
-          border-radius: 50px;
-          font-size: 15px;
-          font-weight: 700;
-          text-decoration: none;
-          white-space: nowrap;
-          box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-          transition: all 0.3s;
-          flex-shrink: 0;
-          position: relative;
-          overflow: hidden;
-        }
-        .landing-page .footer-top-cta::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, #5665a9, #eaf1f3);
-          opacity: 0;
-          transition: opacity 0.3s;
-          border-radius: 50px;
-        }
-        .landing-page .footer-top-cta span { position: relative; z-index: 1; }
-        .landing-page .footer-top-cta:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 16px 44px rgba(0,0,0,0.22); color: #fff; }
-        .landing-page .footer-top-cta:hover::before { opacity: 1; }
         .landing-page .footer-inner {
           max-width: 1200px;
           margin: 0 auto;
           display: grid;
           grid-template-columns: 2fr 1fr 1fr 1fr;
           gap: 48px;
-          padding-bottom: 48px;
-          border-bottom: 1px solid rgba(86,101,169,0.12);
+          padding-bottom: 30px;
+          border-bottom: 1px solid rgba(255,255,255,0.15);
           position: relative; z-index: 1;
         }
         .landing-page .footer-brand { max-width: 300px; }
         .landing-page .footer-brand .logo {
           font-size: 26px;
           font-weight: 800;
-          color: #1a1a3e;
+          color: #ffffff;
           text-decoration: none;
           display: block;
           margin-bottom: 16px;
         }
-        .landing-page .footer-brand .logo span { color: #5665a9; }
+        .landing-page .footer-brand .logo span { color: #ff9d9d; }
         .landing-page .footer-brand p {
           font-size: 14px;
-          color: #6b7280;
+          color: rgba(255,255,255,0.8);
           line-height: 1.7;
           margin-bottom: 24px;
         }
@@ -779,21 +870,16 @@ export default function Home() {
           border: 1px solid rgba(86,101,169,0.15);
           display: flex; align-items: center; justify-content: center;
           text-decoration: none;
+          font-size: 16px;
           transition: all 0.3s;
           box-shadow: 0 2px 8px rgba(86,101,169,0.08);
         }
-        .landing-page .social-link svg { width: 18px; height: 18px; display: block; }
         .landing-page .social-link:hover {
+          background: #5665a9;
+          border-color: #5665a9;
           transform: translateY(-3px);
           box-shadow: 0 8px 20px rgba(86,101,169,0.3);
         }
-        .landing-page .social-link.wa:hover  { background: #25d366; border-color: #25d366; }
-        .landing-page .social-link.fb:hover  { background: #1877f2; border-color: #1877f2; }
-        .landing-page .social-link.ig:hover  { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); border-color: #e1306c; }
-        .landing-page .social-link.li:hover  { background: #0077b5; border-color: #0077b5; }
-        .landing-page .social-link.yt:hover  { background: #ff0000; border-color: #ff0000; }
-        .landing-page .social-link.pin:hover { background: #e60023; border-color: #e60023; }
-        .landing-page .social-link:hover svg { fill: #fff; }
         .landing-page .footer-badge {
           display: inline-flex;
           align-items: center;
@@ -815,47 +901,41 @@ export default function Home() {
           font-size: 8px; color: #fff;
         }
         .landing-page .footer-col h5 {
-          font-family: 'Roboto', sans-serif;
+          color: #ffffff;
+          font-size: 16px;
           font-weight: 700;
-          font-size: 13px;
-          color: #1a1a3e;
-          letter-spacing: 0.8px;
-          text-transform: uppercase;
-          margin-bottom: 20px;
+          margin-bottom: 24px;
         }
-        .landing-page .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-        .landing-page .footer-col ul a {
+        .landing-page .footer-col ul { list-style: none; }
+        .landing-page .footer-col ul li { margin-bottom: 12px; }
+        .landing-page .footer-col ul li a {
+          color: rgba(255,255,255,0.7);
           text-decoration: none;
           font-size: 14px;
-          color: #6b7280;
-          transition: all 0.2s;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
+          transition: all 0.3s;
         }
-        .landing-page .footer-col ul a:hover { color: #5665a9; transform: translateX(4px); }
+        .landing-page .footer-col ul li a:hover { color: #ffffff; transform: translateX(5px); display: inline-block; }
         .landing-page .footer-bottom {
           max-width: 1200px;
-          margin: 32px auto 0;
+          margin: 0 auto;
+          padding-top: 24px;
           display: flex;
           justify-content: space-between;
           align-items: center;
           position: relative; z-index: 1;
         }
-        .landing-page .footer-bottom p { font-size: 13px; color: #9ca3af; }
+        .landing-page .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.5); }
         .landing-page .footer-bottom-links { display: flex; gap: 24px; }
         .landing-page .footer-bottom-links a {
-          color: #9ca3af;
-          text-decoration: none;
           font-size: 13px;
-          transition: color 0.2s;
+          color: rgba(255,255,255,0.5);
+          text-decoration: none;
+          transition: color 0.3s;
         }
-        .landing-page .footer-bottom-links a:hover { color: #5665a9; }
+        .landing-page .footer-bottom-links a:hover { color: #ffffff; }
         @media (max-width: 900px) {
           .landing-page .footer-top { flex-direction: column; text-align: center; padding: 40px 32px; }
           .landing-page .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
-          .landing-page .testi-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
-          .landing-page .cta-band { margin: 40px auto 60px; }
         }
         @media (max-width: 768px) {
           .landing-page footer { padding: 60px 20px 32px; }
@@ -868,11 +948,6 @@ export default function Home() {
           .landing-page .footer-col h5 { margin-bottom: 14px; }
           .landing-page .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
           .landing-page .footer-bottom-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
-          .landing-page .testi-grid { grid-template-columns: 1fr; }
-          .landing-page .cta-band { margin: 24px 16px 48px; border-radius: 24px; }
-          .landing-page .slide1-cta { left: 16px; bottom: 60px; padding: 11px 22px; font-size: 13px; }
-          .landing-page .footer-social { flex-wrap: wrap; gap: 8px; }
-          .landing-page .social-link { width: 36px; height: 36px; }
         }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
         .landing-page .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -1108,45 +1183,6 @@ export default function Home() {
             display: none;
           }
         }
-
-        /* WhatsApp Floating Button */
-        .wa-float {
-          position: fixed;
-          bottom: 28px;
-          right: 28px;
-          z-index: 9999;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          background: #25d366;
-          color: #fff;
-          padding: 13px 22px 13px 16px;
-          border-radius: 50px;
-          text-decoration: none;
-          font-family: 'Roboto', sans-serif;
-          font-weight: 600;
-          font-size: 14px;
-          box-shadow: 0 6px 24px rgba(37,211,102,0.5);
-          transition: all 0.3s ease;
-        }
-        .wa-float:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 14px 36px rgba(37,211,102,0.6);
-          background: #20c05a;
-        }
-        .wa-float span { display: inline; }
-        @media (max-width: 480px) {
-          .wa-float {
-            bottom: 16px;
-            right: 16px;
-            padding: 13px;
-            border-radius: 50%;
-            width: 52px;
-            height: 52px;
-            justify-content: center;
-          }
-          .wa-float span { display: none; }
-        }
       `}</style>
 
       <nav>
@@ -1159,7 +1195,7 @@ export default function Home() {
           <li><a href="#how">How it works</a></li>
           <li><Link to="/register" className="nav-cta">Make Your Card</Link></li>
         </ul>
-        <button 
+        <button
           className={`mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle mobile menu"
@@ -1245,12 +1281,13 @@ export default function Home() {
             <h2 className="section-title">Up and running in 3 minutes</h2>
             <p className="section-desc">No design skills needed. Create a card that impresses everyone.</p>
             <div className="steps">
+              <div className="timeline-progress" style={{ height: `${(activeStep / 2) * 82}%` }} />
               {[
                 ['Create your profile', 'Enter your details, upload your photo, and add your links. Our guided builder makes it effortless.'],
                 ['Choose a design', 'Pick from beautifully crafted templates or customise every element to match your brand colours.'],
                 ['Share everywhere', 'Get your unique link and QR code. Share via WhatsApp, email, LinkedIn, or print on physical cards.'],
               ].map((step, index) => (
-                <div key={step[0]} className={`step ${activeStep === index ? 'active' : ''}`} onClick={() => setActiveStep(index)}>
+                <div key={step[0]} className={`step ${activeStep === index ? 'active' : ''} ${activeStep >= index ? 'passed' : ''}`} onClick={() => setActiveStep(index)} data-index={index}>
                   <div className="step-num">{`0${index + 1}`}</div>
                   <div className="step-content">
                     <h4>{step[0]}</h4>
@@ -1267,20 +1304,27 @@ export default function Home() {
         </div>
       </section>
 
-      
+
       <section className="testimonials">
         <div className="testi-inner">
           <div className="testi-header reveal">
             <div className="section-label">Testimonials</div>
             <h2 className="section-title">Trusted by professionals<br />across India</h2>
           </div>
-          <div className="testi-grid">
+          
+          <div className="testi-slider">
+            <button className="testi-nav prev" onClick={() => setTestiIndex(i => (i - 1 + 6) % 6)}>←</button>
+            <button className="testi-nav next" onClick={() => setTestiIndex(i => (i + 1) % 6)}>→</button>
+            
             {[
               { avatar: 'SP', grad: 'linear-gradient(135deg,#0057ff,#0084ff)', name: 'Suresh Pandian', role: 'Sales Director, Chennai', text: '"Kaira completely changed how I network. I shared my card with 40 people at a conference and got 15 follow-up messages the same day."' },
               { avatar: 'PM', grad: 'linear-gradient(135deg,#7c3aed,#a855f7)', name: 'Priya Muthukumar', role: 'Founder, Madurai', text: '"The analytics dashboard is a game-changer. I can see exactly when someone views my card and follow up at the right time."' },
               { avatar: 'VR', grad: 'linear-gradient(135deg,#059669,#10b981)', name: 'Vijay Raghunathan', role: 'HR Head, Coimbatore', text: '"We rolled out Kaira for our 80-person team in one afternoon. The brand consistency and the admin panel made it incredibly smooth."' },
-            ].map((item) => (
-              <div key={item.name} className="testi-card reveal">
+              { avatar: 'AK', grad: 'linear-gradient(135deg,#f59e0b,#fbbf24)', name: 'Arjun Kapoor', role: 'Real Estate Lead, Mumbai', text: '"Sharing my contact info has never been easier. The QR code feature on my business card always gets a wow from clients."' },
+              { avatar: 'NL', grad: 'linear-gradient(135deg,#ec4899,#f472b6)', name: 'Neha Lakshmi', role: 'Marketing Expert, Bangalore', text: '"I love the design flexibility. I can update my social links in seconds, and my card is instantly refreshed everywhere."' },
+              { avatar: 'RK', grad: 'linear-gradient(135deg,#6366f1,#818cf8)', name: 'Rajesh Kumar', role: 'Tech Consultant, Hyderabad', text: '"The analytics show me exactly which regions are engaging with my profile. It is incredibly useful for my outreach strategy."' },
+            ].map((item, index) => (
+              <div key={item.name} className={`testi-card ${testiIndex === index ? 'active' : ''}`}>
                 <div className="stars">★★★★★</div>
                 <p className="testi-text">{item.text}</p>
                 <div className="testi-author">
@@ -1288,6 +1332,12 @@ export default function Home() {
                   <div><div className="testi-name">{item.name}</div><div className="testi-role">{item.role}</div></div>
                 </div>
               </div>
+            ))}
+          </div>
+
+          <div className="testi-dots">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className={`testi-dot ${testiIndex === i ? 'active' : ''}`} onClick={() => setTestiIndex(i)} />
             ))}
           </div>
         </div>
@@ -1300,27 +1350,18 @@ export default function Home() {
       </div>
 
       <footer>
-        <div className="footer-top">
-          <div className="footer-top-text">
-            <h3>Start networking smarter today</h3>
-            <p>Join 5,000+ professionals already using Kaira across India.</p>
-          </div>
-          <a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer" className="footer-top-cta"><span>Visit Our Website →</span></a>
-        </div>
         <div className="footer-inner">
           <div className="footer-brand">
-            <a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer" className="logo">
+            <Link to="/" className="logo">
               <img src="/favicon.png" alt="Kaira" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
               Kaira Technologies<span>.</span>
-            </a>
+            </Link>
             <p>Professional digital vCards built for the way modern India networks. From freelancers to Fortune 500 teams.</p>
             <div className="footer-social">
-              <a href="https://wa.me/916379430293" target="_blank" rel="noreferrer" className="social-link" title="WhatsApp">💬</a>
-              <a href="https://www.facebook.com/profile.php?id=100082309272540" target="_blank" rel="noreferrer" className="social-link" title="Facebook">📘</a>
-              <a href="https://www.instagram.com/kaira_technologies/" target="_blank" rel="noreferrer" className="social-link" title="Instagram">📸</a>
-              <a href="https://www.linkedin.com/company/kairatechnologies/" target="_blank" rel="noreferrer" className="social-link" title="LinkedIn">💼</a>
-              <a href="https://www.youtube.com/@KairaTechnologies-ht9mh" target="_blank" rel="noreferrer" className="social-link" title="YouTube">▶️</a>
-              <a href="https://pin.it/3KSN3YI8" target="_blank" rel="noreferrer" className="social-link" title="Pinterest">📌</a>
+              <a href="#" className="social-link">📧</a>
+              <a href="#" className="social-link">💬</a>
+              <a href="#" className="social-link">📱</a>
+              <a href="#" className="social-link">🔗</a>
             </div>
             <div className="footer-badge">
               <div className="footer-badge-icon">✓</div>
@@ -1348,34 +1389,22 @@ export default function Home() {
           <div className="footer-col">
             <h5>Company</h5>
             <ul>
-              <li><a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer">About Us</a></li>
-              <li><a href="https://wa.me/916379430293" target="_blank" rel="noreferrer">Contact Us</a></li>
-              <li><a href="https://www.linkedin.com/company/kairatechnologies/" target="_blank" rel="noreferrer">LinkedIn</a></li>
-              <li><a href="https://www.youtube.com/@KairaTechnologies-ht9mh" target="_blank" rel="noreferrer">YouTube</a></li>
+              <li><Link to="/">About Us</Link></li>
+              <li><Link to="/">Blog</Link></li>
+              <li><Link to="/">Careers</Link></li>
+              <li><Link to="/">Contact</Link></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© 2026 <a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer" style={{color:'#5665a9', textDecoration:'none'}}>Kaira Technology</a>. All rights reserved.</p>
+          <p>© 2026 Kaira Technology. All rights reserved.</p>
           <div className="footer-bottom-links">
-            <a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer">Privacy Policy</a>
-            <a href="https://www.kairatechnologies.in/" target="_blank" rel="noreferrer">Terms of Service</a>
-            <a href="https://wa.me/916379430293" target="_blank" rel="noreferrer">Contact</a>
+            <Link to="/">Privacy Policy</Link>
+            <Link to="/">Terms of Service</Link>
+            <Link to="/">Cookie Policy</Link>
           </div>
         </div>
       </footer>
-
-      {/* WhatsApp Floating Button */}
-      <a
-        href="https://wa.me/916379430293"
-        target="_blank"
-        rel="noreferrer"
-        className="wa-float"
-      >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        <span>Chat with us</span>
-      </a>
-
     </div>
   )
 }

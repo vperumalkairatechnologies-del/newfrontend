@@ -96,13 +96,13 @@ export default function Pricing() {
     if (planId === 'basic') return
     setPaying(planId)
     try {
-      const body = { plan: planId }
+      const body = { plan: planId, dummy: true }
       if (coupon.trim() && couponPlan === planId && couponResult?.valid) {
         body.coupon = coupon.trim()
       }
       const res = await api.post('/pay/initiate', body)
-      if (res.data.free) {
-        // 100% discount — already activated
+      if (res.data.dummy || res.data.free) {
+        // Dummy mode or 100% discount — already activated
         await new Promise(r => setTimeout(r, 500))
         navigate('/payment/success?order_id=' + res.data.order_id)
       } else {

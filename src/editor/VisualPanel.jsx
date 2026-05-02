@@ -134,8 +134,8 @@ export default function VisualPanel({ card, update, updateNested }) {
               style={{ background: color }}
               title="Premium color - Upgrade to unlock"
               onClick={() => {
-                // Navigate to upgrade page when clicking locked colors
-                window.location.href = '/upgrade'
+                // Navigate to pricing page when clicking locked colors
+                window.location.href = '/pricing'
               }}
             >
               <div className="absolute inset-0 flex items-center justify-center">
@@ -159,7 +159,7 @@ export default function VisualPanel({ card, update, updateNested }) {
                 <p className="text-xs text-purple-600 mt-1">Get {THEME_COLORS.length - maxColors} additional colors with premium</p>
               </div>
               <button 
-                onClick={() => window.location.href = '/upgrade'}
+                onClick={() => window.location.href = '/pricing'}
                 className="px-3 py-1.5 bg-purple-600 text-white text-xs font-medium rounded-lg hover:bg-purple-700 transition-colors"
               >
                 Upgrade
