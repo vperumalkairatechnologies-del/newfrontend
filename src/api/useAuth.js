@@ -42,10 +42,13 @@ export function useAuthState() {
         const freshUser = res.data.user
         localStorage.setItem('user', JSON.stringify(freshUser))
         setUser(freshUser)
-        try {
-          const fr = await api.get('/premium/features')
-          setFeatures(fr.data.features)
-        } catch {}
+        // Only fetch features for non-admin users
+        if (freshUser.role !== 'admin') {
+          try {
+            const fr = await api.get('/premium/features')
+            setFeatures(fr.data.features)
+          } catch {}
+        }
       } catch (err) {
         if (err.response?.status !== 401) {
           const cached = localStorage.getItem('user')

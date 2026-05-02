@@ -26,7 +26,8 @@ export default function Login() {
       localStorage.removeItem('smartcard_editor')
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('user', JSON.stringify(res.data.user))
-      navigate('/dashboard')
+      // Redirect admin to admin panel, others to dashboard
+      navigate(res.data.user.role === 'admin' ? '/admin' : '/dashboard')
     } catch (err) {
       setError('root', { message: err.response?.data?.error || 'Login failed.' })
     }
@@ -43,7 +44,7 @@ export default function Login() {
         localStorage.removeItem('smartcard_editor')
         localStorage.setItem('token', res.data.token)
         localStorage.setItem('user', JSON.stringify(res.data.user))
-        navigate('/dashboard')
+        navigate(res.data.user.role === 'admin' ? '/admin' : '/dashboard')
       } catch (err) {
         setError('root', { message: err.response?.data?.error || 'Google login failed.' })
       } finally {
