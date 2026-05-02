@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Mail, Phone, Globe, MapPin, AtSign, MessageCircle, Calendar, GitBranch, Link as LinkIcon, Pencil, Settings, Palette } from 'lucide-react'
 import ImageAdjustModal from './ImageAdjustModal'
 
@@ -235,14 +236,15 @@ export default function CardPreview({ card = {}, editable = false, onLayoutChang
         </div>
       </div>
 
-      {modal && (
+      {modal && createPortal(
         <ImageAdjustModal
           type={modal}
           layout={layout}
           onChange={(newLayout) => { if (onLayoutChange) onLayoutChange(newLayout) }}
           onSave={(newLayout) => { if (onLayoutChange) onLayoutChange(newLayout) }}
           onClose={() => setModal(null)}
-        />
+        />,
+        document.body
       )}
     </>
   )
