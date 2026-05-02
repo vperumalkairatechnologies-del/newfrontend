@@ -238,8 +238,8 @@ export default function CardPreview({ card = {}, editable = false, onLayoutChang
       {modal && (
         <ImageAdjustModal
           type={modal}
-          label={modal === 'cover' ? 'Cover Photo' : modal === 'profile' ? 'Profile Photo' : 'Company Logo'}
           layout={layout}
+          onChange={(newLayout) => { if (onLayoutChange) onLayoutChange(newLayout) }}
           onSave={(newLayout) => { if (onLayoutChange) onLayoutChange(newLayout) }}
           onClose={() => setModal(null)}
         />
