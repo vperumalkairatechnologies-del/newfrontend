@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Users, CreditCard, TrendingUp, Clock, ArrowRight, BarChart2, Shield, Settings, Eye, FileText, Check, X } from 'lucide-react'
+import { Users, CreditCard, TrendingUp, Clock, ArrowRight, BarChart2, Shield, Settings, Eye, FileText, Check, X, DollarSign } from 'lucide-react'
 import axios from '../api/axios'
 import { useAuth } from '../api/useAuth'
 import Navbar from '../components/Navbar'
@@ -27,6 +27,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(null)
   const [analytics, setAnalytics] = useState(null)
   const [limits, setLimits] = useState([])
+  const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
   const [savingLimits, setSavingLimits] = useState(false)
@@ -49,6 +50,10 @@ export default function AdminDashboard() {
       setStats(s.data.stats)
       setAnalytics(a.data)
       setLimits(l.data.limits || [])
+      try {
+        const t = await axios.get('/pay/admin/transactions')
+        setTransactions(t.data.transactions || [])
+      } catch {}
     } catch (err) {
       console.error(err)
     } finally {
@@ -126,6 +131,7 @@ export default function AdminDashboard() {
           {[
             { id: 'overview', label: 'Overview', icon: <BarChart2 size={14} /> },
             { id: 'limits', label: 'Feature Limits', icon: <Settings size={14} /> },
+            { id: 'transactions', label: 'Transactions', icon: <DollarSign size={14} /> },
           ].map(tab => (
             <button
               key={tab.id}
@@ -228,6 +234,46 @@ export default function AdminDashboard() {
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
               <p className="text-sm font-semibold text-amber-800 mb-1">Per-user overrides</p>
               <p className="text-xs text-amber-700">You can also set individual card limits per user in <button onClick={() => navigate('/admin/users')} className="underline font-semibold">User Management</button>. Per-user limits override plan defaults.</p>
+            </div>
+          </div>
+        )}
+        {activeTab === 'transactions' && (
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold text-gray-900">All Transactions</h2>
+            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">User</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Plan</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Amount</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {transactions.length === 0 && (
+                    <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400 text-sm">No transactions yet</td></tr>
+                  )}
+                  {transactions.map((t, i) => (
+                    <tr key={i} className="hover:bg-gray-50">
+                      <td className="px-4 py-3">
+                        <p className="font-medium text-gray-800 text-sm">{t.name || '—'}</p>
+                        <p className="text-xs text-gray-400">{t.email}</p>
+                      </td>
+                      <td className="px-4 py-3 font-semibold capitalize text-gray-700">{t.plan}</td>
+                      <td className="px-4 py-3 text-gray-600">₹{Math.round(t.amount / 100)}</td>
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                          t.status === 'success' ? 'bg-green-100 text-green-700' :
+                          t.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-red-100 text-red-700'}`}>{t.status}</span>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-gray-400">{new Date(t.created_at).toLocaleDateString('en-IN')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
