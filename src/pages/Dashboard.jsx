@@ -228,6 +228,11 @@ export default function Dashboard() {
                     <p className="text-xs text-gray-400">
                       {analytics?.last_7_days?.reduce((s, d) => s + d.views, 0) ?? 0} total
                       {!analytics && <span className="ml-1 text-gray-300">(sample)</span>}
+                      {analytics?.analytics_days && (
+                        <span className="ml-1 text-indigo-400 font-medium">
+                          · {analytics.analytics_days === -1 ? 'Full history' : `${analytics.analytics_days}-day`}
+                        </span>
+                      )}
                     </p>
                   </div>
                 </div>

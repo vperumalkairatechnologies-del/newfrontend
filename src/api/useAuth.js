@@ -92,27 +92,26 @@ export function useAuthState() {
 
   const getFeatureLimit = (featureName) => {
     if (isAdmin()) return -1
-    if (isAdvanced()) return -1
+    if (isAdvanced()) {
+      return -1  // unlimited everything
+    }
     if (isPro()) {
-      if (featureName === 'theme_colors') return -1
-      if (featureName === 'social_links') return -1
-      if (featureName === 'virtual_background') return 0
-      if (featureName === 'csv_export') return 0
-      if (featureName === 'custom_slug') return 0
-      return -1
+      const proLimits = {
+        theme_colors: -1, social_links: -1, cover_photo: 1,
+        company_logo: 1, custom_colors: 1, lead_capture: 1,
+        advanced_analytics: 1, custom_fields: 1,
+        virtual_background: 0, csv_export: 0, custom_slug: 0,
+      }
+      return proLimits[featureName] ?? -1
     }
     // basic
-    switch (featureName) {
-      case 'theme_colors':        return 10
-      case 'social_links':        return 5
-      case 'cover_photo':
-      case 'company_logo':
-      case 'virtual_background':
-      case 'custom_colors':
-      case 'csv_export':
-      case 'custom_slug':         return 0
-      default:                    return -1
+    const basicLimits = {
+      theme_colors: 10, social_links: 5,
+      cover_photo: 0, company_logo: 0, virtual_background: 0,
+      custom_colors: 0, lead_capture: 0, csv_export: 0, custom_slug: 0,
+      advanced_analytics: 0, custom_fields: 0,
     }
+    return basicLimits[featureName] ?? -1
   }
 
   const refreshUser = async () => {
