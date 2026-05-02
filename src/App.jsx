@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
+import { useAuth } from './api/useAuth'
 
 const Home = lazy(() => import('./pages/Home'))
 const Login = lazy(() => import('./pages/Login'))
@@ -21,9 +22,12 @@ const Spinner = () => (
 )
 
 function PrivateRoute({ children }) {
+  const { loading } = useAuth()
   const token = localStorage.getItem('token')
+
   if (!token) return <Navigate to="/login" replace />
-  // Check JWT expiry client-side to avoid stale token loops
+
+  // Check JWT expiry
   try {
     const payload = JSON.parse(atob(token.split('.')[1]))
     if (payload.exp && payload.exp * 1000 < Date.now()) {
@@ -32,6 +36,10 @@ function PrivateRoute({ children }) {
       return <Navigate to="/login" replace />
     }
   } catch {}
+
+  // Wait for /auth/me to complete before rendering protected page
+  if (loading) return <Spinner />
+
   return children
 }
 

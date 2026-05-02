@@ -125,7 +125,7 @@ export default function Dashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Hey, <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">{user.name?.split(' ')[0]}</span> 👋
+              Hey, <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">{user?.name?.split(' ')[0] || 'there'}</span> 👋
             </h1>
             <p className="text-sm text-gray-500 mt-1">Here's what's happening with your cards</p>
           </div>
@@ -287,7 +287,7 @@ export default function Dashboard() {
                       </button>
                     </div>
                   </div>
-                  <CardPreview card={{ ...selectedCard, name: selectedCard.name || user.name, email: selectedCard.email || user.email }} />
+                  <CardPreview card={{ ...selectedCard, name: selectedCard.name || user?.name, email: selectedCard.email || user?.email }} />
                 </div>
               </div>
             </div>
@@ -318,7 +318,7 @@ export default function Dashboard() {
       {showQR && selectedCard && (
         <QRModal
           cardId={selectedCard.id}
-          userName={selectedCard.name || user.name}
+          userName={selectedCard.name || user?.name}
           onClose={() => setShowQR(false)}
         />
       )}
