@@ -6,35 +6,6 @@ export default function Home() {
   const [testiIndex, setTestiIndex] = useState(0)
   const [isAnnual, setIsAnnual] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [slideIndex, setSlideIndex] = useState(0)
-
-  const slides = [
-    {
-      bg: '/phone/hero.png',
-      mobileBg: '/phone/mobiles1.png',
-      type: 'fullbg',
-    },
-    {
-      type: 'fullbg',
-      bg: '/phone/kk.png',
-      mobileBg: '/phone/mobiles2.png',
-      label: 'Built for Modern Professionals',
-      title: 'Create Smart Vcard',
-      sub: 'Replace paper cards forever. One link holds your contact, portfolio, and social profiles — always up to date.',
-      cta: 'Get Started Free',
-      contain: true,
-    },
-    {
-      type: 'fullbg',
-      bg: '/phone/hero_banner.png',
-      mobileBg: '/phone/mobile3.png',
-      label: 'Real-time Analytics & Insights',
-      title: 'Share Your Contact in \n One Scan',
-      sub: 'Every share, view, and click collects your leads.',
-      cta: 'See How It Works',
-      contain: true,
-    },
-  ]
 
   const pricing = {
     pro: isAnnual ? 499 : 624,
@@ -85,15 +56,11 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    const timer = setInterval(() => setSlideIndex(i => (i + 1) % 3), 5000)
     const testiTimer = setInterval(() => setTestiIndex(i => (i + 1) % 6), 6000)
     return () => {
-      clearInterval(timer)
       clearInterval(testiTimer)
     }
   }, [])
-
-  const handleHeroClick = () => setSlideIndex(i => (i + 1) % slides.length)
 
   return (
     <div className="landing-page">
@@ -101,30 +68,26 @@ export default function Home() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
         .landing-page *, .landing-page *::before, .landing-page *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        .landing-page { font-family: 'Roboto', sans-serif; background: #f0f4ff; color: #0a0a0f; overflow-x: hidden; }
+        .landing-page { font-family: 'Roboto', sans-serif; background: #F5F7FF; color: #0F172A; overflow-x: hidden; }
         .landing-page html { scroll-behavior: smooth; }
         /* ── Global Abstract Background ── */
         .landing-page .page-bg {
           position: fixed;
           inset: 0;
           z-index: -1;
-          background:
-            radial-gradient(ellipse 80% 60% at 10% 20%, rgba(186,210,255,0.45) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 50% at 90% 10%, rgba(214,228,255,0.4) 0%, transparent 55%),
-            radial-gradient(ellipse 70% 60% at 80% 80%, rgba(173,205,255,0.35) 0%, transparent 60%),
-            radial-gradient(ellipse 50% 40% at 20% 85%, rgba(199,218,255,0.3) 0%, transparent 55%),
-            radial-gradient(ellipse 90% 70% at 50% 50%, rgba(232,240,255,0.5) 0%, transparent 70%),
-            linear-gradient(160deg, #eef4ff 0%, #f5f8ff 35%, #eaf1ff 65%, #f0f5ff 100%);
+          background: linear-gradient(180deg, #F5F7FF, #EDEBFF);
         }
         .landing-page .page-bg::before {
           content: '';
           position: absolute;
           inset: 0;
-          background-image:
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900'%3E%3Cdefs%3E%3ClinearGradient id='w1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23b8d4ff' stop-opacity='0.25'/%3E%3Cstop offset='100%25' stop-color='%23daeaff' stop-opacity='0.08'/%3E%3C/linearGradient%3E%3ClinearGradient id='w2' x1='100%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23c5dcff' stop-opacity='0.2'/%3E%3Cstop offset='100%25' stop-color='%23e8f2ff' stop-opacity='0.06'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0,300 C200,200 400,450 720,280 C1040,110 1200,380 1440,250 L1440,0 L0,0 Z' fill='url(%23w1)'/%3E%3Cpath d='M0,600 C300,500 500,700 800,580 C1100,460 1300,650 1440,550 L1440,900 L0,900 Z' fill='url(%23w2)'/%3E%3Cpath d='M0,450 C250,350 450,550 750,420 C1050,290 1250,480 1440,380' stroke='%23b0ccff' stroke-width='1' fill='none' opacity='0.3'/%3E%3Cpath d='M0,520 C300,420 500,600 800,490 C1100,380 1300,540 1440,450' stroke='%23c8deff' stroke-width='0.8' fill='none' opacity='0.25'/%3E%3C/svg%3E");
-          background-size: cover;
-          background-position: center;
+          background: radial-gradient(circle at 50% 30%, rgba(123, 92, 255, 0.15) 0%, transparent 60%), radial-gradient(circle at 80% 80%, rgba(79, 140, 255, 0.1) 0%, transparent 50%);
           pointer-events: none;
+        }
+        .text-gradient {
+          background: linear-gradient(90deg, #4F8CFF, #7B5CFF);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
         /* Enhanced Navigation Bar */
         .landing-page nav { 
@@ -155,7 +118,7 @@ export default function Home() {
           font-weight: 800; 
           font-size: 22px; 
           letter-spacing: -0.5px; 
-          color: #0a0a0f; 
+          color: #0F172A; 
           text-decoration: none; 
           display: flex;
           align-items: center;
@@ -168,14 +131,14 @@ export default function Home() {
         }
         
         .landing-page .logo span { 
-          color: #5665a9; 
+          color: #4F8CFF; 
         }
         
         .landing-page .logo-icon {
           width: 8px;
           height: 8px;
           border-radius: 50%;
-          background: #5665a9;
+          background: #4F8CFF;
           position: relative;
         }
         
@@ -184,7 +147,7 @@ export default function Home() {
           position: absolute;
           inset: -2px;
           border-radius: 50%;
-          background: rgba(0, 87, 255, 0.2);
+          background: rgba(79, 140, 255, 0.2);
           animation: pulse 2s ease infinite;
         }
         
@@ -197,7 +160,7 @@ export default function Home() {
         
         .landing-page .nav-links a { 
           text-decoration: none; 
-          color: #3a3a4a; 
+          color: #6B7280; 
           font-size: 15px; 
           font-weight: 500; 
           letter-spacing: 0.2px; 
@@ -210,21 +173,21 @@ export default function Home() {
           position: absolute;
           bottom: 0; left: 0;
           width: 0; height: 2px;
-          background: #5665a9;
+          background: #4F8CFF;
           border-radius: 2px;
           transition: width 0.3s ease;
         }
-        .landing-page .nav-links a:hover { color: #5665a9; transform: translateY(-2px); }
+        .landing-page .nav-links a:hover { color: #4F8CFF; transform: translateY(-2px); }
         .landing-page .nav-links a:hover::after { width: 100%; }
         .landing-page .nav-cta { 
-          background: linear-gradient(135deg, #ff0000, #ff4444) !important; 
+          background: linear-gradient(90deg, #4F8CFF, #7B5CFF) !important; 
           color: #fff !important; 
           padding: 12px 28px; 
           border-radius: 50px; 
           font-weight: 600 !important; 
           font-size: 15px;
           transition: all 0.3s ease !important;
-          box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+          box-shadow: 0 4px 15px rgba(79, 140, 255, 0.3);
           position: relative;
           overflow: hidden;
           display: inline-flex;
@@ -235,7 +198,7 @@ export default function Home() {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, #cc0000, #ff2222);
+          background: linear-gradient(90deg, #3A78E8, #6A4AE8);
           opacity: 0;
           transition: opacity 0.3s;
           border-radius: 50px;
@@ -243,18 +206,55 @@ export default function Home() {
         }
         .landing-page .nav-cta:hover {
           transform: translateY(-3px) scale(1.04) !important;
-          box-shadow: 0 10px 28px rgba(255,0,0,0.45) !important;
+          box-shadow: 0 10px 28px rgba(79, 140, 255, 0.45) !important;
           color: #fff !important;
         }
         .landing-page .nav-cta:hover::after { opacity: 1; }
-        /* ── Hero Slider ── */
+        /* ── Hero Video & Floating UI ── */
         .landing-page .hero {
           margin-top: 70px;
           height: calc(100vh - 70px);
           position: relative;
           overflow: hidden;
-          cursor: pointer;
         }
+        .landing-page .hero-video {
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: 1;
+        }
+        .landing-page .desktop-video { display: block; }
+        .landing-page .mobile-video { display: none; }
+        
+        .floating-ui-card {
+          position: absolute;
+          z-index: 5;
+          background: rgba(255, 255, 255, 0.6);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.8);
+          border-radius: 16px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+          padding: 16px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+          100% { transform: translateY(0px); }
+        }
+        .float-1 { top: 20%; left: 15%; animation-delay: 0s; }
+        .float-2 { bottom: 30%; right: 15%; animation-delay: 2s; }
+        .float-3 { top: 40%; right: 10%; animation-delay: 4s; }
+        
+        .glass-color-picker { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #4F8CFF, #7B5CFF); }
+        .glass-toggle { width: 36px; height: 20px; border-radius: 10px; background: #4F8CFF; position: relative; }
+        .glass-toggle::after { content: ''; position: absolute; right: 2px; top: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; }
         /* every slide fills the hero box */
         .landing-page .slide {
           position: absolute;
@@ -475,7 +475,7 @@ export default function Home() {
           display: inline-flex;
           align-items: center;
           gap: 10px;
-          background: linear-gradient(135deg, #ff4444, #ff0000);
+          background: linear-gradient(90deg, #4F8CFF, #7B5CFF);
           color: #fff;
           padding: 18px 44px;
           border-radius: 50px;
@@ -485,8 +485,8 @@ export default function Home() {
           position: absolute;
           bottom: 80px;
           left: 80px;
-          z-index: 3;
-          box-shadow: 0 10px 40px rgba(255,0,0,0.4);
+          z-index: 6;
+          box-shadow: 0 10px 40px rgba(79,140,255,0.4);
           transition: all 0.3s ease;
           overflow: hidden;
         }
@@ -498,7 +498,7 @@ export default function Home() {
           opacity: 0;
           transition: opacity 0.3s;
         }
-        .landing-page .slide1-cta:hover { transform: translateY(-5px) scale(1.04); box-shadow: 0 20px 50px rgba(255,0,0,0.55); }
+        .landing-page .slide1-cta:hover { transform: translateY(-5px) scale(1.04); box-shadow: 0 20px 50px rgba(79,140,255,0.55); }
         .landing-page .slide1-cta:hover::before { opacity: 1; }
         /* dots */
         .landing-page .slider-dots {
@@ -524,6 +524,8 @@ export default function Home() {
         /* mobile */
         @media (max-width: 768px) {
           .landing-page .hero { margin-top: 56px; height: calc(100vh - 56px); }
+          .landing-page .desktop-video { display: none; }
+          .landing-page .mobile-video { display: block; }
           .landing-page .slide-fullbg { background-image: var(--mobile-bg) !important; background-size: cover; background-position: center; }
           .landing-page .slide-badge,
           .landing-page .slide-fullbg .slide-p,
@@ -543,100 +545,156 @@ export default function Home() {
 
         .landing-page section { padding: 100px 60px; }
         .landing-page .section-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #0057ff; font-weight: 500; margin-bottom: 16px; }
-        .landing-page .section-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: clamp(32px, 4vw, 48px); letter-spacing: -1px; line-height: 1.1; color: #0a0a0f; max-width: 560px; }
-        .landing-page .section-desc { font-size: 17px; color: #3a3a4a; font-weight: 300; line-height: 1.7; max-width: 480px; margin-top: 16px; }
+        .landing-page .section-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: clamp(32px, 4vw, 48px); letter-spacing: -1px; line-height: 1.1; color: #0F172A; max-width: 560px; }
+        .landing-page .section-desc { font-size: 17px; color: #6B7280; font-weight: 300; line-height: 1.7; max-width: 480px; margin-top: 16px; }
         .landing-page .features { background: transparent; }
         .landing-page .features-header { text-align: center; margin-bottom: 72px; display: flex; flex-direction: column; align-items: center; }
-        .landing-page .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 1100px; margin: 0 auto; }
-        .landing-page .feature-cell { background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); padding: 44px 40px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; box-shadow: 0 8px 32px rgba(86,101,169,0.08); border: 1px solid rgba(255,255,255,0.8); }
-        .landing-page .feature-cell:hover { background: #5665a9; transform: translateY(-12px); box-shadow: 0 25px 50px rgba(86,101,169,0.3); border-color: transparent; }
-        .landing-page .feature-cell:hover h3, .landing-page .feature-cell:hover p { color: #fff; }
-        .landing-page .feature-cell:hover .feature-icon { background: #fff; color: #5665a9; }
-        .landing-page .feature-icon { width: 52px; height: 52px; border-radius: 14px; background: #5665a9; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 24px; transition: all 0.3s ease; }
-        .landing-page .feature-cell h3 { font-family: 'Roboto', sans-serif; font-weight: 600; font-size: 18px; color: #0a0a0f; margin-bottom: 10px; transition: color 0.3s ease; }
-        .landing-page .feature-cell p { font-size: 14px; color: #3a3a4a; line-height: 1.7; transition: color 0.3s ease; }
-        .landing-page .how { background: #fff; position: relative; }
+        .landing-page .features-grid { display: flex; flex-wrap: wrap; gap: 32px; max-width: 1100px; margin: 0 auto; justify-content: center; }
+        .landing-page .feature-cell { 
+          position: relative;
+          flex: 1 1 300px; max-width: 340px; background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 44px 40px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); border: 1px solid rgba(255, 255, 255, 0.8); 
+        }
+        .landing-page .feature-cell::before {
+          content: ''; position: absolute; inset: -2px; border-radius: 26px; z-index: -1;
+          background: linear-gradient(135deg, rgba(79,140,255,0.6), rgba(123,92,255,0.6), transparent 60%);
+          opacity: 0; filter: blur(6px); transition: opacity 0.5s ease;
+        }
+        .landing-page .feature-cell:hover::before { opacity: 1; }
+        .landing-page .feature-cell:hover { background: rgba(255, 255, 255, 0.8); transform: translateY(-8px); box-shadow: 0 20px 50px rgba(79, 140, 255, 0.15); border-color: transparent; }
+        .landing-page .feature-cell:hover h3, .landing-page .feature-cell:hover p { color: #0F172A; }
+        .landing-page .feature-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 24px; transition: all 0.3s ease; }
+        .landing-page .feature-cell h3 { font-family: 'Roboto', sans-serif; font-weight: 600; font-size: 18px; color: #0F172A; margin-bottom: 10px; transition: color 0.3s ease; }
+        .landing-page .feature-cell p { font-size: 14px; color: #6B7280; line-height: 1.7; transition: color 0.3s ease; }
+        .landing-page .how { background: #ffffff; position: relative; padding: 120px 60px; overflow: hidden; }
+        .landing-page .how::before { content: ''; position: absolute; top: -20%; left: -10%; width: 50%; height: 50%; background: radial-gradient(circle, rgba(79, 140, 255, 0.05), transparent 60%); pointer-events: none; }
+        .landing-page .how::after { content: ''; position: absolute; bottom: -20%; right: -10%; width: 50%; height: 50%; background: radial-gradient(circle, rgba(123, 92, 255, 0.05), transparent 60%); pointer-events: none; }
         .landing-page .how-inner { 
-          max-width: 1100px; 
+          max-width: 1250px; 
           margin: 0 auto; 
           display: grid; 
-          grid-template-columns: 1.1fr 0.9fr; 
+          grid-template-columns: 1fr 1fr; 
           gap: 80px; 
-          align-items: flex-start; 
+          align-items: center; 
         }
+        .landing-page .how-content { position: relative; z-index: 2; padding: 40px 0; }
         .landing-page .steps { 
-          margin-top: 48px; 
+          margin-top: 56px; 
           display: flex; 
           flex-direction: column; 
-          gap: 12px; 
+          gap: 20px; 
           position: relative;
         }
         .landing-page .steps::before {
           content: '';
           position: absolute;
-          top: 22px;
-          bottom: 22px;
-          left: 21px;
+          top: 36px;
+          bottom: 36px;
+          left: 27px;
           width: 2px;
-          background: rgba(0, 87, 255, 0.1);
+          background: linear-gradient(to bottom, rgba(0, 87, 255, 0.1), rgba(123, 92, 255, 0.1));
           border-radius: 2px;
         }
         .landing-page .timeline-progress {
           position: absolute;
-          top: 22px;
-          left: 21px;
+          top: 36px;
+          left: 27px;
           width: 2px;
-          background: #0057ff;
-          transition: height 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+          background: linear-gradient(to bottom, #4F8CFF, #7B5CFF);
+          transition: height 1s cubic-bezier(0.25, 1, 0.5, 1);
           z-index: 1;
-          box-shadow: 0 0 15px rgba(0, 87, 255, 0.5);
+          box-shadow: 0 0 10px rgba(123, 92, 255, 0.4);
         }
         .landing-page .step { 
           display: flex; 
-          gap: 32px; 
-          padding: 24px 0; 
+          align-items: flex-start;
+          gap: 24px; 
+          padding: 24px; 
           cursor: pointer; 
-          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+          transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); 
           position: relative;
           z-index: 1;
+          border-radius: 24px;
+          border: 1px solid transparent;
         }
+        .landing-page .step:hover {
+          background: rgba(245, 247, 255, 0.5);
+        }
+        /* Hide mobile image on desktop */
+        .landing-page .step-mobile-img { display: none; }
         .landing-page .step-num { 
           font-family: 'Roboto', sans-serif; 
-          font-weight: 800; 
-          font-size: 18px; 
-          color: #7a7a8e; 
-          letter-spacing: 1px; 
-          width: 44px; 
-          height: 44px;
-          background: #fff;
-          border: 2px solid rgba(0, 87, 255, 0.1);
-          border-radius: 50%;
+          font-weight: 700; 
+          font-size: 16px; 
+          color: #94A3B8; 
+          width: 56px; 
+          height: 56px;
+          background: #F8FAFC;
+          border: 2px solid #E2E8F0;
+          border-radius: 16px;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0; 
-          transition: all 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+          transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+          position: relative;
+          z-index: 2;
         }
-        .landing-page .step-content h4 { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 22px; color: #0a0a0f; margin-bottom: 8px; transition: color 1.2s ease; }
-        .landing-page .step-content p { font-size: 16px; color: #3a3a4a; line-height: 1.7; }
-        .landing-page .step.passed .step-num { 
-          background: #0057ff; 
+        .landing-page .step-content { flex: 1; padding-top: 4px; }
+        .landing-page .step-content h4 { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 20px; color: #334155; margin-bottom: 8px; transition: color 0.5s ease; }
+        .landing-page .step-content p { font-size: 15px; color: #64748B; line-height: 1.6; transition: color 0.5s ease; }
+        
+        .landing-page .step.active {
+          background: #ffffff;
+          border-color: rgba(79, 140, 255, 0.15);
+          box-shadow: 0 20px 40px rgba(79, 140, 255, 0.08);
+          transform: translateX(10px);
+        }
+        .landing-page .step.active .step-num { 
+          background: linear-gradient(135deg, #4F8CFF, #7B5CFF);
           color: #fff; 
-          border-color: #0057ff;
-          box-shadow: 0 0 20px rgba(0, 87, 255, 0.3);
+          border-color: transparent;
+          box-shadow: 0 10px 20px rgba(79, 140, 255, 0.3);
+          transform: scale(1.1);
         }
-        .landing-page .step.active .step-num {
-          transform: scale(1.15);
-        }
-        .landing-page .step.passed h4 { color: #0057ff; }
+        .landing-page .step.active h4 { color: #0F172A; }
+        .landing-page .step.active p { color: #475569; }
+        
         .landing-page .how-visual { 
           position: sticky; 
-          top: 120px; 
-          height: calc(100vh - 120px); 
+          top: 140px; 
+          height: calc(100vh - 200px); 
+          min-height: 600px;
           display: flex; 
           align-items: center; 
           justify-content: center; 
-          transition: all 0.5s ease;
+        }
+        .landing-page .how-visual-container {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+        }
+        .landing-page .how-visual img {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 95%;
+          height: 95%;
+          object-fit: contain;
+          opacity: 0;
+          z-index: 2;
+          transform: translate(-50%, calc(-50% + 20px)) scale(1.05);
+          transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+          filter: drop-shadow(0 20px 50px rgba(79, 140, 255, 0.2));
+          -webkit-mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 65%, transparent 100%);
+          mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 65%, transparent 100%);
+        }
+        .landing-page .how-visual img.active {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
         }
         .landing-page .pricing { background: #0a0a0f; text-align: center; position: relative; overflow: hidden; }
         .landing-page .pricing::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0,87,255,0.18) 0%, transparent 65%), radial-gradient(ellipse 40% 40% at 10% 100%, rgba(201,168,76,0.08) 0%, transparent 60%); pointer-events: none; }
@@ -712,56 +770,77 @@ export default function Home() {
         .landing-page .testi-card { 
           position: absolute; 
           inset: 0; 
-          background: rgba(255,255,255,0.72); 
-          backdrop-filter: blur(12px); 
-          border-radius: 32px; 
-          padding: 48px 40px; 
-          border: 1px solid rgba(255,255,255,0.85); 
+          background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.6)); 
+          backdrop-filter: blur(20px); 
+          -webkit-backdrop-filter: blur(20px);
+          border-radius: 40px; 
+          padding: 60px 48px; 
+          border: 1px solid rgba(255,255,255,0.9); 
           text-align: center; 
-          box-shadow: 0 15px 45px rgba(86,101,169,0.12); 
+          box-shadow: 0 20px 50px rgba(79, 140, 255, 0.08), inset 0 0 0 1px rgba(255,255,255,0.8); 
           opacity: 0;
           visibility: hidden;
-          transform: translateX(50px) scale(0.95);
-          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+          transform: translateX(60px) scale(0.92);
+          transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          overflow: hidden;
+        }
+        .landing-page .testi-card::before {
+          content: '"';
+          position: absolute;
+          top: -20px;
+          left: 40px;
+          font-size: 200px;
+          font-family: Georgia, serif;
+          color: rgba(79, 140, 255, 0.06);
+          line-height: 1;
+          pointer-events: none;
         }
         .landing-page .testi-card.active {
           opacity: 1;
           visibility: visible;
           transform: translateX(0) scale(1);
+          box-shadow: 0 30px 80px rgba(79, 140, 255, 0.15), inset 0 0 0 1px rgba(255,255,255,0.9);
         }
-        .landing-page .testi-dots { display: flex; justify-content: center; gap: 12px; margin-top: 40px; }
-        .landing-page .testi-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(86,101,169,0.2); cursor: pointer; transition: all 0.3s; }
-        .landing-page .testi-dot.active { background: #5665a9; width: 32px; border-radius: 10px; }
-        .landing-page .stars { color: #c9a84c; font-size: 20px; letter-spacing: 4px; margin-bottom: 24px; }
-        .landing-page .testi-text { font-size: 20px; line-height: 1.6; color: #1a1a3e; font-weight: 400; margin-bottom: 32px; max-width: 600px; }
-        .landing-page .testi-author { display: flex; align-items: center; gap: 16px; flex-direction: column; }
-        .landing-page .testi-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 18px; color: white; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .landing-page .testi-name { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 18px; color: #0a0a0f; margin-bottom: 4px; }
-        .landing-page .testi-role { font-size: 14px; color: #7a7a8e; }
+        .landing-page .testi-dots { display: flex; justify-content: center; gap: 8px; margin-top: 48px; }
+        .landing-page .testi-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(79, 140, 255, 0.2); cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .landing-page .testi-dot:hover { background: rgba(79, 140, 255, 0.4); transform: scale(1.2); }
+        .landing-page .testi-dot.active { background: linear-gradient(135deg, #4F8CFF, #7B5CFF); width: 36px; border-radius: 12px; box-shadow: 0 4px 12px rgba(79, 140, 255, 0.3); }
+        .landing-page .stars { color: #c9a84c; font-size: 22px; letter-spacing: 4px; margin-bottom: 24px; filter: drop-shadow(0 2px 4px rgba(201,168,76,0.3)); }
+        .landing-page .testi-text { font-size: 22px; line-height: 1.7; color: #1E293B; font-weight: 400; margin-bottom: 40px; max-width: 650px; font-style: italic; position: relative; z-index: 1; }
+        .landing-page .testi-author { display: flex; align-items: center; gap: 20px; flex-direction: row; text-align: left; background: rgba(255,255,255,0.5); padding: 12px 24px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .landing-page .testi-avatar { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 20px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 3px solid #fff; }
+        .landing-page .testi-name { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 18px; color: #0F172A; margin-bottom: 2px; }
+        .landing-page .testi-role { font-size: 14px; color: #64748B; }
         .landing-page .testi-nav { 
           position: absolute; 
           top: 50%; 
           transform: translateY(-50%); 
-          width: 56px; 
-          height: 56px; 
+          width: 64px; 
+          height: 64px; 
           border-radius: 50%; 
           background: #fff; 
-          border: 1px solid rgba(86,101,169,0.15); 
+          border: 1px solid rgba(79, 140, 255, 0.15); 
           display: flex; 
           align-items: center; 
           justify-content: center; 
           cursor: pointer; 
           z-index: 10; 
-          box-shadow: 0 8px 25px rgba(86,101,169,0.1); 
-          transition: all 0.3s;
-          font-size: 20px;
-          color: #5665a9;
+          box-shadow: 0 10px 30px rgba(79, 140, 255, 0.1); 
+          transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+          font-size: 24px;
+          color: #4F8CFF;
         }
-        .landing-page .testi-nav:hover { background: #5665a9; color: #fff; transform: translateY(-50%) scale(1.1); box-shadow: 0 12px 35px rgba(86,101,169,0.2); }
+        .landing-page .testi-nav:hover { 
+          background: linear-gradient(135deg, #4F8CFF, #7B5CFF); 
+          color: #fff; 
+          transform: translateY(-50%) scale(1.1); 
+          box-shadow: 0 15px 40px rgba(79, 140, 255, 0.3); 
+          border-color: transparent;
+        }
         .landing-page .testi-nav.prev { left: -80px; }
         .landing-page .testi-nav.next { right: -80px; }
         @media (max-width: 1000px) {
@@ -783,9 +862,9 @@ export default function Home() {
         .landing-page .cta-band h2 { font-family: 'Roboto', sans-serif; font-weight: 800; font-size: clamp(36px, 5vw, 64px); color: #fff; letter-spacing: -1.5px; line-height: 1.05; max-width: 700px; margin: 0 auto 24px; position: relative; z-index: 1; }
         .landing-page .cta-band p { font-size: 17px; font-weight: 300; color: rgba(255,255,255,0.6); max-width: 420px; margin: 0 auto 48px; line-height: 1.7; position: relative; z-index: 1; }
         .landing-page .cta-band .btn-primary { 
-          background: #fff; 
-          color: #5665a9;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.15); 
+          background: linear-gradient(90deg, #4F8CFF, #7B5CFF); 
+          color: #fff;
+          box-shadow: 0 10px 40px rgba(79, 140, 255, 0.3); 
           position: relative; 
           z-index: 1; 
           font-size: 16px; 
@@ -801,22 +880,21 @@ export default function Home() {
           position: absolute;
           top: 0; left: -100%;
           width: 100%; height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
           transition: left 0.6s ease;
         }
         .landing-page .cta-band .btn-primary:hover::before { left: 100%; }
         .landing-page .cta-band .btn-primary:hover { 
-          background: #f0f4ff;
           transform: translateY(-5px) scale(1.04); 
-          box-shadow: 0 24px 60px rgba(0,0,0,0.25);
-          color: #5665a9;
+          box-shadow: 0 20px 50px rgba(79, 140, 255, 0.45);
+          color: #fff;
           letter-spacing: 0.3px;
         }
         /* ── Footer ── */
         .landing-page footer {
-          background: black;
+          background: #0F172A;
           color: #ffffff;
-          padding: 50px 60px 30px;
+          padding: 80px 60px 40px;
           position: relative;
           overflow: hidden;
         }
@@ -824,16 +902,16 @@ export default function Home() {
           content: '';
           position: absolute;
           top: -120px; right: -120px;
-          width: 400px; height: 400px;
-          background: radial-gradient(circle, rgba(86,101,169,0.08), transparent 70%);
+          width: 600px; height: 600px;
+          background: radial-gradient(circle, rgba(79,140,255,0.15), transparent 60%);
           pointer-events: none;
         }
         .landing-page footer::after {
           content: '';
           position: absolute;
-          bottom: -80px; left: -80px;
-          width: 300px; height: 300px;
-          background: radial-gradient(circle, rgba(124,58,237,0.06), transparent 70%);
+          bottom: -150px; left: -150px;
+          width: 500px; height: 500px;
+          background: radial-gradient(circle, rgba(123,92,255,0.15), transparent 60%);
           pointer-events: none;
         }
         .landing-page .footer-inner {
@@ -862,77 +940,142 @@ export default function Home() {
           line-height: 1.7;
           margin-bottom: 24px;
         }
-        .landing-page .footer-social { display: flex; gap: 10px; }
+        .landing-page .footer-social { display: flex; gap: 12px; }
         .landing-page .social-link {
-          width: 38px; height: 38px;
-          border-radius: 12px;
-          background: #fff;
-          border: 1px solid rgba(86,101,169,0.15);
+          width: 42px; height: 42px;
+          border-radius: 14px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
           display: flex; align-items: center; justify-content: center;
           text-decoration: none;
-          font-size: 16px;
-          transition: all 0.3s;
-          box-shadow: 0 2px 8px rgba(86,101,169,0.08);
+          font-size: 18px;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          position: relative;
+          overflow: hidden;
+        }
+        .landing-page .social-link::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #4F8CFF, #7B5CFF);
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          z-index: -1;
         }
         .landing-page .social-link:hover {
-          background: #5665a9;
-          border-color: #5665a9;
-          transform: translateY(-3px);
-          box-shadow: 0 8px 20px rgba(86,101,169,0.3);
+          transform: translateY(-5px) scale(1.05);
+          border-color: transparent;
+          box-shadow: 0 10px 25px rgba(79, 140, 255, 0.3);
+        }
+        .landing-page .social-link:hover::before {
+          opacity: 1;
         }
         .landing-page .footer-badge {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          background: rgba(86,101,169,0.08);
-          border: 1px solid rgba(86,101,169,0.15);
-          padding: 7px 14px;
+          background: rgba(79, 140, 255, 0.1);
+          border: 1px solid rgba(79, 140, 255, 0.2);
+          padding: 8px 16px;
           border-radius: 50px;
-          font-size: 12px;
-          color: #5665a9;
+          font-size: 13px;
+          color: #4F8CFF;
           font-weight: 500;
-          margin-top: 16px;
+          margin-top: 20px;
+          transition: all 0.3s ease;
+        }
+        .landing-page .footer-badge:hover {
+          background: rgba(79, 140, 255, 0.15);
+          border-color: rgba(79, 140, 255, 0.3);
+          transform: translateY(-2px);
         }
         .landing-page .footer-badge-icon {
-          width: 14px; height: 14px;
-          background: #5665a9;
+          width: 16px; height: 16px;
+          background: #4F8CFF;
           border-radius: 50%;
           display: flex; align-items: center; justify-content: center;
-          font-size: 8px; color: #fff;
+          font-size: 9px; color: #fff;
+          box-shadow: 0 0 10px rgba(79, 140, 255, 0.5);
         }
         .landing-page .footer-col h5 {
           color: #ffffff;
           font-size: 16px;
           font-weight: 700;
           margin-bottom: 24px;
+          position: relative;
+          display: inline-block;
+        }
+        .landing-page .footer-col h5::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: -8px;
+          width: 24px;
+          height: 2px;
+          background: #4F8CFF;
+          border-radius: 2px;
         }
         .landing-page .footer-col ul { list-style: none; }
-        .landing-page .footer-col ul li { margin-bottom: 12px; }
+        .landing-page .footer-col ul li { margin-bottom: 14px; }
         .landing-page .footer-col ul li a {
           color: rgba(255,255,255,0.7);
           text-decoration: none;
-          font-size: 14px;
-          transition: all 0.3s;
+          font-size: 15px;
+          transition: all 0.3s ease;
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          padding-bottom: 2px;
         }
-        .landing-page .footer-col ul li a:hover { color: #ffffff; transform: translateX(5px); display: inline-block; }
+        .landing-page .footer-col ul li a::after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 1px;
+          bottom: 0;
+          left: 0;
+          background-color: #4F8CFF;
+          transition: width 0.3s ease;
+        }
+        .landing-page .footer-col ul li a:hover { 
+          color: #ffffff; 
+          transform: translateX(6px); 
+        }
+        .landing-page .footer-col ul li a:hover::after { 
+          width: 100%; 
+        }
         .landing-page .footer-bottom {
           max-width: 1200px;
           margin: 0 auto;
-          padding-top: 24px;
+          padding-top: 32px;
           display: flex;
           justify-content: space-between;
           align-items: center;
           position: relative; z-index: 1;
         }
-        .landing-page .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.5); }
-        .landing-page .footer-bottom-links { display: flex; gap: 24px; }
+        .landing-page .footer-bottom p { font-size: 14px; color: rgba(255,255,255,0.5); }
+        .landing-page .footer-bottom-links { display: flex; gap: 32px; }
         .landing-page .footer-bottom-links a {
-          font-size: 13px;
+          font-size: 14px;
           color: rgba(255,255,255,0.5);
           text-decoration: none;
-          transition: color 0.3s;
+          transition: all 0.3s ease;
+          position: relative;
+        }
+        .landing-page .footer-bottom-links a::after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 1px;
+          bottom: -2px;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: #ffffff;
+          transition: width 0.3s ease;
         }
         .landing-page .footer-bottom-links a:hover { color: #ffffff; }
+        .landing-page .footer-bottom-links a:hover::after { width: 100%; }
         @media (max-width: 900px) {
           .landing-page .footer-top { flex-direction: column; text-align: center; padding: 40px 32px; }
           .landing-page .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
@@ -963,8 +1106,85 @@ export default function Home() {
           .landing-page .nav-links { display: none; }
           .landing-page section { padding: 72px 24px; }
           .landing-page .features-grid, .landing-page .pricing-grid, .landing-page .testi-grid { grid-template-columns: 1fr; }
-          .landing-page .how-inner { grid-template-columns: 1fr; }
+          .landing-page .how { padding: 80px 24px; }
+          .landing-page .how-inner { grid-template-columns: 1fr; gap: 40px; }
           .landing-page .how-visual { display: none; }
+          
+          /* Mobile step accordion */
+          .landing-page .step {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 16px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 24px;
+            padding: 24px !important;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: none !important;
+          }
+          .landing-page .step.active {
+            border-color: rgba(79, 140, 255, 0.3);
+            box-shadow: 0 12px 30px rgba(79, 140, 255, 0.12);
+            background: #ffffff;
+          }
+          .landing-page .step-num {
+            width: 44px; height: 44px; font-size: 14px; border-radius: 12px;
+          }
+          .landing-page .step-content {
+            width: calc(100% - 60px);
+            padding-top: 0;
+          }
+          .landing-page .step-content h4 {
+            line-height: 44px;
+            margin-bottom: 0;
+            font-size: 18px;
+          }
+          .landing-page .step-content p {
+            margin-top: 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            display: none;
+          }
+          .landing-page .step.active .step-content p {
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+          }
+          @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+          
+          .landing-page .step-mobile-img {
+            display: block;
+            width: 100%;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease, transform 0.6s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            margin-top: 0;
+            margin-left: 0;
+          }
+          .landing-page .step.active .step-mobile-img {
+            max-height: 600px;
+            opacity: 1;
+            transform: translateY(0);
+            margin-top: 16px;
+            margin-bottom: 8px;
+          }
+          .landing-page .step-mobile-img img {
+            width: 100%;
+            height: auto;
+            max-height: 380px;
+            object-fit: contain;
+            border-radius: 16px;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.08));
+            display: block;
+          }
+          /* Hide desktop timeline line on mobile */
+          .landing-page .steps::before, .landing-page .timeline-progress { display: none; }
           .landing-page .footer-inner { grid-template-columns: 1fr 1fr; }
           .mobile-menu-toggle {
             display: block;
@@ -984,9 +1204,7 @@ export default function Home() {
           .landing-page .feature-icon { width: 44px; height: 44px; font-size: 20px; margin-bottom: 20px; }
           .landing-page .feature-cell h3 { font-size: 16px; }
           .landing-page .feature-cell p { font-size: 13px; }
-          .landing-page .how-inner { gap: 40px; }
           .landing-page .steps { margin-top: 32px; }
-          .landing-page .step { padding: 20px 0; }
           .landing-page .step-content h4 { font-size: 16px; }
           .landing-page .step-content p { font-size: 13px; }
           .landing-page .cta-band { padding: 80px 20px; }
@@ -1004,12 +1222,11 @@ export default function Home() {
           .landing-page .feature-icon { width: 40px; height: 40px; font-size: 18px; margin-bottom: 16px; }
           .landing-page .feature-cell h3 { font-size: 15px; }
           .landing-page .feature-cell p { font-size: 12px; }
-          .landing-page .how-inner { gap: 32px; }
           .landing-page .steps { margin-top: 24px; }
-          .landing-page .step { padding: 16px 0; }
-          .landing-page .step-num { font-size: 12px; }
-          .landing-page .step-content h4 { font-size: 15px; }
-          .landing-page .step-content p { font-size: 12px; }
+          .landing-page .step-num { font-size: 12px; width: 36px; height: 36px; }
+          .landing-page .step-content { width: calc(100% - 48px); }
+          .landing-page .step-content h4 { font-size: 15px; line-height: 36px; }
+          .landing-page .step-content p { font-size: 12px; margin-top: 8px; }
           .landing-page .testi-header { margin-bottom: 40px; }
           .landing-page .testi-card { padding: 24px 20px; }
           .landing-page .testi-text { font-size: 14px; }
@@ -1038,7 +1255,7 @@ export default function Home() {
           .landing-page .feature-icon { width: 36px; height: 36px; font-size: 16px; margin-bottom: 12px; }
           .landing-page .feature-cell h3 { font-size: 14px; margin-bottom: 8px; }
           .landing-page .feature-cell p { font-size: 11px; }
-          .landing-page .step { padding: 12px 0; }
+          .landing-page .step { padding: 16px !important; }
           .landing-page .step-content h4 { font-size: 14px; }
           .landing-page .step-content p { font-size: 11px; }
           .landing-page .testi-card { padding: 20px 16px; }
@@ -1183,6 +1400,36 @@ export default function Home() {
             display: none;
           }
         }
+
+        .landing-page .floating-whatsapp {
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          background: #25D366;
+          color: white;
+          border-radius: 50px;
+          padding: 12px 24px 12px 20px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-family: 'Roboto', sans-serif;
+          font-weight: 600;
+          font-size: 15px;
+          text-decoration: none;
+          box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+          z-index: 999;
+          transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .landing-page .floating-whatsapp:hover {
+          transform: translateY(-5px) scale(1.05);
+          box-shadow: 0 15px 40px rgba(37, 211, 102, 0.5);
+          color: white;
+        }
+        .landing-page .floating-whatsapp svg {
+          width: 24px;
+          height: 24px;
+          fill: currentColor;
+        }
       `}</style>
 
       <nav>
@@ -1193,7 +1440,7 @@ export default function Home() {
         <ul className="nav-links">
           <li><a href="#features">Features</a></li>
           <li><a href="#how">How it works</a></li>
-          <li><Link to="/register" className="nav-cta">Make Your Card</Link></li>
+          <li><Link to="/register" className="nav-cta">Get Started Now</Link></li>
         </ul>
         <button
           className={`mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`}
@@ -1211,62 +1458,62 @@ export default function Home() {
         <ul className="mobile-nav-links">
           <li><a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a></li>
           <li><a href="#how" onClick={() => setMobileMenuOpen(false)}>How it works</a></li>
-          <li><Link to="/register" className="nav-cta" onClick={() => setMobileMenuOpen(false)}>Get Started Free</Link></li>
+          <li><Link to="/register" className="nav-cta" onClick={() => setMobileMenuOpen(false)}>Get Started Now</Link></li>
         </ul>
       </div>
 
-      <section className="hero" onClick={handleHeroClick}>
-        {slides.map((s, i) => {
-          const isActive = slideIndex === i
-          if (!s.label) {
-            return (
-              <div key={i} className={`slide slide-fullbg${isActive ? ' active' : ''}`}
-                style={{ backgroundImage: `url(${s.bg})`, '--mobile-bg': `url(${s.mobileBg})` }} />
-            )
-          }
-          return (
-            <div key={i} className={`slide slide-fullbg${s.contain ? ' slide-contain' : ''}${isActive ? ' active' : ''}`}
-              style={{ backgroundImage: `url(${s.bg})`, '--mobile-bg': `url(${s.mobileBg})` }}>
-              <div className="slide-overlay" />
-              <div className="slide-content">
-                <div className="slide-badge">{s.label}</div>
-                <h1 className="slide-h1">{s.title}</h1>
-                <p className="slide-p">{s.sub}</p>
-                <Link to="/register" className="slide-btn" onClick={e => e.stopPropagation()}>{s.cta} →</Link>
-                <div className="slide-trust">Trusted by 5,000+ professionals across India</div>
-              </div>
-            </div>
-          )
-        })}
-        {slideIndex === 0 && (
-          <Link to="/register" className="slide1-cta" onClick={e => e.stopPropagation()}>
-            Create Your Card <span>→</span>
-          </Link>
-        )}
-        <div className="slider-dots">
-          {slides.map((_, i) => (
-            <button key={i} className={`dot${slideIndex === i ? ' active' : ''}`} onClick={e => { e.stopPropagation(); setSlideIndex(i) }} aria-label={`Slide ${i + 1}`} />
-          ))}
+      <section className="hero">
+        <video 
+          className="hero-video desktop-video" 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+        >
+          <source src="/phone/hero.webm" type="video/webm" />
+        </video>
+        <video 
+          className="hero-video mobile-video" 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+        >
+          <source src="/phone/heromobile.webm" type="video/webm" />
+        </video>
+        <div className="floating-ui-card float-1">
+          <div className="glass-color-picker"></div>
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#0F172A' }}>Brand Color</span>
         </div>
+        <div className="floating-ui-card float-2">
+          <div className="glass-toggle"></div>
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#0F172A' }}>Custom Layout</span>
+        </div>
+        <div className="floating-ui-card float-3" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+          <div style={{ width: '60px', height: '6px', background: 'rgba(79, 140, 255, 0.2)', borderRadius: '3px', margin: '0 0 8px 0' }}></div>
+          <div style={{ width: '40px', height: '6px', background: 'rgba(79, 140, 255, 0.2)', borderRadius: '3px' }}></div>
+        </div>
+        <Link to="/register" className="slide1-cta">
+          Get Started Now <span>→</span>
+        </Link>
       </section>
 
       <section className="features" id="features">
         <div className="features-header reveal">
           <div className="section-label">Everything You Need</div>
-          <h2 className="section-title">Built for professionals<br />who mean business</h2>
+          <h2 className="section-title">Built for professionals<br />who want <span className="text-gradient">Customized</span> cards</h2>
           <p className="section-desc">Every feature designed to help you make memorable first impressions and track meaningful connections.</p>
         </div>
         <div className="features-grid reveal">
           {[
-            { icon: '✦', title: 'Beautiful Templates', desc: 'Choose from 50+ professionally designed templates. Customise colors, fonts, and layout to match your brand identity perfectly.' },
-            { icon: '📲', title: 'Instant QR Sharing', desc: 'Generate a unique QR code for every card. Anyone can scan and save your contact in one tap — no app required.' },
-            { icon: '📊', title: 'Real-time Analytics', desc: 'See who viewed your card, when they scanned it, and where they came from. Know your network like never before.' },
-            { icon: '🔗', title: 'One Link, Everything', desc: 'A single shareable link houses your website, social profiles, portfolio, and contact — all in one polished page.' },
-            { icon: '🏢', title: 'Team Management', desc: 'Deploy branded cards across your entire organisation. Maintain consistency while giving each member their own card.' },
-            { icon: '🔒', title: 'Privacy & Control', desc: 'Choose exactly what information to share and with whom. Update your details anytime — changes reflect instantly everywhere.' },
+            { icon: '✦', bg: '#E6F0FF', color: '#4F8CFF', title: 'Beautiful Templates', desc: 'Choose from 50+ professionally designed templates. Customise colors, fonts, and layout to match your brand identity perfectly.' },
+            { icon: '📲', bg: '#F0E6FF', color: '#7B5CFF', title: 'Instant QR Sharing', desc: 'Generate a unique QR code for every card. Anyone can scan and save your contact in one tap.' },
+            { icon: '📊', bg: '#FFE6F0', color: '#FF4F8C', title: 'Real-time Analytics', desc: 'See who viewed your card, when they scanned it, and where they came from.' },
+            { icon: '🔗', bg: '#FFF4E6', color: '#FF8C4F', title: 'One Link, Everything', desc: 'A single shareable link houses your website, social profiles, portfolio, and contact.' },
+            { icon: '🔒', bg: '#E6FFF0', color: '#4CAF50', title: 'Privacy & Control', desc: 'Choose exactly what information to share and with whom. Update your details anytime.' },
           ].map((f, i) => (
             <div key={i} className="feature-cell">
-              <div className="feature-icon">{f.icon}</div>
+              <div className="feature-icon" style={{ background: f.bg, color: f.color }}>{f.icon}</div>
               <h3>{f.title}</h3>
               <p>{f.desc}</p>
             </div>
@@ -1276,30 +1523,56 @@ export default function Home() {
 
       <section className="how" id="how">
         <div className="how-inner">
-          <div>
+          <div className="how-content">
             <div className="section-label">Simple Process</div>
             <h2 className="section-title">Up and running in 3 minutes</h2>
             <p className="section-desc">No design skills needed. Create a card that impresses everyone.</p>
             <div className="steps">
-              <div className="timeline-progress" style={{ height: `${(activeStep / 2) * 82}%` }} />
+              <div className="timeline-progress" style={{ height: `${(activeStep / 3) * 82}%` }} />
               {[
-                ['Create your profile', 'Enter your details, upload your photo, and add your links. Our guided builder makes it effortless.'],
-                ['Choose a design', 'Pick from beautifully crafted templates or customise every element to match your brand colours.'],
-                ['Share everywhere', 'Get your unique link and QR code. Share via WhatsApp, email, LinkedIn, or print on physical cards.'],
+                { title: 'Create your design', desc: 'Pick from beautifully crafted templates or customise every element to match your brand colours.', mobileImg: '/phone/mobilefirst.png' },
+                { title: 'Scan QR Code', desc: 'Instantly generate your unique QR code and let others scan it to open your digital card', mobileImg: '/phone/mobilesecond.png' },
+                { title: 'Get your Vcard', desc: 'Instantly generate your unique your digital card.', mobileImg: '/phone/monilethird.png' },
+                { title: 'Share everywhere', desc: 'Share your VCard through WhatsApp, email, LinkedIn, QR code, or print it on physical cards.', mobileImg: '/phone/four.png' },
               ].map((step, index) => (
-                <div key={step[0]} className={`step ${activeStep === index ? 'active' : ''} ${activeStep >= index ? 'passed' : ''}`} onClick={() => setActiveStep(index)} data-index={index}>
+                <div 
+                  key={step.title} 
+                  className={`step ${activeStep === index ? 'active' : ''}`} 
+                  onClick={() => setActiveStep(index)} 
+                  onMouseEnter={() => setActiveStep(index)}
+                  data-index={index}
+                >
                   <div className="step-num">{`0${index + 1}`}</div>
                   <div className="step-content">
-                    <h4>{step[0]}</h4>
-                    <p>{step[1]}</p>
+                    <h4>{step.title}</h4>
+                    <p>{step.desc}</p>
                   </div>
+                  {step.mobileImg && (
+                    <div className="step-mobile-img">
+                      <img src={step.mobileImg} alt={step.title} />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           </div>
 
           <div className="how-visual">
-            <img src="/phone/cha1 (1).png" alt="How it works" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <div className="how-visual-container">
+              {[
+                '/phone/first.png',
+                '/phone/second.png',
+                '/phone/third.png',
+                '/phone/heronew.png'
+              ].map((src, idx) => (
+                <img 
+                  key={src} 
+                  src={src} 
+                  alt={`Step ${idx + 1}`} 
+                  className={activeStep === idx ? 'active' : ''} 
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -1357,6 +1630,10 @@ export default function Home() {
               Kaira Technologies<span>.</span>
             </Link>
             <p>Professional digital vCards built for the way modern India networks. From freelancers to Fortune 500 teams.</p>
+            <div className="footer-contact" style={{ marginBottom: '28px', fontSize: '15px', color: 'rgba(255,255,255,0.9)', fontWeight: '500' }}>
+              <div style={{ marginBottom: '10px' }}>Email: kairateamkvp@gmail.com</div>
+              <div>Phone: 6379430293</div>
+            </div>
             <div className="footer-social">
               <a href="#" className="social-link">📧</a>
               <a href="#" className="social-link">💬</a>
@@ -1405,6 +1682,19 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Floating WhatsApp Button */}
+      <a 
+        href="https://wa.me/916379430293" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="floating-whatsapp"
+      >
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.201.535 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.031 18.105c-1.85 0-3.6-.531-5.111-1.458l-5.69 1.493 1.528-5.547c-1.045-1.583-1.611-3.435-1.61-5.358 0-5.462 4.444-9.907 9.906-9.907s9.907 4.445 9.907 9.907c0 5.46-4.445 9.904-9.906 9.906z" />
+        </svg>
+        Chat with us
+      </a>
     </div>
   )
 }

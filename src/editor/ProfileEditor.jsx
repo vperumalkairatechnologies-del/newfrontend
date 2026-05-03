@@ -122,6 +122,13 @@ export default function ProfileEditor() {
     // Construct full URLs for images
     const constructImageUrl = (filename) => filename ? `${uploadsBase}${filename}` : ''
     
+    // Restore saved layout (coverHeight, profileSize, logoSize, etc.)
+    const savedLayoutRaw = metaByType('meta_layout')
+    let savedLayout = null
+    if (savedLayoutRaw) {
+      try { savedLayout = JSON.parse(savedLayoutRaw) } catch {}
+    }
+
     // Single batch update -- one localStorage save with ALL fields including images
     const cardData = {
       name:           metaByType('meta_name')           || payload.name    || '',
@@ -151,6 +158,7 @@ export default function ProfileEditor() {
         preset:  metaByType('meta_vBg_preset')  || '',
         custom:  constructImageUrl(vBgFile),
       },
+      ...(savedLayout ? { layout: savedLayout } : {}),
       ...socialData,
     }
     

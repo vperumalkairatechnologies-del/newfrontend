@@ -135,10 +135,10 @@ export default function ImageAdjustModal({ type, layout, onChange, onSave, onClo
           {type === 'layout' && (
             <>
               {[
-                { key: 'coverHeight', label: 'Cover Height', min: 64, max: 220, step: 8, unit: 'px' },
-                { key: 'overlap',     label: 'Overlap',      min: 16, max: 72,  step: 4, unit: 'px' },
-                { key: 'profileSize', label: 'Profile Size', min: 64, max: 128, step: 8, unit: 'px' },
-                { key: 'logoSize',    label: 'Logo Size',    min: 40, max: 80,  step: 4, unit: 'px' },
+                { key: 'coverHeight', label: 'Cover Height',       min: 64, max: 220, step: 8, unit: 'px' },
+                { key: 'profileSize', label: 'Profile Photo Size', min: 64, max: 128, step: 8, unit: 'px' },
+                { key: 'logoSize',    label: 'Company Logo Size',  min: 40, max: 80,  step: 4, unit: 'px' },
+                { key: 'overlap',     label: 'Overlap',            min: 16, max: 72,  step: 4, unit: 'px' },
               ].map(({ key, label, min, max, step, unit }) => (
                 <div key={key}>
                   <div className="flex items-center justify-between mb-1.5">
@@ -149,6 +149,9 @@ export default function ImageAdjustModal({ type, layout, onChange, onSave, onClo
                     value={layout[key]}
                     onChange={e => updateLayout(key, +e.target.value)}
                     className="w-full h-1.5 accent-indigo-500 cursor-pointer" />
+                  <div className="flex justify-between text-[10px] text-gray-300 mt-1">
+                    <span>{min}{unit}</span><span>{max}{unit}</span>
+                  </div>
                 </div>
               ))}
             </>
