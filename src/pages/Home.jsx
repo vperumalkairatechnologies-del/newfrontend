@@ -1081,6 +1081,7 @@ export default function Home() {
           .landing-page .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
         }
         @media (max-width: 768px) {
+          .landing-page .floating-ui-card { display: none; }
           .landing-page footer { padding: 60px 20px 32px; }
           .landing-page .footer-top { padding: 32px 24px; margin-bottom: 40px; }
           .landing-page .footer-top-text h3 { font-size: 20px; }
